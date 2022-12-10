@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:stem_2022/firebase_options.dart';
 
 void main() {
+  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
+      // ignore: avoid_print
+      .then((value) => print("Firebase has been initialized"));
+
   runApp(const MyApp());
 }
-
-const primaryColor = Color.fromARGB(255, 0, 81, 5);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -22,15 +26,14 @@ class MyApp extends StatelessWidget {
             minimum: const EdgeInsets.all(10),
             child: Scaffold(
               appBar: AppBar(
-                title: const Text("Ideal Food"),
-                elevation: 0.00,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(20),
-                    bottom: Radius.circular(20),
-                  ),
-                ),
-              ),
+                  title: const Text("Ideal Food"),
+                  elevation: 0.00,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20),
+                      bottom: Radius.circular(20),
+                    ),
+                  )),
               body: const Center(
                   child: Text(
                 "Hello World",
