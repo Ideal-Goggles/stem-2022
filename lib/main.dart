@@ -16,24 +16,25 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Ideal Food',
         theme: ThemeData(
-            primarySwatch: Colors.green,
+            primarySwatch: Colors.deepPurple,
             textTheme:
-                const TextTheme(bodyMedium: TextStyle(color: Colors.amber))),
-        home: Scaffold(
-          appBar: AppBar(
-            title: const Text("I HAVE NO CLUE WHAT IM DOING"),
-            elevation: 0.00,
-            backgroundColor: Colors.green,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(30),
-                bottom: Radius.circular(30),
+                const TextTheme(bodyMedium: TextStyle(color: Colors.white))),
+        home: SafeArea(
+            minimum: const EdgeInsets.all(10),
+            child: Scaffold(
+              appBar: AppBar(
+                title: const Text("Ideal Food"),
+                elevation: 0.00,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(20),
+                    bottom: Radius.circular(20),
+                  ),
+                ),
               ),
-            ),
-          ),
-          body: const Center(child: RandomWords()),
-          backgroundColor: Colors.black,
-        ));
+              body: const Center(child: RandomWords()),
+              backgroundColor: Colors.black,
+            )));
   }
 }
 
