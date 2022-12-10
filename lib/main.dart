@@ -5,6 +5,8 @@ void main() {
   runApp(const MyApp());
 }
 
+const primaryColor = Color.fromARGB(255, 0, 81, 5);
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -14,15 +16,23 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Ideal Food',
         theme: ThemeData(
-            appBarTheme: AppBarTheme(
-              elevation: 0,
-            ),
-            primarySwatch: Colors.red,
+            primarySwatch: Colors.green,
             textTheme:
                 const TextTheme(bodyMedium: TextStyle(color: Colors.amber))),
         home: Scaffold(
-          appBar: AppBar(title: const Text("I HAVE NO CLUE WHAT IM DOING")),
+          appBar: AppBar(
+            title: const Text("I HAVE NO CLUE WHAT IM DOING"),
+            elevation: 0.00,
+            backgroundColor: Colors.green,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(30),
+                bottom: Radius.circular(30),
+              ),
+            ),
+          ),
           body: const Center(child: RandomWords()),
+          backgroundColor: Colors.black,
         ));
   }
 }
