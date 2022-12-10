@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Ideal Food',
         theme: ThemeData(
-            primarySwatch: Colors.deepPurple,
+            primarySwatch: Colors.red,
             textTheme:
                 const TextTheme(bodyMedium: TextStyle(color: Colors.white))),
         home: SafeArea(
