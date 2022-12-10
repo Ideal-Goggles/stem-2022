@@ -17,28 +17,38 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // Change this to change the general theme of the app.
+  // This exists because sometime Colors.primaries.first gives
+  // a different color than the primary swatch color for reasons
+  // I cannot bother to find out.
+  static const primaryThemeColor = Colors.deepPurple;
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Ideal Food',
         theme: ThemeData(
-            primarySwatch: Colors.deepPurple,
+            primarySwatch: primaryThemeColor,
             textTheme:
                 const TextTheme(bodyMedium: TextStyle(color: Colors.white))),
-        home: const SafeArea(
+        home: SafeArea(
+            bottom: false,
             child: DefaultTabController(
                 length: 3,
                 child: Scaffold(
-                  bottomNavigationBar: TabBar(
-                    tabs: [
-                      Tab(icon: Icon(Icons.home)),
-                      Tab(icon: Icon(Icons.group)),
-                      Tab(icon: Icon(Icons.settings))
-                    ],
-                    indicatorColor: Colors.transparent,
-                  ),
-                  body: TabBarView(
+                  bottomNavigationBar: Container(
+                      color: primaryThemeColor,
+                      padding: const EdgeInsets.only(bottom: 18, top: 2),
+                      child: const TabBar(
+                        tabs: [
+                          Tab(icon: Icon(Icons.home)),
+                          Tab(icon: Icon(Icons.group)),
+                          Tab(icon: Icon(Icons.settings))
+                        ],
+                        indicatorColor: Colors.transparent,
+                      )),
+                  body: const TabBarView(
                     children: [
                       HomeScreen(),
                       GroupsScreen(),
