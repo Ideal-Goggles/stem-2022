@@ -23,32 +23,22 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Ideal Food',
         theme: ThemeData(
-            primarySwatch: Colors.red,
+            primarySwatch: Colors.deepPurple,
             textTheme:
                 const TextTheme(bodyMedium: TextStyle(color: Colors.white))),
-        home: SafeArea(
-            minimum: const EdgeInsets.all(10),
+        home: const SafeArea(
             child: DefaultTabController(
                 length: 3,
                 child: Scaffold(
-                  bottomNavigationBar: const TabBar(
-                      tabs: [
-                        Tab(icon: Icon(Icons.home)),
-                        Tab(icon: Icon(Icons.group)),
-                        Tab(icon: Icon(Icons.settings)),
-                      ],
-                      padding: EdgeInsets.only(left: 12, right: 12),
-                      indicatorColor: Colors.transparent),
-                  appBar: AppBar(
-                      elevation: 0.00,
-                      backgroundColor: Colors.black45,
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(50),
-                            bottom: Radius.circular(50),
-                          ),
-                          side: BorderSide(color: Colors.white54))),
-                  body: const TabBarView(
+                  bottomNavigationBar: TabBar(
+                    tabs: [
+                      Tab(icon: Icon(Icons.home)),
+                      Tab(icon: Icon(Icons.group)),
+                      Tab(icon: Icon(Icons.settings))
+                    ],
+                    indicatorColor: Colors.transparent,
+                  ),
+                  body: TabBarView(
                     children: [
                       HomeScreen(),
                       GroupsScreen(),
