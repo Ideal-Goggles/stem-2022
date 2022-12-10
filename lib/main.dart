@@ -31,20 +31,23 @@ class MyApp extends StatelessWidget {
             child: DefaultTabController(
                 length: 3,
                 child: Scaffold(
-                  appBar: AppBar(
-                      title: const Text("Ideal Food"),
-                      bottom: const TabBar(tabs: [
+                  bottomNavigationBar: const TabBar(
+                      tabs: [
                         Tab(icon: Icon(Icons.home)),
                         Tab(icon: Icon(Icons.group)),
                         Tab(icon: Icon(Icons.settings)),
-                      ], padding: EdgeInsets.only(left: 12, right: 12)),
+                      ],
+                      padding: EdgeInsets.only(left: 12, right: 12),
+                      indicatorColor: Colors.transparent),
+                  appBar: AppBar(
                       elevation: 0.00,
+                      backgroundColor: Colors.black45,
                       shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(15),
-                          bottom: Radius.circular(15),
-                        ),
-                      )),
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(50),
+                            bottom: Radius.circular(50),
+                          ),
+                          side: BorderSide(color: Colors.white54))),
                   body: const TabBarView(
                     children: [
                       HomeScreen(),
