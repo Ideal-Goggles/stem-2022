@@ -24,22 +24,43 @@ class MyApp extends StatelessWidget {
                 const TextTheme(bodyMedium: TextStyle(color: Colors.white))),
         home: SafeArea(
             minimum: const EdgeInsets.all(10),
-            child: Scaffold(
-              appBar: AppBar(
-                  title: const Text("Ideal Food"),
-                  elevation: 0.00,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(20),
-                      bottom: Radius.circular(20),
-                    ),
-                  )),
-              body: const Center(
-                  child: Text(
-                "Hello World",
-                style: TextStyle(fontSize: 20),
-              )),
-              backgroundColor: Colors.black,
-            )));
+            child: DefaultTabController(
+                length: 3,
+                child: Scaffold(
+                  appBar: AppBar(
+                      title: const Text("Ideal Food"),
+                      bottom: const TabBar(tabs: [
+                        Tab(icon: Icon(Icons.home)),
+                        Tab(icon: Icon(Icons.group)),
+                        Tab(icon: Icon(Icons.settings)),
+                      ], padding: EdgeInsets.only(left: 12, right: 12)),
+                      elevation: 0.00,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(15),
+                          bottom: Radius.circular(15),
+                        ),
+                      )),
+                  body: const TabBarView(
+                    children: [
+                      Center(
+                          child: Text(
+                        "Home",
+                        style: TextStyle(fontSize: 20),
+                      )),
+                      Center(
+                          child: Text(
+                        "Groups",
+                        style: TextStyle(fontSize: 20),
+                      )),
+                      Center(
+                          child: Text(
+                        "Settings",
+                        style: TextStyle(fontSize: 20),
+                      )),
+                    ],
+                  ),
+                  backgroundColor: Colors.black,
+                ))));
   }
 }
