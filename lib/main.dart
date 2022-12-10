@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+
 import 'package:stem_2022/firebase_options.dart';
+import 'package:stem_2022/tab_screens/groups_screen.dart';
+import 'package:stem_2022/tab_screens/home_screen.dart';
+import 'package:stem_2022/tab_screens/settings_screen.dart';
 
 void main() {
   Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
@@ -43,21 +47,9 @@ class MyApp extends StatelessWidget {
                       )),
                   body: const TabBarView(
                     children: [
-                      Center(
-                          child: Text(
-                        "Home",
-                        style: TextStyle(fontSize: 20),
-                      )),
-                      Center(
-                          child: Text(
-                        "Groups",
-                        style: TextStyle(fontSize: 20),
-                      )),
-                      Center(
-                          child: Text(
-                        "Settings",
-                        style: TextStyle(fontSize: 20),
-                      )),
+                      HomeScreen(),
+                      GroupsScreen(),
+                      SettingsScreen(),
                     ],
                   ),
                   backgroundColor: Colors.black,
