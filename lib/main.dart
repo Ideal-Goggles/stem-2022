@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Ideal Food',
         theme: ThemeData(
-            primarySwatch: Colors.deepPurple,
+            primarySwatch: Colors.red,
             textTheme:
                 const TextTheme(bodyMedium: TextStyle(color: Colors.white))),
         home: SafeArea(
@@ -28,12 +28,13 @@ class MyApp extends StatelessWidget {
               appBar: AppBar(
                   title: const Text("Ideal Food"),
                   elevation: 0.00,
+                  backgroundColor: Colors.black45,
                   shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(20),
-                      bottom: Radius.circular(20),
-                    ),
-                  )),
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(50),
+                        bottom: Radius.circular(50),
+                      ),
+                      side: BorderSide(color: Colors.white54))),
               body: const Center(
                   child: Text(
                 "Hello World",
