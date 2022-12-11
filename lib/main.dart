@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:stem_2022/firebase_options.dart';
-import 'package:stem_2022/tab_screens/groups_screen.dart';
-import 'package:stem_2022/tab_screens/home_screen.dart';
-import 'package:stem_2022/tab_screens/settings_screen.dart';
+import 'package:stem_2022/tab_screens/groups.dart';
+import 'package:stem_2022/tab_screens/home.dart';
+import 'package:stem_2022/tab_screens/settings.dart';
 
 void main() {
   Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
