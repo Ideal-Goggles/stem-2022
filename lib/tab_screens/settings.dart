@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends State<SettingsScreen> {
-  @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        "Settings",
-        style: TextStyle(fontSize: 20),
-      ),
-    );
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          ListTile(
+            leading: Icon(Icons.help),
+            title: Text(
+              "What is Ideal Food?",
+            ),
+          ),
+        ]);
   }
 }

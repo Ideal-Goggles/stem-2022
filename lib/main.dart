@@ -30,32 +30,38 @@ class MyApp extends StatelessWidget {
         title: 'Ideal Food',
         theme: ThemeData(
             primarySwatch: primaryThemeColor,
-            textTheme:
-                const TextTheme(bodyMedium: TextStyle(color: Colors.white))),
-        home: SafeArea(
-            bottom: false,
-            child: DefaultTabController(
-                length: 3,
-                child: Scaffold(
-                  bottomNavigationBar: Container(
-                      color: primaryThemeColor,
-                      padding: const EdgeInsets.only(bottom: 18, top: 2),
-                      child: const TabBar(
-                        tabs: [
-                          Tab(icon: Icon(Icons.home)),
-                          Tab(icon: Icon(Icons.group)),
-                          Tab(icon: Icon(Icons.settings))
-                        ],
-                        indicatorColor: Colors.transparent,
-                      )),
-                  body: const TabBarView(
+            listTileTheme: ListTileThemeData(
+              iconColor: primaryThemeColor[200],
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              tileColor: Colors.blueGrey.withOpacity(0.2),
+            ),
+            colorScheme: const ColorScheme.dark(
+                primary: primaryThemeColor, error: Colors.deepOrange)),
+        home: DefaultTabController(
+            length: 3,
+            child: Scaffold(
+              bottomNavigationBar: Container(
+                  color: primaryThemeColor,
+                  padding: const EdgeInsets.only(bottom: 18, top: 2),
+                  child: const TabBar(
+                    tabs: [
+                      Tab(icon: Icon(Icons.home)),
+                      Tab(icon: Icon(Icons.group)),
+                      Tab(icon: Icon(Icons.settings))
+                    ],
+                    indicatorColor: Colors.transparent,
+                  )),
+              body: const SafeArea(
+                  minimum: EdgeInsets.all(8),
+                  child: TabBarView(
                     children: [
                       HomeScreen(),
                       GroupsScreen(),
                       SettingsScreen(),
                     ],
-                  ),
-                  backgroundColor: Colors.black,
-                ))));
+                  )),
+              backgroundColor: Colors.black,
+            )));
   }
 }
