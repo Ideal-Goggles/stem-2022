@@ -23,22 +23,27 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CarouselSlider(
-              options: CarouselOptions(
-                autoPlay: true,
-                autoPlayInterval: const Duration(seconds: 15),
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    _current = index;
-                  });
-                },
-              ),
-              items: const [
-                Text("hi"),
-                Text("hello"),
-                Text("bello"),
-              ],
-            ),
+            Container(
+                margin: const EdgeInsets.only(left: 20, right: 20),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.grey.withOpacity(0.1)),
+                child: CarouselSlider(
+                  options: CarouselOptions(
+                    autoPlay: true,
+                    autoPlayInterval: const Duration(seconds: 15),
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        _current = index;
+                      });
+                    },
+                  ),
+                  items: const [
+                    Text("hi"),
+                    Text("hello"),
+                    Text("bello"),
+                  ],
+                )),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [0, 1, 2].map((i) {
