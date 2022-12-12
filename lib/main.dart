@@ -46,21 +46,23 @@ class MyApp extends StatelessWidget {
             length: 3,
             child: Scaffold(
               bottomNavigationBar: Container(
-                  color: Colors.grey.withOpacity(0.05),
+                  color: Colors.grey.withOpacity(0.07),
                   // decoration: BoxDecoration(
                   //   color: Colors.yellow,
                   //   border: Border.all(color: Colors.black),
                   // ),
                   padding: const EdgeInsets.only(bottom: 10, top: 10),
-                  child: const TabBar(
-                    labelColor: Colors.blue,
-                    unselectedLabelColor: Colors.white38,
-                    tabs: [
-                      Tab(icon: Icon(Icons.home)),
-                      Tab(icon: Icon(Icons.group)),
-                      Tab(icon: Icon(Icons.settings))
-                    ],
-                    indicatorColor: Colors.transparent,
+                  child: const SafeArea(
+                    child: TabBar(
+                      labelColor: Colors.blue,
+                      unselectedLabelColor: Colors.white38,
+                      tabs: [
+                        Tab(icon: Icon(Icons.home)),
+                        Tab(icon: Icon(Icons.group)),
+                        Tab(icon: Icon(Icons.settings))
+                      ],
+                      indicatorColor: Colors.transparent,
+                    ),
                   )),
               body: const SafeArea(
                   minimum: EdgeInsets.all(8),
