@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
   // This exists because sometime Colors.primaries.first gives
   // a different color than the primary swatch color for reasons
   // I cannot bother to find out.
-  static const primaryThemeColor = Colors.deepPurple;
+  static const primaryThemeColor = Colors.indigo;
 
   // This widget is the root of your application.
   @override
@@ -36,6 +36,9 @@ class MyApp extends StatelessWidget {
             //       borderRadius: BorderRadius.circular(10)),
             //   tileColor: Colors.blueGrey.withOpacity(0.2),
             // ),
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            scaffoldBackgroundColor: Color.fromARGB(255, 0, 0, 0),
             appBarTheme: const AppBarTheme(color: primaryThemeColor),
             colorScheme: const ColorScheme.dark(
                 primary: primaryThemeColor, error: Colors.deepOrange)),
@@ -43,9 +46,15 @@ class MyApp extends StatelessWidget {
             length: 3,
             child: Scaffold(
               bottomNavigationBar: Container(
-                  color: primaryThemeColor,
-                  padding: const EdgeInsets.only(bottom: 20, top: 2),
+                  color: Colors.grey.withOpacity(0.05),
+                  // decoration: BoxDecoration(
+                  //   color: Colors.yellow,
+                  //   border: Border.all(color: Colors.black),
+                  // ),
+                  padding: const EdgeInsets.only(bottom: 10, top: 10),
                   child: const TabBar(
+                    labelColor: Colors.blue,
+                    unselectedLabelColor: Colors.white38,
                     tabs: [
                       Tab(icon: Icon(Icons.home)),
                       Tab(icon: Icon(Icons.group)),

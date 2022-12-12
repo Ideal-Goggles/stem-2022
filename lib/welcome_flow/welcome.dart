@@ -14,7 +14,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Welcome to Ideal Food")),
+        appBar: AppBar(
+          title: const Text("Welcome to Hammit"),
+          elevation: 0,
+          backgroundColor: Colors.grey.withOpacity(0.05),
+        ),
         body: Center(
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
