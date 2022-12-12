@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
   // This exists because sometime Colors.primaries.first gives
   // a different color than the primary swatch color for reasons
   // I cannot bother to find out.
-  static const primaryThemeColor = Colors.deepPurple;
+  static const primaryThemeColor = Colors.indigo;
 
   // This widget is the root of your application.
   @override
@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
             child: Scaffold(
               bottomNavigationBar: Container(
                   color: primaryThemeColor,
-                  padding: const EdgeInsets.only(bottom: 20, top: 2),
+                  padding: const EdgeInsets.only(bottom: 10, top: 10),
                   child: const TabBar(
                     tabs: [
                       Tab(icon: Icon(Icons.home)),
