@@ -4,7 +4,7 @@ import 'package:stem_2022/welcome_flow/welcome.dart';
 class SettingsMenuEntry {
   final IconData icon;
   final String text;
-  final Widget Function() destination;
+  final Widget destination;
 
   SettingsMenuEntry(this.icon, this.text, this.destination);
 }
@@ -13,8 +13,7 @@ class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   static List<SettingsMenuEntry> entries = [
-    SettingsMenuEntry(
-        Icons.help, "What is Ideal Food?", () => const WelcomeScreen()),
+    SettingsMenuEntry(Icons.help, "What is Ideal Food?", const WelcomeScreen()),
   ];
 
   @override
@@ -29,7 +28,7 @@ class SettingsScreen extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => entries[index].destination()));
+                        builder: (context) => entries[index].destination));
               },
               color: Colors.blueGrey.withOpacity(0.2),
               shape: RoundedRectangleBorder(
