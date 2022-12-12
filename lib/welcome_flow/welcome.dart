@@ -9,7 +9,7 @@ class WelcomeScreen extends StatelessWidget {
         appBar: AppBar(
           title: const Text("Welcome to Hammit"),
           elevation: 0,
-          backgroundColor: Colors.black87,
+          backgroundColor: Colors.grey.withOpacity(0.05),
         ),
         body: const Center(
           child: Text("Welcome to Hammit!"),
