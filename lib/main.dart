@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
                 child: Scaffold(
                   bottomNavigationBar: Container(
                       color: primaryThemeColor,
-                      padding: const EdgeInsets.only(bottom: 18, top: 2),
+                      padding: const EdgeInsets.only(bottom: 20, top: 2),
                       child: const TabBar(
                         tabs: [
                           Tab(icon: Icon(Icons.home)),
