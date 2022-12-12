@@ -30,12 +30,13 @@ class MyApp extends StatelessWidget {
         title: 'Ideal Food',
         theme: ThemeData(
             primarySwatch: primaryThemeColor,
-            listTileTheme: ListTileThemeData(
-              iconColor: primaryThemeColor[200],
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-              tileColor: Colors.blueGrey.withOpacity(0.2),
-            ),
+            // listTileTheme: ListTileThemeData(
+            //   iconColor: primaryThemeColor[200],
+            //   shape: RoundedRectangleBorder(
+            //       borderRadius: BorderRadius.circular(10)),
+            //   tileColor: Colors.blueGrey.withOpacity(0.2),
+            // ),
+            appBarTheme: const AppBarTheme(color: primaryThemeColor),
             colorScheme: const ColorScheme.dark(
                 primary: primaryThemeColor, error: Colors.deepOrange)),
         home: DefaultTabController(
@@ -61,7 +62,7 @@ class MyApp extends StatelessWidget {
                       SettingsScreen(),
                     ],
                   )),
-              backgroundColor: Colors.black,
+              // backgroundColor: Colors.black,
             )));
   }
 }
