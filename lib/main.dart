@@ -36,6 +36,7 @@ class MyApp extends StatelessWidget {
             //       borderRadius: BorderRadius.circular(10)),
             //   tileColor: Colors.blueGrey.withOpacity(0.2),
             // ),
+            scaffoldBackgroundColor: Color.fromARGB(255, 0, 0, 0),
             appBarTheme: const AppBarTheme(color: primaryThemeColor),
             colorScheme: const ColorScheme.dark(
                 primary: primaryThemeColor, error: Colors.deepOrange)),

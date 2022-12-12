@@ -30,9 +30,9 @@ class SettingsScreen extends StatelessWidget {
                     MaterialPageRoute(
                         builder: (context) => entries[index].destination));
               },
-              color: Colors.blueGrey.withOpacity(0.2),
+              color: Colors.grey.withOpacity(0.1),
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
+                  borderRadius: BorderRadius.circular(50)),
               elevation: 0,
               child: ListTile(
                 leading: Icon(entries[index].icon),
