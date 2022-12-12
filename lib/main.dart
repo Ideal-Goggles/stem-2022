@@ -43,9 +43,15 @@ class MyApp extends StatelessWidget {
             length: 3,
             child: Scaffold(
               bottomNavigationBar: Container(
-                  color: primaryThemeColor,
+                  color: Colors.black87,
+                  // decoration: BoxDecoration(
+                  //   color: Colors.yellow,
+                  //   border: Border.all(color: Colors.black),
+                  // ),
                   padding: const EdgeInsets.only(bottom: 10, top: 10),
                   child: const TabBar(
+                    labelColor: Colors.blue,
+                    unselectedLabelColor: Colors.white38,
                     tabs: [
                       Tab(icon: Icon(Icons.home)),
                       Tab(icon: Icon(Icons.group)),
