@@ -36,6 +36,8 @@ class MyApp extends StatelessWidget {
             //       borderRadius: BorderRadius.circular(10)),
             //   tileColor: Colors.blueGrey.withOpacity(0.2),
             // ),
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
             scaffoldBackgroundColor: Color.fromARGB(255, 0, 0, 0),
             appBarTheme: const AppBarTheme(color: primaryThemeColor),
             colorScheme: const ColorScheme.dark(
@@ -44,7 +46,7 @@ class MyApp extends StatelessWidget {
             length: 3,
             child: Scaffold(
               bottomNavigationBar: Container(
-                  color: Colors.black87,
+                  color: Colors.grey.withOpacity(0.05),
                   // decoration: BoxDecoration(
                   //   color: Colors.yellow,
                   //   border: Border.all(color: Colors.black),
