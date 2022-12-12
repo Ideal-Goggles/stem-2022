@@ -16,9 +16,9 @@ class AccountScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Welcome to Hammit!"),
+            const Text("Welcome to Hammit!"),
             const SizedBox(height: 10),
-            TextField(
+            const TextField(
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                 labelText: "Email address",
@@ -26,16 +26,15 @@ class AccountScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             ElevatedButton(
-                child: Text('Get Magic Link'),
-                onPressed: () {
-                  print('Sent!');
-                },
-                style: ElevatedButton.styleFrom(
-                    primary: Colors.blue.withOpacity(0.75),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50)),
-                    padding: EdgeInsets.all(15))),
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue.withOpacity(0.75),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50)),
+                  padding: const EdgeInsets.all(15)),
+              child: const Text('Get Magic Link'),
+            ),
           ],
         ),
       ),

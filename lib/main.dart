@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
             // ),
             highlightColor: Colors.transparent,
             splashColor: Colors.transparent,
-            scaffoldBackgroundColor: Color.fromARGB(255, 0, 0, 0),
+            scaffoldBackgroundColor: Colors.black,
             appBarTheme: const AppBarTheme(color: primaryThemeColor),
             colorScheme: const ColorScheme.dark(
                 primary: primaryThemeColor, error: Colors.deepOrange)),
