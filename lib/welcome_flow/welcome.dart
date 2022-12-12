@@ -1,14 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
+
+  @override
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
+  int _current = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Text("Welcome to Ideal Food")),
-        body: const Center(
-          child: Text("Welcome to Ideal Food!"),
-        ));
+        body: Center(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CarouselSlider(
+              options: CarouselOptions(
+                autoPlay: true,
+                autoPlayInterval: const Duration(seconds: 15),
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    _current = index;
+                  });
+                },
+              ),
+              items: const [
+                Text("hi"),
+                Text("hello"),
+                Text("bello"),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [0, 1, 2].map((i) {
+                final color = i == _current ? Colors.grey[700] : Colors.grey;
+                return Container(
+                    padding: const EdgeInsets.all(3),
+                    child: Icon(
+                      Icons.circle,
+                      color: color,
+                      size: 10,
+                    ));
+              }).toList(),
+            ),
+          ],
+        )));
   }
 }
