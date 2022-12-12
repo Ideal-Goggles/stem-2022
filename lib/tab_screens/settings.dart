@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stem_2022/welcome_flow/welcome.dart';
+import 'package:stem_2022/welcome_flow/account.dart';
 
 class SettingsMenuEntry {
   final IconData icon;
@@ -13,7 +14,8 @@ class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   static List<SettingsMenuEntry> entries = [
-    SettingsMenuEntry(Icons.help, "What is Ideal Food?", const WelcomeScreen()),
+    SettingsMenuEntry(Icons.help, "What is Hammit?", const WelcomeScreen()),
+    SettingsMenuEntry(Icons.person, "Account", const AccountScreen()),
   ];
 
   @override
