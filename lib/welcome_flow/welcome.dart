@@ -17,7 +17,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         appBar: AppBar(
           title: const Text("Welcome to Hammit"),
           elevation: 0,
-          backgroundColor: Colors.grey.withOpacity(0.05),
+          backgroundColor: Colors.grey.withOpacity(0.07),
         ),
         body: Center(
             child: Column(
