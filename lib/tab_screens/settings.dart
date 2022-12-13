@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stem_2022/welcome_flow/welcome.dart';
+import 'package:stem_2022/settings_screens/welcome.dart';
 import 'package:stem_2022/settings_screens/account.dart';
 
 class SettingsMenuEntry {

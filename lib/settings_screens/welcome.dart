@@ -49,7 +49,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               children: [0, 1, 2].map((i) {
                 final color = i == _current ? Colors.grey[700] : Colors.grey;
                 return Container(
-                    padding: const EdgeInsets.all(3),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 3, vertical: 6),
                     child: Icon(
                       Icons.circle,
                       color: color,
