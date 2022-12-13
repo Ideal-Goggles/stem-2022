@@ -39,7 +39,8 @@ class MyApp extends StatelessWidget {
             highlightColor: Colors.transparent,
             splashColor: Colors.transparent,
             scaffoldBackgroundColor: Colors.black,
-            appBarTheme: const AppBarTheme(color: primaryThemeColor),
+            appBarTheme:
+                AppBarTheme(color: Colors.grey.withOpacity(0.07), elevation: 0),
             colorScheme: const ColorScheme.dark(
                 primary: primaryThemeColor, error: Colors.deepOrange)),
         home: DefaultTabController(

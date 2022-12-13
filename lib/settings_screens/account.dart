@@ -6,11 +6,7 @@ class AccountScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Account Management"),
-        elevation: 0,
-        backgroundColor: Colors.grey.withOpacity(0.1),
-      ),
+      appBar: AppBar(title: const Text("Account Management")),
       body: Padding(
         padding: const EdgeInsets.all(50),
         child: Column(

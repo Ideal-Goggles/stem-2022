@@ -38,11 +38,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     ];
 
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Welcome to Hammit"),
-          elevation: 0,
-          backgroundColor: Colors.grey.withOpacity(0.07),
-        ),
+        appBar: AppBar(title: const Text("Welcome to Hammit")),
         body: Center(
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
