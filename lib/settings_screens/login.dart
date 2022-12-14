@@ -1,50 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailRegex =
       RegExp(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)");
 
-  String username = "";
   String email = "";
   String password = "";
 
-  void signUp() {
+  void login() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .then((creds) => creds.user!.updateDisplayName(username))
-          .then((_) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Account created successfully!",
-                textAlign: TextAlign.center)));
-
-        Navigator.pop(context);
-      }).catchError((error) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            backgroundColor: Theme.of(context).colorScheme.error,
-            content: Text(error.toString(), textAlign: TextAlign.center)));
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          duration: Duration(seconds: 2),
-          content: Text("Creating account...", textAlign: TextAlign.center)));
+      // TODO
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Create an Account")),
+        appBar: AppBar(title: const Text("Log Into Your Account")),
         body: Form(
           key: _formKey,
           child: Padding(
@@ -53,29 +35,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  "Welcome to Hammit!",
+                  "Welcome Back to Hammit!",
                   style: TextStyle(
                     fontSize: 20,
                   ),
                 ),
                 const SizedBox(height: 10),
-                Container(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: TextFormField(
-                    onSaved: (newValue) => username = newValue ?? "",
-                    keyboardType: TextInputType.name,
-                    decoration: const InputDecoration(
-                      labelText: "Username",
-                      hintText: "John Doe",
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter a username.";
-                      }
-                      return null;
-                    },
-                  ),
-                ),
                 Container(
                   padding: const EdgeInsets.only(top: 20),
                   child: TextFormField(
@@ -124,14 +89,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   width: double.infinity,
                   child: ElevatedButton(
                     // width:,
-                    onPressed: signUp,
+                    onPressed: login,
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey.withOpacity(0.1),
                         foregroundColor: Theme.of(context).colorScheme.primary,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(50)),
                         padding: const EdgeInsets.all(15)),
-                    child: const Text("Sign Up"),
+                    child: const Text("Login"),
                   ),
                 )
               ],

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:stem_2022/settings_screens/login.dart';
+
 import 'package:stem_2022/settings_screens/welcome.dart';
 import 'package:stem_2022/settings_screens/sign_up.dart';
 
@@ -13,14 +16,20 @@ class SettingsMenuEntry {
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
-  static List<SettingsMenuEntry> entries = [
-    SettingsMenuEntry(Icons.help, "What is Hammit?", const WelcomeScreen()),
-    SettingsMenuEntry(Icons.app_registration_rounded, "Create an Account",
-        const SignUpScreen()),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final currentUser = FirebaseAuth.instance.currentUser;
+
+    final List<SettingsMenuEntry> entries = [
+      SettingsMenuEntry(Icons.help, "What is Hammit?", const WelcomeScreen()),
+      if (currentUser == null)
+        SettingsMenuEntry(Icons.app_registration_rounded, "Create an Account",
+            const SignUpScreen()),
+      if (currentUser == null)
+        SettingsMenuEntry(
+            Icons.login, "Log Into Existing Account", const LoginScreen())
+    ];
+
     return Container(
       margin: const EdgeInsets.only(top: 20),
       child: ListView.separated(
