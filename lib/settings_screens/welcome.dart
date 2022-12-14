@@ -11,9 +11,9 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> {
   int _current = 0;
   final _carouselDecoration = BoxDecoration(
-    borderRadius: BorderRadius.circular(8),
-    border: Border.all(color: Colors.grey),
-    color: Colors.grey.withOpacity(0.2),
+    borderRadius: BorderRadius.circular(50),
+    // border: Border.all(color: Colors.grey),
+    color: Colors.grey.withOpacity(0.1),
   );
 
   Widget textPage(String content) {
@@ -50,7 +50,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 autoPlay: true,
                 autoPlayInterval: const Duration(seconds: 15),
                 enlargeCenterPage: true,
-                height: 260,
+                height: 500,
                 onPageChanged: (index, reason) {
                   setState(() {
                     _current = index;
@@ -64,10 +64,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               children: carouselItems.asMap().keys.map((i) {
                 return Container(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 3, vertical: 6),
+                        const EdgeInsets.symmetric(horizontal: 3, vertical: 20),
                     child: Icon(
                       Icons.circle,
-                      color: i == _current ? Colors.grey[700] : Colors.grey,
+                      color:
+                          i == _current ? Colors.blue[900] : Colors.blue[600],
                       size: 10,
                     ));
               }).toList(),

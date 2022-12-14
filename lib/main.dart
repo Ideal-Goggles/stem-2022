@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
             //       borderRadius: BorderRadius.circular(10)),
             //   tileColor: Colors.blueGrey.withOpacity(0.2),
             // ),
+            fontFamily: "Inter",
             highlightColor: Colors.transparent,
             splashColor: Colors.transparent,
             scaffoldBackgroundColor: Colors.black,
