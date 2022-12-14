@@ -11,8 +11,10 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> {
   int _current = 0;
   final _carouselDecoration = BoxDecoration(
-      borderRadius: BorderRadius.circular(8),
-      color: Colors.grey.withOpacity(0.1));
+    borderRadius: BorderRadius.circular(8),
+    border: Border.all(color: Colors.grey),
+    color: Colors.grey.withOpacity(0.2),
+  );
 
   Widget textPage(String content) {
     return Container(
