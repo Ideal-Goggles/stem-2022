@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stem_2022/settings_screens/welcome.dart';
-import 'package:stem_2022/settings_screens/account.dart';
+import 'package:stem_2022/settings_screens/sign_up.dart';
 
 class SettingsMenuEntry {
   final IconData icon;
@@ -15,7 +15,8 @@ class SettingsScreen extends StatelessWidget {
 
   static List<SettingsMenuEntry> entries = [
     SettingsMenuEntry(Icons.help, "What is Hammit?", const WelcomeScreen()),
-    SettingsMenuEntry(Icons.person, "Account", const AccountScreen()),
+    SettingsMenuEntry(
+        Icons.app_registration_rounded, "Sign Up", const SignUpScreen()),
   ];
 
   @override

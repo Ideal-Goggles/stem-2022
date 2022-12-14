@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
   // a different color than the primary swatch color for reasons
   // I cannot bother to find out.
   static const primaryThemeColor = Colors.indigo;
+  static const formErrorColor = Colors.deepOrangeAccent;
 
   // This widget is the root of your application.
   @override
@@ -41,8 +42,14 @@ class MyApp extends StatelessWidget {
             scaffoldBackgroundColor: Colors.black,
             appBarTheme:
                 AppBarTheme(color: Colors.grey.withOpacity(0.07), elevation: 0),
-            colorScheme: const ColorScheme.dark(
-                primary: primaryThemeColor, error: Colors.deepOrange)),
+            colorScheme: const ColorScheme.dark(primary: primaryThemeColor),
+            inputDecorationTheme: const InputDecorationTheme(
+              errorStyle: TextStyle(color: formErrorColor),
+              errorBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: formErrorColor, width: 1)),
+              focusedErrorBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: formErrorColor, width: 2)),
+            )),
         home: DefaultTabController(
             length: 3,
             child: Scaffold(
