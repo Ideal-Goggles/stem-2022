@@ -23,45 +23,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
       FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password)
           .then((creds) => creds.user!.updateDisplayName(username))
-          .then(
-              (_) => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text(
-                      "Account created successfully!",
-                      style: TextStyle(color: Colors.white),
-                      textAlign: TextAlign.center,
-                    ),
-                    backgroundColor: Colors.white12,
-                    margin: EdgeInsets.all(10),
-                    shape: RoundedRectangleBorder(),
-                    behavior: SnackBarBehavior.floating,
-                    elevation: 5,
-                  )))
-          .catchError(
-              (error) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(
-                      error.toString(),
-                      style: TextStyle(color: Colors.white),
-                      textAlign: TextAlign.center,
-                    ),
-                    backgroundColor: Colors.blue,
-                    margin: EdgeInsets.all(15),
-                    shape: StadiumBorder(),
-                    behavior: SnackBarBehavior.floating,
-                    elevation: 5,
-                  )));
+          .then((_) => ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text("Account created successfully!",
+                      textAlign: TextAlign.center))))
+          .catchError((error) => ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                  content:
+                      Text(error.toString(), textAlign: TextAlign.center))));
 
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-            "Creating account...",
-            style: TextStyle(color: Colors.white),
-            textAlign: TextAlign.center,
-          ),
-          backgroundColor: Colors.blue,
-          margin: EdgeInsets.all(15),
-          shape: StadiumBorder(),
-          behavior: SnackBarBehavior.floating,
-          elevation: 5,
-          duration: Duration(seconds: 2)));
+          duration: Duration(seconds: 2),
+          content: Text("Creating account...", textAlign: TextAlign.center)));
     }
   }
 
@@ -76,9 +50,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Align(
+                const Align(
                   alignment: Alignment.centerLeft,
-                  child: const Text(
+                  child: Text(
                     "Welcome to Hammit!",
                     style: TextStyle(
                       fontSize: 20,
@@ -91,17 +65,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: TextFormField(
                     onSaved: (newValue) => username = newValue ?? "",
                     keyboardType: TextInputType.name,
-                    decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue.shade600),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
+                    decoration: const InputDecoration(
                       labelText: "Username",
                       hintText: "John Doe",
-                      labelStyle: TextStyle(color: Colors.blue[600]),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -117,16 +83,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     onSaved: (newValue) => email = newValue ?? "",
                     keyboardType: TextInputType.emailAddress,
                     autocorrect: false,
-                    decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue.shade600),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
+                    decoration: const InputDecoration(
                       labelText: "Email address",
                       hintText: "johndoe@example.com",
-                      labelStyle: TextStyle(color: Colors.blue[600]),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14)),
                     ),
                     validator: (value) {
                       if (value != null && value.isNotEmpty) {
@@ -147,15 +106,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     keyboardType: TextInputType.visiblePassword,
                     obscureText: true,
                     autocorrect: false,
-                    decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue.shade600),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
+                    decoration: const InputDecoration(
                       labelText: "Password",
-                      labelStyle: TextStyle(color: Colors.blue[600]),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14)),
                     ),
                     validator: (value) {
                       if (value != null && value.isNotEmpty) {
@@ -169,14 +121,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Container(
+                SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     // width:,
                     onPressed: signUp,
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey.withOpacity(0.1),
-                        foregroundColor: Colors.blue[600],
+                        foregroundColor: Theme.of(context).colorScheme.primary,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(50)),
                         padding: const EdgeInsets.all(15)),

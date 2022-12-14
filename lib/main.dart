@@ -17,8 +17,8 @@ class MyApp extends StatelessWidget {
   // This exists because sometime Colors.primaries.first gives
   // a different color than the primary swatch color for reasons
   // I cannot bother to find out.
-  static const primaryThemeColor = Colors.indigo;
-  static const formErrorColor = Colors.deepOrangeAccent;
+  static const primaryThemeColor = Colors.blue;
+  static const primaryErrorColor = Colors.deepOrangeAccent;
 
   // This widget is the root of your application.
   @override
@@ -27,25 +27,40 @@ class MyApp extends StatelessWidget {
         title: 'Ideal Food',
         theme: ThemeData(
             primarySwatch: primaryThemeColor,
-            // listTileTheme: ListTileThemeData(
-            //   iconColor: primaryThemeColor[200],
-            //   shape: RoundedRectangleBorder(
-            //       borderRadius: BorderRadius.circular(10)),
-            //   tileColor: Colors.blueGrey.withOpacity(0.2),
-            // ),
             fontFamily: "Inter",
             highlightColor: Colors.transparent,
             splashColor: Colors.transparent,
             scaffoldBackgroundColor: Colors.black,
             appBarTheme:
                 AppBarTheme(color: Colors.grey.withOpacity(0.1), elevation: 0),
-            colorScheme: const ColorScheme.dark(primary: primaryThemeColor),
-            inputDecorationTheme: const InputDecorationTheme(
-              errorStyle: TextStyle(color: formErrorColor),
-              errorBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: formErrorColor, width: 1)),
-              focusedErrorBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: formErrorColor, width: 2)),
+            colorScheme: const ColorScheme.dark(
+                primary: primaryThemeColor, error: primaryErrorColor),
+            inputDecorationTheme: InputDecorationTheme(
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: primaryThemeColor),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              errorStyle: const TextStyle(color: primaryErrorColor),
+              errorBorder: OutlineInputBorder(
+                borderSide:
+                    const BorderSide(color: primaryErrorColor, width: 1),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide:
+                    const BorderSide(color: primaryErrorColor, width: 2),
+                borderRadius: BorderRadius.circular(14),
+              ),
+            ),
+            snackBarTheme: const SnackBarThemeData(
+              backgroundColor: Colors.blue,
+              shape: StadiumBorder(),
+              behavior: SnackBarBehavior.floating,
+              elevation: 5,
+              contentTextStyle: TextStyle(color: Colors.white),
             )),
         home: FutureBuilder(
           future: Firebase.initializeApp(
@@ -64,7 +79,7 @@ class MyApp extends StatelessWidget {
                       padding: const EdgeInsets.only(bottom: 10, top: 10),
                       child: const SafeArea(
                         child: TabBar(
-                          labelColor: Colors.blue,
+                          labelColor: primaryThemeColor,
                           unselectedLabelColor: Colors.white38,
                           tabs: [
                             Tab(icon: Icon(Icons.home)),

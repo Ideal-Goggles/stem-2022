@@ -62,13 +62,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: carouselItems.asMap().keys.map((i) {
+                final primaryColor = Theme.of(context).colorScheme.primary;
+
                 return Container(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 3, vertical: 20),
                     child: Icon(
                       Icons.circle,
-                      color:
-                          i == _current ? Colors.blue[900] : Colors.blue[600],
+                      color: i == _current
+                          ? primaryColor.withOpacity(0.6)
+                          : primaryColor.withOpacity(0.95),
                       size: 10,
                     ));
               }).toList(),
