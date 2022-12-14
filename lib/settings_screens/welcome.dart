@@ -12,7 +12,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   int _current = 0;
   final _carouselDecoration = BoxDecoration(
       borderRadius: BorderRadius.circular(8),
-      color: Colors.grey.withOpacity(0.07));
+      color: Colors.grey.withOpacity(0.1));
 
   Widget textPage(String content) {
     return Container(

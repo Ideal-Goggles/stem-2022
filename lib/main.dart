@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
             splashColor: Colors.transparent,
             scaffoldBackgroundColor: Colors.black,
             appBarTheme:
-                AppBarTheme(color: Colors.grey.withOpacity(0.07), elevation: 0),
+                AppBarTheme(color: Colors.grey.withOpacity(0.1), elevation: 0),
             colorScheme: const ColorScheme.dark(primary: primaryThemeColor),
             inputDecorationTheme: const InputDecorationTheme(
               errorStyle: TextStyle(color: formErrorColor),
@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
                 length: 3,
                 child: Scaffold(
                   bottomNavigationBar: Container(
-                      color: Colors.grey.withOpacity(0.07),
+                      color: Colors.grey.withOpacity(0.1),
                       // decoration: BoxDecoration(
                       //   color: Colors.yellow,
                       //   border: Border.all(color: Colors.black),
