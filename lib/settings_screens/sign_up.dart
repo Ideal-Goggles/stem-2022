@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -12,10 +13,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _emailRegex =
       RegExp(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)");
 
+  String username = "";
+  String email = "";
+  String password = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Account Management")),
+        appBar: AppBar(title: const Text("Create an Account")),
         body: Form(
           key: _formKey,
           child: Padding(
@@ -29,6 +34,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
+                  onSaved: (newValue) => username = newValue ?? "",
                   keyboardType: TextInputType.name,
                   decoration: const InputDecoration(
                     labelText: "Username",
@@ -42,6 +48,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   },
                 ),
                 TextFormField(
+                  onSaved: (newValue) => email = newValue ?? "",
                   keyboardType: TextInputType.emailAddress,
                   autocorrect: false,
                   decoration: const InputDecoration(
@@ -60,6 +67,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   },
                 ),
                 TextFormField(
+                  onSaved: (newValue) => password = newValue ?? "",
                   keyboardType: TextInputType.visiblePassword,
                   obscureText: true,
                   autocorrect: false,
@@ -80,8 +88,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Signing Up...")));
+                      _formKey.currentState!.save();
+                      FirebaseAuth.instance
+                          .createUserWithEmailAndPassword(
+                              email: email, password: password)
+                          .then((creds) =>
+                              creds.user!.updateDisplayName(username))
+                          .then((_) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content:
+                                    Text("Account created successfully!")));
+                      });
+
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("Creating account..."),
+                          duration: Duration(seconds: 2)));
                     }
                   },
                   style: ElevatedButton.styleFrom(

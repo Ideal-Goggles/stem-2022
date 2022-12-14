@@ -7,10 +7,6 @@ import 'package:stem_2022/tab_screens/home.dart';
 import 'package:stem_2022/tab_screens/settings.dart';
 
 void main() {
-  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
-      // ignore: avoid_print
-      .then((value) => print("Firebase has been initialized"));
-
   runApp(const MyApp());
 }
 
@@ -50,38 +46,49 @@ class MyApp extends StatelessWidget {
               focusedErrorBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: formErrorColor, width: 2)),
             )),
-        home: DefaultTabController(
-            length: 3,
-            child: Scaffold(
-              bottomNavigationBar: Container(
-                  color: Colors.grey.withOpacity(0.07),
-                  // decoration: BoxDecoration(
-                  //   color: Colors.yellow,
-                  //   border: Border.all(color: Colors.black),
-                  // ),
-                  padding: const EdgeInsets.only(bottom: 10, top: 10),
-                  child: const SafeArea(
-                    child: TabBar(
-                      labelColor: Colors.blue,
-                      unselectedLabelColor: Colors.white38,
-                      tabs: [
-                        Tab(icon: Icon(Icons.home)),
-                        Tab(icon: Icon(Icons.group)),
-                        Tab(icon: Icon(Icons.settings))
-                      ],
-                      indicatorColor: Colors.transparent,
-                    ),
-                  )),
-              body: const SafeArea(
-                  minimum: EdgeInsets.all(8),
-                  child: TabBarView(
-                    children: [
-                      HomeScreen(),
-                      GroupsScreen(),
-                      SettingsScreen(),
-                    ],
-                  )),
-              // backgroundColor: Colors.black,
-            )));
+        home: FutureBuilder(
+          future: Firebase.initializeApp(
+              options: DefaultFirebaseOptions.currentPlatform),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return DefaultTabController(
+                length: 3,
+                child: Scaffold(
+                  bottomNavigationBar: Container(
+                      color: Colors.grey.withOpacity(0.07),
+                      // decoration: BoxDecoration(
+                      //   color: Colors.yellow,
+                      //   border: Border.all(color: Colors.black),
+                      // ),
+                      padding: const EdgeInsets.only(bottom: 10, top: 10),
+                      child: const SafeArea(
+                        child: TabBar(
+                          labelColor: Colors.blue,
+                          unselectedLabelColor: Colors.white38,
+                          tabs: [
+                            Tab(icon: Icon(Icons.home)),
+                            Tab(icon: Icon(Icons.group)),
+                            Tab(icon: Icon(Icons.settings))
+                          ],
+                          indicatorColor: Colors.transparent,
+                        ),
+                      )),
+                  body: const SafeArea(
+                      minimum: EdgeInsets.all(8),
+                      child: TabBarView(
+                        children: [
+                          HomeScreen(),
+                          GroupsScreen(),
+                          SettingsScreen(),
+                        ],
+                      )),
+                  // backgroundColor: Colors.black,
+                ),
+              );
+            }
+
+            return const Center(child: Text("Loading..."));
+          },
+        ));
   }
 }

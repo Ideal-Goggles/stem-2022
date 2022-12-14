@@ -15,8 +15,8 @@ class SettingsScreen extends StatelessWidget {
 
   static List<SettingsMenuEntry> entries = [
     SettingsMenuEntry(Icons.help, "What is Hammit?", const WelcomeScreen()),
-    SettingsMenuEntry(
-        Icons.app_registration_rounded, "Sign Up", const SignUpScreen()),
+    SettingsMenuEntry(Icons.app_registration_rounded, "Create an Account",
+        const SignUpScreen()),
   ];
 
   @override
