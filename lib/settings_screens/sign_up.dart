@@ -17,6 +17,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String email = "";
   String password = "";
 
+  void signUp() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((creds) => creds.user!.updateDisplayName(username))
+          .then((_) => ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Account created successfully!"))))
+          .catchError((error) => ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(error.toString()))));
+
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Creating account..."),
+          duration: Duration(seconds: 2)));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,26 +103,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      _formKey.currentState!.save();
-                      FirebaseAuth.instance
-                          .createUserWithEmailAndPassword(
-                              email: email, password: password)
-                          .then((creds) =>
-                              creds.user!.updateDisplayName(username))
-                          .then((_) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content:
-                                    Text("Account created successfully!")));
-                      });
-
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("Creating account..."),
-                          duration: Duration(seconds: 2)));
-                    }
-                  },
+                  onPressed: signUp,
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue.withOpacity(0.75),
                       foregroundColor: Colors.white,
