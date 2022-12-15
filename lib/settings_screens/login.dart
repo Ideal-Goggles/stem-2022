@@ -19,7 +19,27 @@ class _LoginScreenState extends State<LoginScreen> {
   void login() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      // TODO
+
+      FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password)
+          .then((creds) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+                "Successfully signed in, welcome back ${creds.user!.displayName}!",
+                textAlign: TextAlign.center)));
+
+        Navigator.pop(context);
+      }).catchError((error) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(error.toString(), textAlign: TextAlign.center),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ));
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Loggin in...", textAlign: TextAlign.center),
+        duration: Duration(seconds: 2),
+      ));
     }
   }
 
@@ -88,7 +108,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    // width:,
                     onPressed: login,
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey.withOpacity(0.1),
