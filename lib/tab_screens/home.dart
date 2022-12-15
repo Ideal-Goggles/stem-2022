@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:stem_2022/models/food_post.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -8,13 +11,50 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _foodPostsCollection =
+      FirebaseFirestore.instance.collection("foodPosts");
+
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        "Home",
-        style: TextStyle(fontSize: 20),
-      ),
+    return StreamBuilder(
+      stream: _foodPostsCollection.snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.error != null) {
+          return Center(
+            child: Text(
+              "Error: ${snapshot.error.toString()}",
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          );
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: Text("Loading..."));
+        }
+
+        final data = snapshot.data!;
+        final foodPostList = data.docs
+            .map((document) => FoodPost.fromFirestore(document))
+            .toList();
+
+        return ListView.separated(
+          itemCount: foodPostList.length,
+          separatorBuilder: (context, index) => const SizedBox(height: 20),
+          itemBuilder: (context, index) {
+            return FoodPostTile(foodPost: foodPostList[index]);
+          },
+        );
+      },
     );
+  }
+}
+
+class FoodPostTile extends StatelessWidget {
+  final FoodPost foodPost;
+
+  const FoodPostTile({super.key, required this.foodPost});
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO
+    return ListTile(title: Text(foodPost.caption));
   }
 }
