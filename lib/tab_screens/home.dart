@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return StreamBuilder(
       stream: _foodPostsCollection.snapshots(),
       builder: (context, snapshot) {
-        if (snapshot.error != null) {
+        if (snapshot.hasError) {
           return Center(
             child: Text(
               "Error: ${snapshot.error.toString()}",
@@ -30,8 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
           return const Center(child: Text("Loading..."));
         }
 
-        final data = snapshot.data!;
-        final foodPostList = data.docs
+        final foodPostList = snapshot.data!.docs
             .map((document) => FoodPost.fromFirestore(document))
             .toList();
 
