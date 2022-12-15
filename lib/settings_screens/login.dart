@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Loggin in...", textAlign: TextAlign.center),
+        content: Text("Logging in...", textAlign: TextAlign.center),
         duration: Duration(seconds: 2),
       ));
     }
