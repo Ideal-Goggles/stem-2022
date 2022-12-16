@@ -89,9 +89,7 @@ class FoodPostCard extends StatelessWidget {
                   decoration:
                       BoxDecoration(borderRadius: BorderRadius.circular(5)),
                   clipBehavior: Clip.antiAlias,
-                  child: Image.memory(
-                    snapshot.data!,
-                  ),
+                  child: Image.memory(snapshot.data!),
                 );
               },
             ),
