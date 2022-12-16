@@ -11,15 +11,22 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with AutomaticKeepAliveClientMixin<HomeScreen> {
   final _foodPostsQuery = FirebaseFirestore.instance
       .collection("foodPosts")
       .orderBy("dateAdded", descending: true);
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: _foodPostsQuery.snapshots(),
+    super.build(context);
+
+    return FutureBuilder(
+      future:
+          _foodPostsQuery.get(const GetOptions(source: Source.serverAndCache)),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(
