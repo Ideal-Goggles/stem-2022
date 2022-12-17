@@ -15,6 +15,7 @@ class AppUser {
     required this.dateCreated,
   });
 
+  // TOOD: Change to `fromMap`
   factory AppUser.fromFirestore(DocumentSnapshot snapshot) {
     final data = snapshot.data() as Map<String, dynamic>;
 
@@ -25,5 +26,14 @@ class AppUser {
       overallRating: data["overallRating"],
       dateCreated: data["dateCreated"],
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "email": email,
+      "displayName": displayName,
+      "overallRating": overallRating,
+      "dateCreated": dateCreated,
+    };
   }
 }

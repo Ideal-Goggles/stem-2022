@@ -10,7 +10,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<DatabaseService>(context);
+    final db = Provider.of<DatabaseService>(context, listen: false);
 
     return StreamBuilder(
       stream: db.streamRecentFoodPosts(),
@@ -50,7 +50,7 @@ class FoodPostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
-    final storage = Provider.of<StorageService>(context);
+    final storage = Provider.of<StorageService>(context, listen: false);
 
     return Card(
       color: Colors.grey.withOpacity(0.15),

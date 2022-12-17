@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+
+import 'package:stem_2022/services/database_service.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -22,8 +25,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
       _formKey.currentState!.save();
       FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password)
-          .then((creds) => creds.user!.updateDisplayName(username))
-          .then((_) {
+          .then((creds) {
+        final newUser = creds.user!;
+        final db = Provider.of<DatabaseService>(context, listen: false);
+
+        // Store user data in Firestore then update display name in Firebase Auth
+        db.createAppUser(newUser.uid, newUser.email!, username);
+        return newUser.updateDisplayName(username);
+      }).then((_) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Account created successfully!",
                 textAlign: TextAlign.center)));
