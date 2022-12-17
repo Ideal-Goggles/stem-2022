@@ -21,7 +21,8 @@ class DatabaseService {
   }
 
   Stream<List<FoodPost>> streamRecentFoodPosts() {
-    final collection = _db.collection("foodPosts");
+    final collection =
+        _db.collection("foodPosts").orderBy("dateAdded", descending: true);
     return collection.snapshots().map((snapshot) => snapshot.docs
         .map((document) => FoodPost.fromFirestore(document))
         .toList());
