@@ -69,15 +69,30 @@ class FoodPostCard extends StatelessWidget {
         .child("${foodPost.id}.jpg");
 
     return Card(
-      color: Colors.grey.withOpacity(0.1),
+      color: Colors.grey.withOpacity(0.15),
+      clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
         side: BorderSide(color: primaryColor, width: 0.5),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(15),
+        padding: const EdgeInsets.symmetric(vertical: 15),
         child: Column(
           children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Row(children: [
+                const CircleAvatar(backgroundColor: Colors.grey, radius: 20),
+                const SizedBox(width: 10),
+                Text(
+                  // Replace with username
+                  foodPost.authorId,
+                  maxLines: 1,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ]),
+            ),
+            const SizedBox(height: 15),
             FutureBuilder(
               future: storageRef.getData(),
               builder: (context, snapshot) {
@@ -92,18 +107,21 @@ class FoodPostCard extends StatelessWidget {
                   return const CircularProgressIndicator.adaptive();
                 }
 
-                return Container(
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(5)),
-                  clipBehavior: Clip.antiAlias,
-                  child: Image.memory(snapshot.data!),
-                );
+                return Image.memory(snapshot.data!);
               },
             ),
-            const SizedBox(height: 20),
-            Text(
-              foodPost.caption,
-              style: TextStyle(fontSize: 13, color: Colors.grey[400]),
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                children: [
+                  Text(
+                    foodPost.caption,
+                    style: TextStyle(fontSize: 13, color: Colors.grey[400]),
+                    textAlign: TextAlign.start,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
