@@ -4,6 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:stem_2022/firebase_options.dart';
+import 'package:stem_2022/services/storage_service.dart';
+import 'package:stem_2022/services/database_service.dart';
+
 import 'package:stem_2022/tab_screens/groups.dart';
 import 'package:stem_2022/tab_screens/home.dart';
 import 'package:stem_2022/tab_screens/settings.dart';
@@ -28,9 +31,11 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         StreamProvider<User?>.value(
-          value: FirebaseAuth.instance.authStateChanges(),
+          value: FirebaseAuth.instance.userChanges(),
           initialData: FirebaseAuth.instance.currentUser,
-        )
+        ),
+        Provider<StorageService>.value(value: StorageService()),
+        Provider<DatabaseService>.value(value: DatabaseService()),
       ],
       child: MaterialApp(
         title: 'Ideal Food',

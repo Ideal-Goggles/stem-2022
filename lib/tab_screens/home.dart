@@ -1,32 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:provider/provider.dart';
 
 import 'package:stem_2022/models/food_post.dart';
+import 'package:stem_2022/services/storage_service.dart';
+import 'package:stem_2022/services/database_service.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen>
-    with AutomaticKeepAliveClientMixin<HomeScreen> {
-  final _foodPostsQuery = FirebaseFirestore.instance
-      .collection("foodPosts")
-      .orderBy("dateAdded", descending: true);
-
-  @override
-  bool get wantKeepAlive => true;
-
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
+    final db = Provider.of<DatabaseService>(context);
 
-    return FutureBuilder(
-      future:
-          _foodPostsQuery.get(const GetOptions(source: Source.serverAndCache)),
+    return StreamBuilder(
+      stream: db.streamRecentFoodPosts(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(
@@ -35,13 +22,12 @@ class _HomeScreenState extends State<HomeScreen>
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
           );
-        } else if (snapshot.connectionState == ConnectionState.waiting) {
+        } else if (snapshot.connectionState == ConnectionState.waiting ||
+            !snapshot.hasData) {
           return const Center(child: Text("Loading..."));
         }
 
-        final foodPostList = snapshot.data!.docs
-            .map((document) => FoodPost.fromFirestore(document))
-            .toList();
+        final foodPostList = snapshot.data!;
 
         return ListView.separated(
           padding: const EdgeInsets.only(top: 20),
@@ -64,9 +50,7 @@ class FoodPostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
-    final storageRef = FirebaseStorage.instance
-        .ref("foodPostImages")
-        .child("${foodPost.id}.jpg");
+    final storage = Provider.of<StorageService>(context);
 
     return Card(
       color: Colors.grey.withOpacity(0.15),
@@ -94,7 +78,7 @@ class FoodPostCard extends StatelessWidget {
             ),
             const SizedBox(height: 15),
             FutureBuilder(
-              future: storageRef.getData(),
+              future: storage.getFoodPostImage(foodPost.id),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Icon(
@@ -103,7 +87,8 @@ class FoodPostCard extends StatelessWidget {
                     size: 35,
                   );
                 } else if (snapshot.connectionState ==
-                    ConnectionState.waiting) {
+                        ConnectionState.waiting ||
+                    !snapshot.hasData) {
                   return const CircularProgressIndicator.adaptive();
                 }
 
