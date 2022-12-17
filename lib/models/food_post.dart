@@ -4,7 +4,7 @@ class FoodPost {
   final String id;
   final String authorId;
   final String caption;
-  final int totalRatings;
+  final int totalRating;
   final int numberOfRatings;
   final Timestamp dateAdded;
 
@@ -12,7 +12,7 @@ class FoodPost {
     required this.id,
     required this.authorId,
     required this.caption,
-    required this.totalRatings,
+    required this.totalRating,
     required this.numberOfRatings,
     required this.dateAdded,
   });
@@ -24,7 +24,7 @@ class FoodPost {
       id: snapshot.id,
       authorId: data["authorId"],
       caption: data["caption"],
-      totalRatings: data["totalRatings"],
+      totalRating: data["totalRating"],
       numberOfRatings: data["numberOfRatings"],
       dateAdded: data["dateAdded"],
     );
