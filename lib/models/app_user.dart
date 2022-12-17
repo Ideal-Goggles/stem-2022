@@ -15,7 +15,7 @@ class AppUser {
     required this.dateCreated,
   });
 
-  // TOOD: Change to `fromMap`
+  // TODO: Change to `fromMap`
   factory AppUser.fromFirestore(DocumentSnapshot snapshot) {
     final data = snapshot.data() as Map<String, dynamic>;
 

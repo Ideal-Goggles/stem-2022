@@ -17,7 +17,7 @@ class FoodPost {
     required this.dateAdded,
   });
 
-  // TOOD: Change to `fromMap`
+  // TODO: Change to `fromMap`
   factory FoodPost.fromFirestore(DocumentSnapshot snapshot) {
     final data = snapshot.data() as Map<String, dynamic>;
 
