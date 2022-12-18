@@ -28,11 +28,14 @@ class DatabaseService {
         .map((document) => AppUser.fromFirestore(document));
   }
 
-  Stream<List<FoodPost>> streamRecentFoodPosts() {
-    final collection =
-        _db.collection("foodPosts").orderBy("dateAdded", descending: true);
-    return collection.snapshots().map((snapshot) => snapshot.docs
+  Future<List<FoodPost>> getRecentFoodPosts() async {
+    final snapshot = await _db
+        .collection("foodPosts")
+        .orderBy("dateAdded", descending: true)
+        .get();
+
+    return snapshot.docs
         .map((document) => FoodPost.fromFirestore(document))
-        .toList());
+        .toList();
   }
 }

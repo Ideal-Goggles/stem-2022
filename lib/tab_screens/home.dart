@@ -5,15 +5,25 @@ import 'package:stem_2022/models/food_post.dart';
 import 'package:stem_2022/services/storage_service.dart';
 import 'package:stem_2022/services/database_service.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     final db = Provider.of<DatabaseService>(context, listen: false);
 
-    return StreamBuilder(
-      stream: db.streamRecentFoodPosts(),
+    return FutureBuilder(
+      future: db.getRecentFoodPosts(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(
@@ -32,10 +42,9 @@ class HomeScreen extends StatelessWidget {
         return ListView.separated(
           padding: const EdgeInsets.only(top: 20),
           itemCount: foodPostList.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 20),
-          itemBuilder: (context, index) {
-            return FoodPostCard(foodPost: foodPostList[index]);
-          },
+          separatorBuilder: (context, index) => const SizedBox(height: 15),
+          itemBuilder: (context, index) =>
+              FoodPostCard(foodPost: foodPostList[index]),
         );
       },
     );
