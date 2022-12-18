@@ -76,7 +76,20 @@ class FoodPostCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Row(children: [
-                const CircleAvatar(backgroundColor: Colors.grey, radius: 20),
+                FutureBuilder(
+                  future: storage.getUserProfileImage(foodPost.authorId),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return CircleAvatar(
+                        backgroundColor: Colors.grey,
+                        radius: 20,
+                        foregroundImage: MemoryImage(snapshot.data!),
+                      );
+                    }
+                    return const CircleAvatar(
+                        backgroundColor: Colors.grey, radius: 20);
+                  },
+                ),
                 const SizedBox(width: 10),
                 StreamBuilder(
                   stream: db.streamAppUser(foodPost.authorId),
@@ -88,8 +101,10 @@ class FoodPostCard extends StatelessWidget {
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       );
                     }
-
-                    return const Text("");
+                    return Text(
+                      "Unknown User",
+                      style: TextStyle(color: Colors.blueGrey[300]),
+                    );
                   },
                 ),
               ]),
