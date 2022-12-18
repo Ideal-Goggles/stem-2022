@@ -20,6 +20,14 @@ class DatabaseService {
     await docRef.set(appUser.toMap());
   }
 
+  Stream<AppUser> streamAppUser(String id) {
+    return _db
+        .collection("users")
+        .doc(id)
+        .snapshots()
+        .map((document) => AppUser.fromFirestore(document));
+  }
+
   Stream<List<FoodPost>> streamRecentFoodPosts() {
     final collection =
         _db.collection("foodPosts").orderBy("dateAdded", descending: true);

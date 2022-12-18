@@ -51,6 +51,7 @@ class FoodPostCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
     final storage = Provider.of<StorageService>(context, listen: false);
+    final db = Provider.of<DatabaseService>(context);
 
     return Card(
       color: Colors.grey.withOpacity(0.15),
@@ -68,11 +69,19 @@ class FoodPostCard extends StatelessWidget {
               child: Row(children: [
                 const CircleAvatar(backgroundColor: Colors.grey, radius: 20),
                 const SizedBox(width: 10),
-                Text(
-                  // Replace with username
-                  foodPost.authorId,
-                  maxLines: 1,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                StreamBuilder(
+                  stream: db.streamAppUser(foodPost.authorId),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Text(
+                        snapshot.data!.displayName,
+                        maxLines: 1,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      );
+                    }
+
+                    return const Text("");
+                  },
                 ),
               ]),
             ),
@@ -97,7 +106,7 @@ class FoodPostCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Row(
                 children: [
                   Text(
