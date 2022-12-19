@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+final GoogleSignIn _googleSignIn = GoogleSignIn();
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -43,8 +46,41 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  void _signInWithGoogle() async {
+    try {
+      // Sign in with Google
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser!.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      final UserCredential authResult =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      final User? user = authResult.user;
+
+      // Display a SnackBar with a welcome message
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+            "Successfully signed in with Google, welcome back ${user!.displayName}!",
+            textAlign: TextAlign.center),
+      ));
+
+      // Navigate to the previous screen
+      Navigator.pop(context);
+    } catch (error) {
+      // Display a SnackBar with the error message
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(error.toString(), textAlign: TextAlign.center),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    // FirebaseAuth.instance.signOut();
     return Scaffold(
         appBar: AppBar(title: const Text("Log Into Your Account")),
         body: Form(
@@ -116,7 +152,31 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.all(15),
                     child: const Text("Login"),
                   ),
-                )
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: MaterialButton(
+                      onPressed: () => _signInWithGoogle(),
+                      color: Colors.grey.withOpacity(0.1),
+                      textColor: Theme.of(context).colorScheme.primary,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50)),
+                      padding: const EdgeInsets.all(15),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                              child: Image.network(
+                                  // '/assets/images/google.png',
+                                  "http://pngimg.com/uploads/google/google_PNG19635.png",
+                                  fit: BoxFit.cover,
+                                  height: 24,
+                                  width: 24)),
+                          Text(' Login in with Google'),
+                        ],
+                      )),
+                ),
               ],
             ),
           ),
