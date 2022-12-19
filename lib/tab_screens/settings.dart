@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:stem_2022/settings_screens/welcome.dart';
 import 'package:stem_2022/settings_screens/sign_up.dart';
 import 'package:stem_2022/settings_screens/login.dart';
 
+final GoogleSignIn _googleSignIn = GoogleSignIn();
+
 class SettingsMenuEntry {
   final IconData icon;
   final String text;
-  final Widget destination;
+  final Widget? destination;
+  final Function? action;
 
-  SettingsMenuEntry(this.icon, this.text, this.destination);
+  SettingsMenuEntry(this.icon, this.text, this.destination, this.action);
 }
 
 class SettingsScreen extends StatelessWidget {
@@ -22,14 +26,22 @@ class SettingsScreen extends StatelessWidget {
     User? user = Provider.of<User?>(context);
     bool loggedIn = user != null;
 
+    void logout() async {
+      _googleSignIn.signOut();
+      await FirebaseAuth.instance.signOut();
+    }
+
     final List<SettingsMenuEntry> entries = [
-      SettingsMenuEntry(Icons.help, "What is Hammit?", const WelcomeScreen()),
+      SettingsMenuEntry(
+          Icons.help, "What is Hammit?", const WelcomeScreen(), null),
       if (!loggedIn) ...[
         SettingsMenuEntry(Icons.perm_contact_calendar, "Create an Account",
-            const SignUpScreen()),
+            const SignUpScreen(), null),
         SettingsMenuEntry(
-            Icons.login, "Log Into Existing Account", const LoginScreen())
+            Icons.login, "Log Into Existing Account", const LoginScreen(), null)
       ],
+      if (loggedIn)
+        SettingsMenuEntry(Icons.exit_to_app, "Logout", null, logout),
     ];
 
     return Container(
@@ -41,12 +53,16 @@ class SettingsScreen extends StatelessWidget {
           itemBuilder: (BuildContext context, int index) {
             return MaterialButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => entries[index].destination,
-                  ),
-                );
+                if (entries[index].destination != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => entries[index].destination!,
+                    ),
+                  );
+                } else if (entries[index].action != null) {
+                  entries[index].action?.call() ?? print("Action not defined");
+                }
               },
               color: Colors.grey.withOpacity(0.1),
               shape: RoundedRectangleBorder(
