@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
+
+import 'package:stem_2022/services/database_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -59,6 +62,10 @@ class _LoginScreenState extends State<LoginScreen> {
       return FirebaseAuth.instance.signInWithCredential(credential);
     }).then((creds) {
       final user = creds.user!;
+      final db = Provider.of<DatabaseService>(context, listen: false);
+
+      // Create Firestore document to store user info
+      db.createAppUser(user.uid, user.email!, user.displayName!);
 
       // Display a SnackBar with a welcome message
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -163,15 +170,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderRadius: BorderRadius.circular(50)),
                   padding: const EdgeInsets.all(15),
                   child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset(
                         "assets/images/google.png",
                         fit: BoxFit.cover,
-                        height: 24,
-                        width: 24,
+                        height: 25,
+                        width: 25,
                       ),
-                      const Text(" Login in with Google"),
+                      const SizedBox(width: 5),
+                      const Text("Login with Google"),
                     ],
                   ),
                 ),

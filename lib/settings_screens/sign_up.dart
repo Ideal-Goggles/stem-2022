@@ -4,8 +4,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:stem_2022/services/database_service.dart';
 
-final GoogleSignIn _googleSignIn = GoogleSignIn();
-
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
@@ -52,33 +50,42 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  void signUpWithGoogle() async {
-    try {
-      // Initiate the sign-in process
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser!.authentication;
+  void signInWithGoogle() {
+    final googleSignIn = GoogleSignIn();
+
+    // Sign in with Google
+    googleSignIn
+        .signIn()
+        .then((googleUser) => googleUser!.authentication)
+        .then((googleAuth) {
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      final UserCredential authResult =
-          await FirebaseAuth.instance.signInWithCredential(credential);
-      final User? user = authResult.user;
+      return FirebaseAuth.instance.signInWithCredential(credential);
+    }).then((creds) {
+      final user = creds.user!;
+      final db = Provider.of<DatabaseService>(context, listen: false);
 
-      // Show a success message
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Account created successfully!",
-              textAlign: TextAlign.center)));
+      // Create Firestore document to store user info
+      db.createAppUser(user.uid, user.email!, user.displayName!);
 
-      // Close the sign-up screen
-      Navigator.pop(context);
-    } catch (error) {
-      // Show an error message
+      // Display a SnackBar with a welcome message
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          backgroundColor: Theme.of(context).colorScheme.error,
-          content: Text(error.toString(), textAlign: TextAlign.center)));
-    }
+        content: Text(
+          "Successfully signed in with Google, welcome back ${user.displayName}!",
+          textAlign: TextAlign.center,
+        ),
+      ));
+
+      // Navigate to the previous screen
+      Navigator.pop(context);
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(error.toString(), textAlign: TextAlign.center),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      ));
+    });
   }
 
   @override
@@ -176,25 +183,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
               SizedBox(
                 width: double.infinity,
                 child: MaterialButton(
-                    onPressed: () => signUpWithGoogle(),
-                    color: Colors.grey[900],
-                    textColor: Theme.of(context).colorScheme.primary,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50)),
-                    padding: const EdgeInsets.all(15),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                            child: Image.asset(
-                                // '/assets/images/google.png',
-                                "assets/images/google.png",
-                                fit: BoxFit.cover,
-                                height: 24,
-                                width: 24)),
-                        Text(' Sign Up with Google'),
-                      ],
-                    )),
+                  onPressed: signInWithGoogle,
+                  color: Colors.grey[900],
+                  textColor: Theme.of(context).colorScheme.primary,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50)),
+                  padding: const EdgeInsets.all(15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "assets/images/google.png",
+                        fit: BoxFit.cover,
+                        height: 25,
+                        width: 25,
+                      ),
+                      const SizedBox(width: 5),
+                      const Text("Login with Google"),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
