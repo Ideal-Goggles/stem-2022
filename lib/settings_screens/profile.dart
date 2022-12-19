@@ -18,7 +18,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<User?>(context);
-    final storage = Provider.of<StorageService>(context);
+    final storage = Provider.of<StorageService>(context, listen: false);
 
     return Scaffold(
         appBar: AppBar(title: Text("Hello, ${currentUser?.displayName}")),

@@ -22,8 +22,8 @@ class StorageService {
   }
 
   Future<Uint8List?> getUserProfileImage(String userId) async {
-    if (_foodPostImageCache.containsKey(userId)) {
-      return _foodPostImageCache[userId];
+    if (_userProfileImageCache.containsKey(userId)) {
+      return _userProfileImageCache[userId];
     }
 
     final storageRef = _storage.ref("userProfileImages").child("$userId.jpg");
