@@ -3,79 +3,86 @@ import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import 'package:stem_2022/tab_screens/settings.dart';
-
-final GoogleSignIn _googleSignIn = GoogleSignIn();
+import 'package:stem_2022/services/storage_service.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
+  void logout(BuildContext context) {
+    final googleSignIn = GoogleSignIn();
+
+    googleSignIn.signOut();
+    FirebaseAuth.instance.signOut().then((_) => Navigator.pop(context));
+  }
+
   @override
   Widget build(BuildContext context) {
-    void logout() async {
-      _googleSignIn.signOut();
-      await FirebaseAuth.instance.signOut();
-
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => SettingsScreen()));
-    }
-
     final currentUser = Provider.of<User?>(context);
+    final storage = Provider.of<StorageService>(context);
+
     return Scaffold(
         appBar: AppBar(title: Text("Hello, ${currentUser?.displayName}")),
         body: Padding(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             children: [
               Container(
-                height: 200,
-                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 18),
                 decoration: BoxDecoration(
                   color: Colors.grey[900],
-                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                  borderRadius: const BorderRadius.all(Radius.circular(50)),
                 ),
-                child: Row(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
-                        flex: 1,
-                        child: const CircleAvatar(
+                    FutureBuilder(
+                      future: storage.getUserProfileImage(currentUser!.uid),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return CircleAvatar(
+                            radius: 50,
+                            foregroundImage: MemoryImage(snapshot.data!),
+                          );
+                        }
+                        return const CircleAvatar(
                           radius: 50,
-                          backgroundImage: NetworkImage(
-                              "https://cdn.discordapp.com/attachments/1002490022487928913/1054449807021842442/lokipoki.jpeg"),
-                        )),
-                    Expanded(
-                        flex: 1,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "${currentUser?.displayName}",
-                              style: const TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.w600),
-                            ),
-                            Text("Professional Cat")
-                          ],
-                        )),
+                          foregroundImage:
+                              AssetImage("assets/images/defaultUserImage.jpg"),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 15),
+                    Text(
+                      "${currentUser.displayName}",
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Professional Cat",
+                      style: TextStyle(color: Colors.grey[300]),
+                    )
                   ],
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 15),
               MaterialButton(
-                  minWidth: double.infinity,
-                  onPressed: logout,
-                  color: Colors.red.withOpacity(0.2),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
+                minWidth: double.infinity,
+                onPressed: () => logout(context),
+                color: Theme.of(context).colorScheme.error,
+                shape: const StadiumBorder(),
+                elevation: 0,
+                child: const Padding(
+                  padding: EdgeInsets.only(top: 25, bottom: 25),
+                  child: Text(
+                    "Logout",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
-                  elevation: 0,
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 25, bottom: 25),
-                    child: Text(
-                      "Logout",
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ))
+                ),
+              )
             ],
           ),
         ));
