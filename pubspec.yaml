@@ -38,6 +38,7 @@ dependencies:
     firebase_core: ^2.4.0
     carousel_slider: ^4.2.0
     firebase_auth: ^4.2.0
+    google_sign_in: ^5.4.2
     provider: ^6.0.5
     cloud_firestore: ^4.2.0
     firebase_storage: ^11.0.8
