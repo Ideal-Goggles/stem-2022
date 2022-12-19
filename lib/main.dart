@@ -40,66 +40,76 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Ideal Food',
         theme: ThemeData(
-            primarySwatch: primaryThemeColor,
-            fontFamily: "Inter",
-            highlightColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            scaffoldBackgroundColor: Colors.black,
-            appBarTheme: AppBarTheme(color: Colors.grey[900], elevation: 5),
-            colorScheme: const ColorScheme.dark(
-                primary: primaryThemeColor, error: primaryErrorColor),
-            inputDecorationTheme: InputDecorationTheme(
-              focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: primaryThemeColor),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-              ),
-              errorStyle: const TextStyle(color: primaryErrorColor),
-              errorBorder: OutlineInputBorder(
-                borderSide:
-                    const BorderSide(color: primaryErrorColor, width: 1),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              focusedErrorBorder: OutlineInputBorder(
-                borderSide:
-                    const BorderSide(color: primaryErrorColor, width: 2),
-                borderRadius: BorderRadius.circular(14),
-              ),
+          primarySwatch: primaryThemeColor,
+          fontFamily: "Inter",
+          highlightColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          scaffoldBackgroundColor: Colors.black,
+          appBarTheme: AppBarTheme(color: Colors.grey[900], elevation: 5),
+          colorScheme: const ColorScheme.dark(
+              primary: primaryThemeColor, error: primaryErrorColor),
+          inputDecorationTheme: InputDecorationTheme(
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: primaryThemeColor),
+              borderRadius: BorderRadius.circular(14),
             ),
-            snackBarTheme: const SnackBarThemeData(
-              backgroundColor: Colors.blue,
-              shape: StadiumBorder(),
-              behavior: SnackBarBehavior.floating,
-              elevation: 5,
-              contentTextStyle: TextStyle(color: Colors.white),
-            )),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+            errorStyle: const TextStyle(color: primaryErrorColor),
+            errorBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: primaryErrorColor, width: 1),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: primaryErrorColor, width: 2),
+              borderRadius: BorderRadius.circular(14),
+            ),
+          ),
+          snackBarTheme: const SnackBarThemeData(
+            backgroundColor: Colors.blue,
+            shape: StadiumBorder(),
+            behavior: SnackBarBehavior.floating,
+            elevation: 5,
+            contentTextStyle: TextStyle(color: Colors.white),
+          ),
+        ),
         home: DefaultTabController(
           length: 3,
           child: Scaffold(
             appBar: const MyAppBar(),
             extendBodyBehindAppBar: true,
             extendBody: true,
+            floatingActionButton: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                fixedSize: const Size.fromRadius(25),
+                shape: const CircleBorder(),
+                foregroundColor: Colors.white,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+              ),
+              child: const Icon(Icons.add, size: 25),
+            ),
             bottomNavigationBar: Container(
-                color: Colors.grey[900],
-                // decoration: BoxDecoration(
-                //   color: Colors.yellow,
-                //   border: Border.all(color: Colors.black),
-                // ),
-                padding: const EdgeInsets.only(bottom: 10, top: 10),
-                child: const SafeArea(
-                  child: TabBar(
-                    labelColor: primaryThemeColor,
-                    unselectedLabelColor: Colors.white38,
-                    tabs: [
-                      Tab(icon: Icon(Icons.home)),
-                      Tab(icon: Icon(Icons.group)),
-                      Tab(icon: Icon(Icons.settings))
-                    ],
-                    indicatorColor: Colors.transparent,
-                  ),
-                )),
+              color: Colors.grey[900],
+              // decoration: BoxDecoration(
+              //   color: Colors.yellow,
+              //   border: Border.all(color: Colors.black),
+              // ),
+              padding: const EdgeInsets.only(bottom: 10, top: 10),
+              child: const SafeArea(
+                child: TabBar(
+                  labelColor: primaryThemeColor,
+                  unselectedLabelColor: Colors.white38,
+                  tabs: [
+                    Tab(icon: Icon(Icons.home)),
+                    Tab(icon: Icon(Icons.group)),
+                    Tab(icon: Icon(Icons.settings))
+                  ],
+                  indicatorColor: Colors.transparent,
+                ),
+              ),
+            ),
             body: const SafeArea(
                 minimum: EdgeInsets.all(8),
                 child: TabBarView(
