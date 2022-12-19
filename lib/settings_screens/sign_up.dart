@@ -52,7 +52,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  void _signUpWithGoogle() async {
+  void signUpWithGoogle() async {
     try {
       // Initiate the sign-in process
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
@@ -79,248 +79,127 @@ class _SignUpScreenState extends State<SignUpScreen> {
           backgroundColor: Theme.of(context).colorScheme.error,
           content: Text(error.toString(), textAlign: TextAlign.center)));
     }
-
-    @override
-    Widget build(BuildContext context) {
-      return Scaffold(
-          appBar: AppBar(title: const Text("Create an Account")),
-          body: Form(
-            key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.all(50),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Welcome to Hammit!",
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: TextFormField(
-                      onSaved: (newValue) => username = newValue ?? "",
-                      keyboardType: TextInputType.name,
-                      decoration: const InputDecoration(
-                        labelText: "Username",
-                        hintText: "John Doe",
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Please enter a username.";
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: TextFormField(
-                      onSaved: (newValue) => email = newValue ?? "",
-                      keyboardType: TextInputType.emailAddress,
-                      autocorrect: false,
-                      decoration: const InputDecoration(
-                        labelText: "Email address",
-                        hintText: "johndoe@example.com",
-                      ),
-                      validator: (value) {
-                        if (value != null && value.isNotEmpty) {
-                          if (_emailRegex.hasMatch(value)) {
-                            return null;
-                          } else {
-                            return "Please enter a valid email address";
-                          }
-                        }
-                        return "Please enter an email address";
-                      },
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: TextFormField(
-                      onSaved: (newValue) => password = newValue ?? "",
-                      keyboardType: TextInputType.visiblePassword,
-                      obscureText: true,
-                      autocorrect: false,
-                      decoration: const InputDecoration(
-                        labelText: "Password",
-                      ),
-                      validator: (value) {
-                        if (value != null && value.isNotEmpty) {
-                          if (value.length < 8) {
-                            return "Password must be at least 8 characters long";
-                          }
-                          return null;
-                        }
-                        return "Please enter a password";
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: MaterialButton(
-                      onPressed: signUp,
-                      color: Colors.grey.withOpacity(0.1),
-                      textColor: Theme.of(context).colorScheme.primary,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50)),
-                      padding: const EdgeInsets.all(15),
-                      child: const Text("Sign Up"),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: MaterialButton(
-                        onPressed: () => _signUpWithGoogle(),
-                        color: Colors.grey.withOpacity(0.1),
-                        textColor: Theme.of(context).colorScheme.primary,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50)),
-                        padding: const EdgeInsets.all(15),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                                child: Image.network(
-                                    // '/assets/images/google.png',
-                                    "http://pngimg.com/uploads/google/google_PNG19635.png",
-                                    fit: BoxFit.cover,
-                                    height: 24,
-                                    width: 24)),
-                            Text(' Login in with Google'),
-                          ],
-                        )),
-                  ),
-                ],
-              ),
-            ),
-          ));
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Create an Account")),
-        body: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(50),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "Welcome to Hammit!",
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
+      appBar: AppBar(title: const Text("Create an Account")),
+      body: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.all(50),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "Welcome to Hammit!",
+                style: TextStyle(
+                  fontSize: 20,
                 ),
-                const SizedBox(height: 10),
-                Container(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: TextFormField(
-                    onSaved: (newValue) => username = newValue ?? "",
-                    keyboardType: TextInputType.name,
-                    decoration: const InputDecoration(
-                      labelText: "Username",
-                      hintText: "John Doe",
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter a username.";
+              ),
+              const SizedBox(height: 10),
+              Container(
+                padding: const EdgeInsets.only(top: 20),
+                child: TextFormField(
+                  onSaved: (newValue) => username = newValue ?? "",
+                  keyboardType: TextInputType.name,
+                  decoration: const InputDecoration(
+                    labelText: "Username",
+                    hintText: "John Doe",
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please enter a username.";
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.only(top: 20),
+                child: TextFormField(
+                  onSaved: (newValue) => email = newValue ?? "",
+                  keyboardType: TextInputType.emailAddress,
+                  autocorrect: false,
+                  decoration: const InputDecoration(
+                    labelText: "Email address",
+                    hintText: "johndoe@example.com",
+                  ),
+                  validator: (value) {
+                    if (value != null && value.isNotEmpty) {
+                      if (_emailRegex.hasMatch(value)) {
+                        return null;
+                      } else {
+                        return "Please enter a valid email address";
+                      }
+                    }
+                    return "Please enter an email address";
+                  },
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.only(top: 20),
+                child: TextFormField(
+                  onSaved: (newValue) => password = newValue ?? "",
+                  keyboardType: TextInputType.visiblePassword,
+                  obscureText: true,
+                  autocorrect: false,
+                  decoration: const InputDecoration(
+                    labelText: "Password",
+                  ),
+                  validator: (value) {
+                    if (value != null && value.isNotEmpty) {
+                      if (value.length < 8) {
+                        return "Password must be at least 8 characters long";
                       }
                       return null;
-                    },
-                  ),
+                    }
+                    return "Please enter a password";
+                  },
                 ),
-                Container(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: TextFormField(
-                    onSaved: (newValue) => email = newValue ?? "",
-                    keyboardType: TextInputType.emailAddress,
-                    autocorrect: false,
-                    decoration: const InputDecoration(
-                      labelText: "Email address",
-                      hintText: "johndoe@example.com",
-                    ),
-                    validator: (value) {
-                      if (value != null && value.isNotEmpty) {
-                        if (_emailRegex.hasMatch(value)) {
-                          return null;
-                        } else {
-                          return "Please enter a valid email address";
-                        }
-                      }
-                      return "Please enter an email address";
-                    },
-                  ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: MaterialButton(
+                  onPressed: signUp,
+                  color: Colors.grey[900],
+                  textColor: Theme.of(context).colorScheme.primary,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50)),
+                  padding: const EdgeInsets.all(15),
+                  child: const Text("Sign Up"),
                 ),
-                Container(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: TextFormField(
-                    onSaved: (newValue) => password = newValue ?? "",
-                    keyboardType: TextInputType.visiblePassword,
-                    obscureText: true,
-                    autocorrect: false,
-                    decoration: const InputDecoration(
-                      labelText: "Password",
-                    ),
-                    validator: (value) {
-                      if (value != null && value.isNotEmpty) {
-                        if (value.length < 8) {
-                          return "Password must be at least 8 characters long";
-                        }
-                        return null;
-                      }
-                      return "Please enter a password";
-                    },
-                  ),
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  child: MaterialButton(
-                    onPressed: signUp,
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: MaterialButton(
+                    onPressed: () => signUpWithGoogle(),
                     color: Colors.grey[900],
                     textColor: Theme.of(context).colorScheme.primary,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50)),
                     padding: const EdgeInsets.all(15),
-                    child: const Text("Sign Up"),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  child: MaterialButton(
-                      onPressed: () => _signUpWithGoogle(),
-                      color: Colors.grey.withOpacity(0.1),
-                      textColor: Theme.of(context).colorScheme.primary,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50)),
-                      padding: const EdgeInsets.all(15),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                              child: Image.asset(
-                                  // '/assets/images/google.png',
-                                  "assets/images/google_blue.png",
-                                  fit: BoxFit.cover,
-                                  height: 24,
-                                  width: 24)),
-                          Text(' Sign Up with Google'),
-                        ],
-                      )),
-                ),
-              ],
-            ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                            child: Image.asset(
+                                // '/assets/images/google.png',
+                                "assets/images/google.png",
+                                fit: BoxFit.cover,
+                                height: 24,
+                                width: 24)),
+                        Text(' Sign Up with Google'),
+                      ],
+                    )),
+              ),
+            ],
           ),
-        ));
-    throw UnimplementedError();
+        ),
+      ),
+    );
   }
 }
