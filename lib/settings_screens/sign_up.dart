@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
+import 'package:stem_2022/services/database_service.dart';
 
 final GoogleSignIn _googleSignIn = GoogleSignIn();
 
@@ -25,8 +27,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
       _formKey.currentState!.save();
       FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password)
-          .then((creds) => creds.user!.updateDisplayName(username))
-          .then((_) {
+          .then((creds) {
+        final newUser = creds.user!;
+        final db = Provider.of<DatabaseService>(context, listen: false);
+
+        // Store user data in Firestore then update display name in Firebase Auth
+        db.createAppUser(newUser.uid, newUser.email!, username);
+        return newUser.updateDisplayName(username);
+      }).then((_) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Account created successfully!",
                 textAlign: TextAlign.center)));
@@ -277,7 +285,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   width: double.infinity,
                   child: MaterialButton(
                     onPressed: signUp,
-                    color: Colors.grey.withOpacity(0.1),
+                    color: Colors.grey[900],
                     textColor: Theme.of(context).colorScheme.primary,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50)),

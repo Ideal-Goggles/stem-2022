@@ -18,7 +18,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   final _carouselDecoration = BoxDecoration(
     borderRadius: BorderRadius.circular(50),
     // border: Border.all(color: Colors.grey),
-    color: Colors.grey.withOpacity(0.1),
+    color: Colors.grey[900],
   );
 
   Widget textPage(String content) {
@@ -40,8 +40,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    User? user = Provider.of<User?>(context);
-    bool loggedIn = user != null;
+    final user = Provider.of<User?>(context);
+    final loggedIn = user != null;
 
     final carouselItems = [
       textPage(
@@ -50,7 +50,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           "You can post a picture of your food at mealtimes and they will be judged by the community on how healthy they are."),
       textPage(
           "Optionally, you can join a school group and compete with other students to become the healthiest student in your school!"),
-      // if (!loggedIn)
+      if (!loggedIn)
         Container(
           padding: const EdgeInsets.all(8),
           decoration: _carouselDecoration,
@@ -63,27 +63,30 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 10),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  MaterialButton(
-                    onPressed: () => goToPage(const SignUpScreen()),
-                    color: Colors.grey.withOpacity(0.1),
-                    textColor: Theme.of(context).colorScheme.primary,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50)),
-                    padding: const EdgeInsets.all(10),
-                    child: const Text("Sign Up"),
-                  ),
-                  const SizedBox(width: 15),
-                  MaterialButton(
-                    onPressed: () => goToPage(const LoginScreen()),
-                    color: Colors.grey.withOpacity(0.1),
-                    textColor: Theme.of(context).colorScheme.primary,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50)),
-                    padding: const EdgeInsets.all(10),
-                    child: const Text("Login"),
-                  ),
-                ]),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MaterialButton(
+                      onPressed: () => goToPage(const SignUpScreen()),
+                      color: Colors.grey[900],
+                      textColor: Theme.of(context).colorScheme.primary,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50)),
+                      padding: const EdgeInsets.all(10),
+                      child: const Text("Sign Up"),
+                    ),
+                    const SizedBox(width: 15),
+                    MaterialButton(
+                      onPressed: () => goToPage(const LoginScreen()),
+                      color: Colors.grey[900],
+                      textColor: Theme.of(context).colorScheme.primary,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50)),
+                      padding: const EdgeInsets.all(10),
+                      child: const Text("Login"),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
