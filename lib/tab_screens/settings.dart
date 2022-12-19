@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:stem_2022/settings_screens/welcome.dart';
 import 'package:stem_2022/settings_screens/sign_up.dart';
 import 'package:stem_2022/settings_screens/login.dart';
+import 'package:stem_2022/settings_screens/profile.dart';
 
 final GoogleSignIn _googleSignIn = GoogleSignIn();
 
@@ -40,8 +41,10 @@ class SettingsScreen extends StatelessWidget {
         SettingsMenuEntry(
             Icons.login, "Log Into Existing Account", const LoginScreen(), null)
       ],
-      if (loggedIn)
+      if (loggedIn) ...[
+        SettingsMenuEntry(Icons.person, "Profile", const ProfileScreen(), null),
         SettingsMenuEntry(Icons.exit_to_app, "Logout", null, logout),
+      ]
     ];
 
     return Container(
@@ -61,7 +64,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                   );
                 } else if (entries[index].action != null) {
-                  entries[index].action?.call() ?? print("Action not defined");
+                  entries[index].action!.call();
                 }
               },
               color: Colors.grey.withOpacity(0.1),
