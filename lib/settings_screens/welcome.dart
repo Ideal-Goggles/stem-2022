@@ -50,7 +50,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           "You can post a picture of your food at mealtimes and they will be judged by the community on how healthy they are."),
       textPage(
           "Optionally, you can join a school group and compete with other students to become the healthiest student in your school!"),
-      if (!loggedIn)
+      // if (!loggedIn)
         Container(
           padding: const EdgeInsets.all(8),
           decoration: _carouselDecoration,
