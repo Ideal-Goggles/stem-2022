@@ -14,10 +14,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     void logout() async {
       _googleSignIn.signOut();
-      await FirebaseAuth.instance.signOut();
-
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => SettingsScreen()));
+      FirebaseAuth.instance.signOut().then((__) => Navigator.pop(context));
     }
 
     final currentUser = Provider.of<User?>(context);

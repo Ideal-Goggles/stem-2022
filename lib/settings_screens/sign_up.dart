@@ -309,7 +309,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           Container(
                               child: Image.asset(
                                   // '/assets/images/google.png',
-                                  "assets/images/google_blue.png",
+                                  "assets/images/google.png",
                                   fit: BoxFit.cover,
                                   height: 24,
                                   width: 24)),
