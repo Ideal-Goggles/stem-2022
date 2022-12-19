@@ -15,7 +15,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   final _carouselDecoration = BoxDecoration(
     borderRadius: BorderRadius.circular(50),
     // border: Border.all(color: Colors.grey),
-    color: Colors.grey.withOpacity(0.1),
+    color: Colors.grey[900],
   );
 
   Widget textPage(String content) {
@@ -59,7 +59,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 MaterialButton(
                   onPressed: () => goToPage(const SignUpScreen()),
-                  color: Colors.grey.withOpacity(0.1),
+                  color: Colors.grey[900],
                   textColor: Theme.of(context).colorScheme.primary,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50)),
@@ -69,7 +69,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 const SizedBox(width: 15),
                 MaterialButton(
                   onPressed: () => goToPage(const LoginScreen()),
-                  color: Colors.grey.withOpacity(0.1),
+                  color: Colors.grey[900],
                   textColor: Theme.of(context).colorScheme.primary,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50)),

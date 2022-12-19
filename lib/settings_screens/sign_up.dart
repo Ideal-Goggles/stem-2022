@@ -133,7 +133,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   width: double.infinity,
                   child: MaterialButton(
                     onPressed: signUp,
-                    color: Colors.grey.withOpacity(0.1),
+                    color: Colors.grey[900],
                     textColor: Theme.of(context).colorScheme.primary,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50)),

@@ -63,7 +63,7 @@ class FoodPostCard extends StatelessWidget {
     final db = Provider.of<DatabaseService>(context);
 
     return Card(
-      color: Colors.grey.withOpacity(0.15),
+      color: Colors.grey[900],
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
