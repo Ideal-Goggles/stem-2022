@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen>
         final foodPostList = snapshot.data!;
 
         return ListView.separated(
-          padding: const EdgeInsets.only(top: 20),
+          padding: const EdgeInsets.only(top: 15),
           itemCount: foodPostList.length,
           separatorBuilder: (context, index) => const SizedBox(height: 15),
           itemBuilder: (context, index) =>

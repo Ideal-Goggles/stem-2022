@@ -32,33 +32,30 @@ class SettingsScreen extends StatelessWidget {
       ],
     ];
 
-    return Container(
-      margin: const EdgeInsets.only(top: 20),
-      child: ListView.separated(
-          itemCount: entries.length,
-          separatorBuilder: (context, index) =>
-              const Divider(color: Colors.transparent, height: 18),
-          itemBuilder: (BuildContext context, int index) {
-            return MaterialButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => entries[index].destination,
-                  ),
-                );
-              },
-              color: Colors.grey.withOpacity(0.1),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50),
-              ),
-              elevation: 0,
-              child: ListTile(
-                leading: Icon(entries[index].icon),
-                title: Text(entries[index].text),
+    return ListView.separated(
+      padding: const EdgeInsets.only(top: 20),
+      itemCount: entries.length,
+      separatorBuilder: (context, index) =>
+          const Divider(color: Colors.transparent, height: 18),
+      itemBuilder: (BuildContext context, int index) {
+        return MaterialButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => entries[index].destination,
               ),
             );
-          }),
+          },
+          color: Colors.grey.withOpacity(0.1),
+          shape: const StadiumBorder(),
+          elevation: 0,
+          child: ListTile(
+            leading: Icon(entries[index].icon),
+            title: Text(entries[index].text),
+          ),
+        );
+      },
     );
   }
 }

@@ -155,10 +155,25 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
               },
             ),
           const SizedBox(width: 10),
-          Text(usernameTitle),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                usernameTitle,
+                style: const TextStyle(
+                  fontSize: 15,
+                ),
+                maxLines: 1,
+              ),
+              if (currentUser == null) ...[
+                const SizedBox(width: 5),
+                const Text("(Not Signed In)",
+                    style: TextStyle(fontSize: 12, color: Colors.grey)),
+              ],
+            ],
+          ),
         ],
       ),
-      titleTextStyle: const TextStyle(fontSize: 15),
     );
   }
 }
