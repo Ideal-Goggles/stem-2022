@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:stem_2022/settings_screens/welcome.dart';
 import 'package:stem_2022/settings_screens/sign_up.dart';
 import 'package:stem_2022/settings_screens/login.dart';
+import 'package:stem_2022/settings_screens/profile.dart';
 
 class SettingsMenuEntry {
   final IconData icon;
@@ -30,6 +31,8 @@ class SettingsScreen extends StatelessWidget {
         SettingsMenuEntry(
             Icons.login, "Log Into Existing Account", const LoginScreen())
       ],
+      if (loggedIn)
+        SettingsMenuEntry(Icons.person, "Profile", const ProfileScreen()),
     ];
 
     return ListView.separated(

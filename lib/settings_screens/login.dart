@@ -80,7 +80,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // FirebaseAuth.instance.signOut();
     return Scaffold(
         appBar: AppBar(title: const Text("Log Into Your Account")),
         body: Form(
@@ -167,13 +166,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Container(
-                              child: Image.network(
+                              child: Image.asset(
                                   // '/assets/images/google.png',
-                                  "http://pngimg.com/uploads/google/google_PNG19635.png",
+                                  "assets/images/google_blue.png",
                                   fit: BoxFit.cover,
                                   height: 24,
                                   width: 24)),
-                          Text(' Login in with Google'),
+                          Text(' Login In with Google'),
                         ],
                       )),
                 ),
