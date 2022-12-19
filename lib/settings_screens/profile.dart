@@ -42,7 +42,7 @@ class ProfileScreen extends StatelessWidget {
                         child: const CircleAvatar(
                           radius: 50,
                           backgroundImage: NetworkImage(
-                              "https://instagram.ffjr1-4.fna.fbcdn.net/v/t51.2885-19/314209652_1722081581497819_3317807027772244106_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.ffjr1-4.fna.fbcdn.net&_nc_cat=107&_nc_ohc=YwXc-tGHo8UAX-SypNX&edm=AF2UC20BAAAA&ccb=7-5&oh=00_AfCLe3pORcdF-Mc3CKB9parcKzSi17dGoH1DmPEQsZfadA&oe=63A5BA29&_nc_sid=57dc97"),
+                              "https://cdn.discordapp.com/attachments/1002490022487928913/1054449807021842442/lokipoki.jpeg"),
                         )),
                     Expanded(
                         flex: 1,

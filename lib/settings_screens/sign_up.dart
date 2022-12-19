@@ -299,9 +299,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Container(
-                              child: Image.network(
+                              child: Image.asset(
                                   // '/assets/images/google.png',
-                                  "http://pngimg.com/uploads/google/google_PNG19635.png",
+                                  "assets/images/google_blue.png",
                                   fit: BoxFit.cover,
                                   height: 24,
                                   width: 24)),
