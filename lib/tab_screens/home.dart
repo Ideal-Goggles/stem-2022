@@ -81,13 +81,15 @@ class FoodPostCard extends StatelessWidget {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return CircleAvatar(
-                        backgroundColor: Colors.grey,
                         radius: 20,
                         foregroundImage: MemoryImage(snapshot.data!),
                       );
                     }
                     return const CircleAvatar(
-                        backgroundColor: Colors.grey, radius: 20);
+                      radius: 20,
+                      foregroundImage:
+                          AssetImage("assets/images/defaultUserImage.jpg"),
+                    );
                   },
                 ),
                 const SizedBox(width: 10),

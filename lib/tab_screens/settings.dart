@@ -19,8 +19,8 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    User? user = Provider.of<User?>(context);
-    bool loggedIn = user != null;
+    final user = Provider.of<User?>(context);
+    final loggedIn = user != null;
 
     final List<SettingsMenuEntry> entries = [
       SettingsMenuEntry(Icons.help, "What is Hammit?", const WelcomeScreen()),

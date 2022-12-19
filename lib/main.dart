@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
             splashColor: Colors.transparent,
             scaffoldBackgroundColor: Colors.black,
             appBarTheme:
-                AppBarTheme(color: Colors.grey.withOpacity(0.1), elevation: 0),
+                AppBarTheme(color: Colors.grey.withOpacity(0.1), elevation: 5),
             colorScheme: const ColorScheme.dark(
                 primary: primaryThemeColor, error: primaryErrorColor),
             inputDecorationTheme: InputDecorationTheme(
@@ -79,6 +79,9 @@ class MyApp extends StatelessWidget {
         home: DefaultTabController(
           length: 3,
           child: Scaffold(
+            appBar: const MyAppBar(),
+            extendBodyBehindAppBar: true,
+            extendBody: true,
             bottomNavigationBar: Container(
                 color: Colors.grey.withOpacity(0.1),
                 // decoration: BoxDecoration(
@@ -111,6 +114,51 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const MyAppBar({super.key});
+
+  @override
+  // Not sure if this is the best way to get the default preferred size but it works.
+  Size get preferredSize => Size.copy(AppBar().preferredSize);
+
+  Widget getAvatar(ImageProvider? imageProvider) {
+    return CircleAvatar(
+      radius: 15,
+      foregroundImage: imageProvider ??
+          const AssetImage("assets/images/defaultUserImage.jpg"),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final currentUser = Provider.of<User?>(context);
+    final storage = Provider.of<StorageService>(context);
+
+    final usernameTitle = currentUser?.displayName ?? "Guest";
+
+    return AppBar(
+      title: Row(
+        children: [
+          if (currentUser == null) getAvatar(null),
+          if (currentUser != null)
+            FutureBuilder(
+              future: storage.getUserProfileImage(currentUser.uid),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return getAvatar(MemoryImage(snapshot.data!));
+                }
+                return getAvatar(null);
+              },
+            ),
+          const SizedBox(width: 10),
+          Text(usernameTitle),
+        ],
+      ),
+      titleTextStyle: const TextStyle(fontSize: 15),
     );
   }
 }
