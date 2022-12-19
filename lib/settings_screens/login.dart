@@ -173,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   fit: BoxFit.cover,
                                   height: 24,
                                   width: 24)),
-                          Text(' Login in with Google'),
+                          Text(' Login In with Google'),
                         ],
                       )),
                 ),
