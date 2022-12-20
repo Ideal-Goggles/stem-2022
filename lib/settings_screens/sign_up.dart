@@ -67,8 +67,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final user = creds.user!;
       final db = Provider.of<DatabaseService>(context, listen: false);
 
-      // Create Firestore document to store user info
-      db.createAppUser(user.uid, user.email!, user.displayName!);
+      // Update user's Firestore document
+      db.updateAppUser(user.uid, user.email!, user.displayName!);
 
       // Display a SnackBar with a welcome message
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

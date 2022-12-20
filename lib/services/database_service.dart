@@ -20,6 +20,21 @@ class DatabaseService {
     await docRef.set(appUser.toMap());
   }
 
+  Future<void> updateAppUser(
+      String id, String email, String displayName) async {
+    final docRef = _db.collection("users").doc(id);
+
+    try {
+      await docRef.update({
+        "email": email,
+        "displayName": displayName,
+      });
+    } catch (error) {
+      // If updating the document fails, try creating it instead.
+      await createAppUser(id, email, displayName);
+    }
+  }
+
   Stream<AppUser> streamAppUser(String id) {
     return _db
         .collection("users")
