@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+// import 'package:provider/provider.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 
 class CreatePostScreen extends StatefulWidget {
   const CreatePostScreen({super.key});
@@ -12,7 +14,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO
+    // final currentUser = Provider.of<User?>(context);
+
     return Scaffold(
       appBar: AppBar(title: const Text("Create a Post")),
       body: const Center(child: Text("Coming Soon...")),

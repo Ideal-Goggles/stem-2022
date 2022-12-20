@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
           snackBarTheme: const SnackBarThemeData(
-            backgroundColor: Colors.blue,
+            backgroundColor: primaryThemeColor,
             shape: StadiumBorder(),
             behavior: SnackBarBehavior.floating,
             elevation: 5,
@@ -93,14 +93,29 @@ class MyAppHome extends StatelessWidget {
         appBar: const MyAppBar(),
         extendBodyBehindAppBar: true,
         extendBody: true,
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         floatingActionButton: ElevatedButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const CreatePostScreen()),
-            );
+            final currentUser = Provider.of<User?>(context, listen: false);
+
+            if (currentUser == null) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: const Text(
+                  "You must be logged in to create a post",
+                  textAlign: TextAlign.center,
+                ),
+                backgroundColor: Theme.of(context).colorScheme.error,
+              ));
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const CreatePostScreen()),
+              );
+            }
           },
           style: ElevatedButton.styleFrom(
+            elevation: 5,
             fixedSize: const Size.fromRadius(25),
             shape: const CircleBorder(),
             foregroundColor: Colors.white,
