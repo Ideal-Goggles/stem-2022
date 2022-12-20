@@ -66,8 +66,8 @@ class FoodPostCard extends StatelessWidget {
       color: Colors.grey[900],
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-        side: BorderSide(color: primaryColor, width: 0.5),
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(color: Colors.white.withOpacity(0.5), width: 0.5),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 15),
@@ -112,23 +112,31 @@ class FoodPostCard extends StatelessWidget {
               ]),
             ),
             const SizedBox(height: 15),
-            FutureBuilder(
-              future: storage.getFoodPostImage(foodPost.id),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Icon(
-                    Icons.error_outline,
-                    color: Theme.of(context).colorScheme.error,
-                    size: 35,
-                  );
-                } else if (snapshot.connectionState ==
-                        ConnectionState.waiting ||
-                    !snapshot.hasData) {
-                  return const CircularProgressIndicator.adaptive();
-                }
+            Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          color: Colors.white.withOpacity(0.5), width: 1),
+                      top: BorderSide(
+                          color: Colors.white.withOpacity(0.5), width: 1))),
+              child: FutureBuilder(
+                future: storage.getFoodPostImage(foodPost.id),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Icon(
+                      Icons.error_outline,
+                      color: Theme.of(context).colorScheme.error,
+                      size: 35,
+                    );
+                  } else if (snapshot.connectionState ==
+                          ConnectionState.waiting ||
+                      !snapshot.hasData) {
+                    return const CircularProgressIndicator.adaptive();
+                  }
 
-                return Image.memory(snapshot.data!);
-              },
+                  return Image.memory(snapshot.data!);
+                },
+              ),
             ),
             const SizedBox(height: 12),
             Padding(
@@ -137,7 +145,10 @@ class FoodPostCard extends StatelessWidget {
                 children: [
                   Text(
                     foodPost.caption,
-                    style: TextStyle(fontSize: 13, color: Colors.grey[400]),
+                    style: TextStyle(
+                        fontSize: 13,
+                        // fontWeight: FontWeight.w600,
+                        color: Colors.grey[400]),
                     textAlign: TextAlign.start,
                   ),
                 ],
