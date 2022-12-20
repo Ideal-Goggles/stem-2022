@@ -15,7 +15,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   Future timer() async {
     while (_secondsLeft > 0) {
       await Future.delayed(const Duration(seconds: 1));
-      if (mounted) setState(() => _secondsLeft--);
+      if (!mounted) break;
+      setState(() => _secondsLeft--);
     }
   }
 
@@ -27,8 +28,6 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final currentUser = Provider.of<User?>(context);
-
     return Scaffold(
       appBar: AppBar(title: const Text("Create a Post")),
       body: Center(child: Text("$_secondsLeft")),
