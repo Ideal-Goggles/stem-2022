@@ -10,7 +10,20 @@ class CreatePostScreen extends StatefulWidget {
 }
 
 class _CreatePostScreenState extends State<CreatePostScreen> {
-  final _startTime = DateTime.now();
+  int _secondsLeft = 60;
+
+  Future timer() async {
+    while (_secondsLeft > 0) {
+      await Future.delayed(const Duration(seconds: 1));
+      if (mounted) setState(() => _secondsLeft--);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    timer(); // Start the timer
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +31,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text("Create a Post")),
-      body: const Center(child: Text("Coming Soon...")),
+      body: Center(child: Text("$_secondsLeft")),
     );
   }
 }
