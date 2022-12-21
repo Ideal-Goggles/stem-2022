@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
-// import 'package:provider/provider.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:stem_2022/services/database_service.dart';
+import 'package:stem_2022/services/storage_service.dart';
 
 class CreatePostScreen extends StatefulWidget {
   const CreatePostScreen({super.key});
@@ -31,15 +34,42 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   }
 
   void clickPicture() {
-    final imagePicker = ImagePicker();
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      final imagePicker = ImagePicker();
 
-    imagePicker
-        .pickImage(
-          source: ImageSource.camera,
-          requestFullMetadata: false,
-        )
-        .then((image) => image!.readAsBytes())
-        .then((imageData) {});
+      imagePicker
+          .pickImage(
+            source: ImageSource.camera,
+            requestFullMetadata: false,
+          )
+          .then((image) => image!.readAsBytes())
+          .then((imageData) {
+        final db = Provider.of<DatabaseService>(context, listen: false);
+        final storage = Provider.of<StorageService>(context, listen: false);
+        final currentUser = Provider.of<User?>(context, listen: false);
+
+        return db.createFoodPost(currentUser!.uid, _caption).then(
+            (foodPostId) => storage.setFoodPostImage(foodPostId, imageData));
+      }).then((_) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+            "Successfully created a post!",
+            textAlign: TextAlign.center,
+          ),
+        ));
+
+        Navigator.pop(context);
+      }).catchError((error) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: Theme.of(context).colorScheme.error,
+          content: Text(
+            error.toString(),
+            textAlign: TextAlign.center,
+          ),
+        ));
+      });
+    }
   }
 
   @override
@@ -54,7 +84,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                "Create a new post",
+                "Create A New Post",
                 style: TextStyle(fontSize: 20),
               ),
               const SizedBox(height: 10),
@@ -70,7 +100,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Please enter an email address";
+                      return "Please enter a caption";
                     }
                     return null;
                   },
