@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 // import 'package:provider/provider.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 
@@ -15,6 +16,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
   String _caption = "";
 
+  @override
+  void initState() {
+    super.initState();
+    timer(); // Start the timer
+  }
+
   Future timer() async {
     while (_secondsLeft > 0) {
       await Future.delayed(const Duration(seconds: 1));
@@ -23,10 +30,16 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    timer(); // Start the timer
+  void clickPicture() {
+    final imagePicker = ImagePicker();
+
+    imagePicker
+        .pickImage(
+          source: ImageSource.camera,
+          requestFullMetadata: false,
+        )
+        .then((image) => image!.readAsBytes())
+        .then((imageData) {});
   }
 
   @override
@@ -67,7 +80,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               SizedBox(
                 width: double.infinity,
                 child: MaterialButton(
-                  onPressed: () {},
+                  onPressed: clickPicture,
                   color: Colors.grey[900],
                   textColor: Theme.of(context).colorScheme.primary,
                   shape: const StadiumBorder(),
