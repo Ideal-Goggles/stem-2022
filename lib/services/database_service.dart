@@ -53,4 +53,20 @@ class DatabaseService {
         .map((document) => FoodPost.fromFirestore(document))
         .toList();
   }
+
+  Future<String> createFoodPost(String authorId, String caption) async {
+    final foodPost = FoodPost(
+      id: "",
+      authorId: authorId,
+      caption: caption,
+      totalRating: 0,
+      numberOfRatings: 0,
+      dateAdded: Timestamp.now(),
+    );
+
+    final docRef = _db.collection("foodPosts").doc();
+    await docRef.set(foodPost.toMap());
+
+    return docRef.id;
+  }
 }

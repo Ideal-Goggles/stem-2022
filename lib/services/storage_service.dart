@@ -21,6 +21,16 @@ class StorageService {
     return imageData;
   }
 
+  Future<void> setFoodPostImage(String foodPostId, Uint8List imageData) async {
+    final storageRef = _storage.ref("foodPostImages").child("$foodPostId.jpg");
+    await storageRef.putData(
+      imageData,
+      SettableMetadata(contentType: "image/jpeg"),
+    );
+
+    _foodPostImageCache[foodPostId] = imageData;
+  }
+
   Future<Uint8List?> getUserProfileImage(String userId) async {
     if (_userProfileImageCache.containsKey(userId)) {
       return _userProfileImageCache[userId];

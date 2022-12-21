@@ -11,6 +11,8 @@ import 'package:stem_2022/tab_screens/groups.dart';
 import 'package:stem_2022/tab_screens/home.dart';
 import 'package:stem_2022/tab_screens/settings.dart';
 
+import 'package:stem_2022/misc_screens/create_post_screen.dart';
+
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -68,59 +70,84 @@ class MyApp extends StatelessWidget {
             ),
           ),
           snackBarTheme: const SnackBarThemeData(
-            backgroundColor: Colors.blue,
+            backgroundColor: primaryThemeColor,
             shape: StadiumBorder(),
             behavior: SnackBarBehavior.floating,
             elevation: 5,
             contentTextStyle: TextStyle(color: Colors.white),
           ),
         ),
-        home: DefaultTabController(
-          length: 3,
-          child: Scaffold(
-            appBar: const MyAppBar(),
-            extendBodyBehindAppBar: true,
-            extendBody: true,
-            floatingActionButton: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                fixedSize: const Size.fromRadius(25),
-                shape: const CircleBorder(),
-                foregroundColor: Colors.white,
-                backgroundColor: Theme.of(context).colorScheme.primary,
-              ),
-              child: const Icon(Icons.add, size: 25),
-            ),
-            bottomNavigationBar: Container(
-              color: Colors.grey[900],
-              // decoration: BoxDecoration(
-              //   color: Colors.yellow,
-              //   border: Border.all(color: Colors.black),
-              // ),
-              padding: const EdgeInsets.only(bottom: 10, top: 10),
-              child: const SafeArea(
-                child: TabBar(
-                  labelColor: primaryThemeColor,
-                  unselectedLabelColor: Colors.white38,
-                  tabs: [
-                    Tab(icon: Icon(Icons.home)),
-                    Tab(icon: Icon(Icons.group)),
-                    Tab(icon: Icon(Icons.settings))
-                  ],
-                  indicatorColor: Colors.transparent,
+        home: const MyAppHome(),
+      ),
+    );
+  }
+}
+
+class MyAppHome extends StatelessWidget {
+  const MyAppHome({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: const MyAppBar(),
+        extendBodyBehindAppBar: true,
+        extendBody: true,
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton: ElevatedButton(
+          onPressed: () {
+            final currentUser = Provider.of<User?>(context, listen: false);
+
+            if (currentUser == null) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: const Text(
+                  "You must be logged in to create a post",
+                  textAlign: TextAlign.center,
                 ),
-              ),
+                backgroundColor: Theme.of(context).colorScheme.error,
+              ));
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const CreatePostScreen()),
+              );
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            elevation: 5,
+            fixedSize: const Size.fromRadius(25),
+            shape: const CircleBorder(),
+            foregroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.primary,
+          ),
+          child: const Icon(Icons.add, size: 25),
+        ),
+        bottomNavigationBar: Container(
+          color: Colors.grey[900],
+          padding: const EdgeInsets.only(bottom: 10, top: 10),
+          child: SafeArea(
+            child: TabBar(
+              labelColor: Theme.of(context).colorScheme.primary,
+              unselectedLabelColor: Colors.white38,
+              tabs: const [
+                Tab(icon: Icon(Icons.home)),
+                Tab(icon: Icon(Icons.group)),
+                Tab(icon: Icon(Icons.settings))
+              ],
+              indicatorColor: Colors.transparent,
             ),
-            body: const SafeArea(
-                minimum: EdgeInsets.all(8),
-                child: TabBarView(
-                  children: [
-                    HomeScreen(),
-                    GroupsScreen(),
-                    SettingsScreen(),
-                  ],
-                )),
-            // backgroundColor: Colors.black,
+          ),
+        ),
+        body: const SafeArea(
+          minimum: EdgeInsets.all(8),
+          child: TabBarView(
+            children: [
+              HomeScreen(),
+              GroupsScreen(),
+              SettingsScreen(),
+            ],
           ),
         ),
       ),
