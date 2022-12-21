@@ -27,6 +27,7 @@ class ProfileScreen extends StatelessWidget {
           child: Column(
             children: [
               Container(
+                width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 18),
                 decoration: BoxDecoration(
                   color: Colors.grey[900],
@@ -56,7 +57,7 @@ class ProfileScreen extends StatelessWidget {
                       "${currentUser.displayName}",
                       style: const TextStyle(
                         fontSize: 24,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w700,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -79,7 +80,10 @@ class ProfileScreen extends StatelessWidget {
                   padding: EdgeInsets.only(top: 25, bottom: 25),
                   child: Text(
                     "Logout",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                        color: Colors.red),
                   ),
                 ),
               )
