@@ -25,8 +25,7 @@ class MyApp extends StatelessWidget {
 
   // Change these to change the general theme of the app
   static const primaryThemeColor = Colors.blue;
-  static const primaryErrorColor = Color.fromRGBO(50, 0, 0, 1);
-  static const primaryErrorTextColor = Color.fromRGBO(135, 0, 0, 1);
+  static const primaryErrorColor = Colors.red;
 
   // This widget is the root of your application.
   @override
