@@ -49,12 +49,19 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         final storage = Provider.of<StorageService>(context, listen: false);
         final currentUser = Provider.of<User?>(context, listen: false);
 
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+            "Creating post, please wait...",
+            textAlign: TextAlign.center,
+          ),
+        ));
+
         return db.createFoodPost(currentUser!.uid, _caption).then(
             (foodPostId) => storage.setFoodPostImage(foodPostId, imageData));
       }).then((_) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text(
-            "Successfully created a post!",
+            "Successfully created post!",
             textAlign: TextAlign.center,
           ),
         ));
@@ -62,7 +69,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         Navigator.pop(context);
       }).catchError((error) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: Theme.of(context).colorScheme.error,
+          backgroundColor: Theme.of(context).colorScheme.error,
           content: Text(
             error.toString(),
             textAlign: TextAlign.center,
