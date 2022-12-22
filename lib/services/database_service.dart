@@ -64,6 +64,4 @@ class DatabaseService {
         .map((document) => Group.fromFirestore(document))
         .toList();
   }
-
-  getGroup() {}
 }
