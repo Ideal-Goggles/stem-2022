@@ -66,19 +66,45 @@ class GroupCard extends StatelessWidget {
         textColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         padding: const EdgeInsets.all(15),
+        height: 100,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Column(
               children: [
-                Text(group.name,
-                    style:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 Text(
-                  group.description,
-                  style: TextStyle(color: Colors.white38),
-                )
+                  "#${group.groupRank}",
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: group.groupRank == 1
+                          ? Colors.yellow[800]
+                          : group.groupRank == 2
+                              ? Colors.white70
+                              : group.groupRank == 3
+                                  ? Colors.brown[900]
+                                  : Colors.white30),
+                ),
+                Text("${group.groupPoints} H",
+                    style: TextStyle(color: Colors.white38))
               ],
+            ),
+            Container(
+              width: 200,
+              child: Column(
+                children: [
+                  Text(
+                    group.name,
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    group.description,
+                    style: TextStyle(color: Colors.white38),
+                    textAlign: TextAlign.center,
+                  )
+                ],
+              ),
             ),
             Icon(Icons.chevron_right)
           ],
