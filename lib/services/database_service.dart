@@ -43,6 +43,21 @@ class DatabaseService {
         .map((document) => AppUser.fromFirestore(document));
   }
 
+  Future<FoodPost?> getUserLatestFoodPost(String userId) async {
+    final snapshot = await _db
+        .collection("foodPosts")
+        .where("authorId", isEqualTo: userId)
+        .orderBy("dateAdded", descending: true)
+        .limit(1)
+        .get();
+
+    if (snapshot.docs.isEmpty) {
+      return null;
+    }
+
+    return FoodPost.fromFirestore(snapshot.docs.first);
+  }
+
   Future<List<FoodPost>> getRecentFoodPosts() async {
     final snapshot = await _db
         .collection("foodPosts")

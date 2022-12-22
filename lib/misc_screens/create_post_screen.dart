@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:stem_2022/services/database_service.dart';
 import 'package:stem_2022/services/storage_service.dart';
+import 'package:stem_2022/models/food_post.dart';
 
 class CreatePostScreen extends StatefulWidget {
   const CreatePostScreen({super.key});
@@ -15,23 +16,9 @@ class CreatePostScreen extends StatefulWidget {
 
 class _CreatePostScreenState extends State<CreatePostScreen> {
   final _formKey = GlobalKey<FormState>();
-  int _secondsLeft = 60;
+  final _postTimeGap = const Duration(hours: 5);
 
   String _caption = "";
-
-  @override
-  void initState() {
-    super.initState();
-    timer(); // Start the timer
-  }
-
-  Future timer() async {
-    while (_secondsLeft > 0) {
-      await Future.delayed(const Duration(seconds: 1));
-      if (!mounted) break;
-      setState(() => _secondsLeft--);
-    }
-  }
 
   void clickPicture() {
     if (_formKey.currentState!.validate()) {
@@ -81,6 +68,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final db = Provider.of<DatabaseService>(context, listen: false);
+    final currentUser = Provider.of<User?>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(title: const Text("Create a Post")),
       body: Form(
@@ -95,42 +85,87 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 style: TextStyle(fontSize: 20),
               ),
               const SizedBox(height: 10),
-              Container(
-                padding: const EdgeInsets.only(top: 20),
-                child: TextFormField(
-                  onSaved: (newValue) => _caption = newValue ?? "",
-                  keyboardType: TextInputType.text,
-                  autocorrect: true,
-                  decoration: const InputDecoration(
-                    labelText: "Caption",
-                    hintText: "An amazing meal!",
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Please enter a caption";
+              FutureBuilder(
+                future: db.getUserLatestFoodPost(currentUser!.uid),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  final foodPost = snapshot.data;
+
+                  // Check if there is the required time gap since last post
+                  if (foodPost != null) {
+                    final now = DateTime.now();
+                    final dateAdded = foodPost.dateAdded.toDate();
+                    final timeDiff = now.difference(dateAdded);
+
+                    if (timeDiff < _postTimeGap) {
+                      final nextPostTime = dateAdded.add(_postTimeGap);
+                      final timeTillNextPost = nextPostTime.difference(now);
+
+                      String timeString;
+
+                      if (timeTillNextPost.inSeconds > 60) {
+                        final timeStringSplit =
+                            timeTillNextPost.toString().split(":");
+                        timeString =
+                            "${timeStringSplit[0]}:${timeStringSplit[1]} hour(s)";
+                      } else {
+                        timeString = "${timeTillNextPost.inSeconds} second(s)";
+                      }
+
+                      return Text(
+                        "You cannot post right now, come back in $timeString!",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.error),
+                      );
                     }
-                    return null;
-                  },
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: MaterialButton(
-                  onPressed: clickPicture,
-                  color: Colors.grey[900],
-                  textColor: Theme.of(context).colorScheme.primary,
-                  shape: const StadiumBorder(),
-                  padding: const EdgeInsets.all(15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.camera_alt, size: 25),
-                      SizedBox(width: 5),
-                      Text("Click a Picture"),
+                  }
+
+                  return Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: TextFormField(
+                          onSaved: (newValue) => _caption = newValue ?? "",
+                          keyboardType: TextInputType.text,
+                          autocorrect: true,
+                          decoration: const InputDecoration(
+                            labelText: "Caption",
+                            hintText: "An amazing meal!",
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Please enter a caption";
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        width: double.infinity,
+                        child: MaterialButton(
+                          onPressed: clickPicture,
+                          color: Colors.grey[900],
+                          textColor: Theme.of(context).colorScheme.primary,
+                          shape: const StadiumBorder(),
+                          padding: const EdgeInsets.all(15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(Icons.camera_alt, size: 25),
+                              SizedBox(width: 5),
+                              Text("Click a Picture"),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
-                  ),
-                ),
+                  );
+                },
               ),
             ],
           ),
