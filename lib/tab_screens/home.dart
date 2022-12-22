@@ -112,31 +112,31 @@ class FoodPostCard extends StatelessWidget {
               ]),
             ),
             const SizedBox(height: 15),
-            Container(
-              decoration: BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(
-                          color: Colors.white.withOpacity(0.5), width: 1),
-                      top: BorderSide(
-                          color: Colors.white.withOpacity(0.5), width: 1))),
-              child: FutureBuilder(
-                future: storage.getFoodPostImage(foodPost.id),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Icon(
-                      Icons.error_outline,
-                      color: Theme.of(context).colorScheme.error,
-                      size: 35,
-                    );
-                  } else if (snapshot.connectionState ==
-                          ConnectionState.waiting ||
-                      !snapshot.hasData) {
-                    return const CircularProgressIndicator.adaptive();
-                  }
+            FutureBuilder(
+              future: storage.getFoodPostImage(foodPost.id),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Icon(
+                    Icons.error_outline,
+                    color: Theme.of(context).colorScheme.error,
+                    size: 35,
+                  );
+                } else if (snapshot.connectionState ==
+                        ConnectionState.waiting ||
+                    !snapshot.hasData) {
+                  return const CircularProgressIndicator.adaptive();
+                }
 
-                  return Image.memory(snapshot.data!);
-                },
-              ),
+                return Container(
+                    decoration: BoxDecoration(
+                        border: Border(
+                            bottom: BorderSide(
+                                color: Colors.white.withOpacity(0.5), width: 1),
+                            top: BorderSide(
+                                color: Colors.white.withOpacity(0.5),
+                                width: 1))),
+                    child: Image.memory(snapshot.data!));
+              },
             ),
             const SizedBox(height: 12),
             Padding(
