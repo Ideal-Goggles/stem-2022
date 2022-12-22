@@ -56,7 +56,10 @@ class DatabaseService {
   }
 
   Future<List<Group>> getGroupsList() async {
-    final snapshot = await _db.collection("groups").orderBy("groupRank").get();
+    final snapshot = await _db
+        .collection("groups")
+        .orderBy("groupPoints", descending: true)
+        .get();
     return snapshot.docs
         .map((document) => Group.fromFirestore(document))
         .toList();
