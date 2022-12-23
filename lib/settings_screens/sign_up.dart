@@ -1,8 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:image/image.dart' show decodePng, encodeJpg;
+import 'package:http/http.dart';
+
 import 'package:stem_2022/services/database_service.dart';
+import 'package:stem_2022/services/storage_service.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -69,6 +74,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       // Update user's Firestore document
       db.updateAppUser(user.uid, user.email!, user.displayName!);
+
+      // Download user's profile picture and upload to Storage
+      if (user.photoURL != null) {
+        get(Uri.parse(user.photoURL!)).then((response) {
+          final image = decodePng(response.bodyBytes);
+          final jpegImage = encodeJpg(image!, quality: 80);
+          final jpegImageData = Uint8List.fromList(jpegImage);
+
+          final storage = Provider.of<StorageService>(context, listen: false);
+          storage.setUserProfileImage(user.uid, jpegImageData);
+        });
+      }
 
       // Display a SnackBar with a welcome message
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

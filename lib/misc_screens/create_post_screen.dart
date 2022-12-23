@@ -5,7 +5,6 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:stem_2022/services/database_service.dart';
 import 'package:stem_2022/services/storage_service.dart';
-import 'package:stem_2022/models/food_post.dart';
 
 class CreatePostScreen extends StatefulWidget {
   const CreatePostScreen({super.key});
