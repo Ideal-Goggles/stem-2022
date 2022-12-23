@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:stem_2022/models/group.dart';
 import 'package:stem_2022/services/database_service.dart';
 
+import 'package:stem_2022/misc_screens/group_details.dart';
+
 class GroupsScreen extends StatefulWidget {
   const GroupsScreen({super.key});
 
@@ -116,7 +118,14 @@ class GroupCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
       ),
       child: MaterialButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => GroupDetails(group: group),
+            ),
+          );
+        },
         color: Colors.grey[900],
         textColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
