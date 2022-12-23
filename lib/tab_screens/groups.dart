@@ -19,48 +19,62 @@ class _GroupsScreenState extends State<GroupsScreen> {
   Widget build(BuildContext context) {
     final db = Provider.of<DatabaseService>(context, listen: false);
 
-    return StreamBuilder(
-      stream: db.streamGroupsByRank(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(
-            child: Text(
-              "Error: ${snapshot.error.toString()}",
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
+    return Column(
+      children: [
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: 'Search groups...',
+              border: OutlineInputBorder(),
             ),
-          );
-        } else if (snapshot.connectionState == ConnectionState.waiting ||
-            !snapshot.hasData) {
-          return const Center(child: Text("Loading..."));
-        }
-
-        final groupList = snapshot.data!;
-
-        return ListView.separated(
-          key: const PageStorageKey("groupsList"),
-          controller: _scrollController,
-          padding: const EdgeInsets.symmetric(vertical: 15),
-          itemCount: groupList.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 15),
-          itemBuilder: (context, index) {
-            Color? rankColor;
-
-            if (index == 0) {
-              rankColor = Colors.yellow[800];
-            } else if (index == 1) {
-              rankColor = Colors.white70;
-            } else if (index == 2) {
-              rankColor = Colors.brown[800];
+          ),
+        ),
+        StreamBuilder(
+          stream: db.streamGroupsByRank(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Text(
+                  "Error: ${snapshot.error.toString()}",
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              );
+            } else if (snapshot.connectionState == ConnectionState.waiting ||
+                !snapshot.hasData) {
+              return const Center(child: Text("Loading..."));
             }
 
-            return GroupCard(
-              group: groupList[index],
-              rank: index + 1,
-              rankColor: rankColor,
+            final groupList = snapshot.data!;
+
+            return ListView.separated(
+              controller: _scrollController,
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              itemCount: groupList.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 15),
+              itemBuilder: (context, index) {
+                Color? rankColor;
+
+                if (index == 0) {
+                  rankColor = Colors.yellow[800];
+                } else if (index == 1) {
+                  rankColor = Colors.white70;
+                } else if (index == 2) {
+                  rankColor = Colors.brown[800];
+                } else {
+                  rankColor = Colors.white54;
+                }
+
+                return GroupCard(
+                  group: groupList[index],
+                  rank: index + 1,
+                  rankColor: rankColor,
+                );
+              },
             );
           },
-        );
-      },
+        )
+      ],
     );
   }
 }
