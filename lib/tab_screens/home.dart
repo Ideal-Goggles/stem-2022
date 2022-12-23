@@ -58,6 +58,8 @@ class _FoodPostCardState extends State<FoodPostCard>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     final storage = Provider.of<StorageService>(context, listen: false);
     final db = Provider.of<DatabaseService>(context);
 
