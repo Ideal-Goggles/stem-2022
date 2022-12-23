@@ -11,16 +11,12 @@ class GroupsScreen extends StatefulWidget {
   State<GroupsScreen> createState() => _GroupsScreenState();
 }
 
-class _GroupsScreenState extends State<GroupsScreen>
-    with AutomaticKeepAliveClientMixin {
-  final _scrollController = ScrollController(keepScrollOffset: true);
-
-  @override
-  bool get wantKeepAlive => true;
+class _GroupsScreenState extends State<GroupsScreen> {
+  final _scrollController =
+      ScrollController(keepScrollOffset: true, initialScrollOffset: 0);
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     final db = Provider.of<DatabaseService>(context, listen: false);
 
     return StreamBuilder(
@@ -41,8 +37,9 @@ class _GroupsScreenState extends State<GroupsScreen>
         final groupList = snapshot.data!;
 
         return ListView.separated(
+          key: const PageStorageKey("groupsList"),
           controller: _scrollController,
-          padding: const EdgeInsets.only(top: 15),
+          padding: const EdgeInsets.symmetric(vertical: 15),
           itemCount: groupList.length,
           separatorBuilder: (context, index) => const SizedBox(height: 15),
           itemBuilder: (context, index) {
@@ -57,7 +54,10 @@ class _GroupsScreenState extends State<GroupsScreen>
             }
 
             return GroupCard(
-                group: groupList[index], rank: index + 1, rankColor: rankColor);
+              group: groupList[index],
+              rank: index + 1,
+              rankColor: rankColor,
+            );
           },
         );
       },
