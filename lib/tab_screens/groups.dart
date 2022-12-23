@@ -13,6 +13,8 @@ class GroupsScreen extends StatefulWidget {
 
 class _GroupsScreenState extends State<GroupsScreen>
     with AutomaticKeepAliveClientMixin {
+  final _scrollController = ScrollController(keepScrollOffset: true);
+
   @override
   bool get wantKeepAlive => true;
 
@@ -21,8 +23,8 @@ class _GroupsScreenState extends State<GroupsScreen>
     super.build(context);
     final db = Provider.of<DatabaseService>(context, listen: false);
 
-    return FutureBuilder(
-      future: db.getGroupsList(),
+    return StreamBuilder(
+      stream: db.streamGroupsByRank(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(
@@ -39,6 +41,7 @@ class _GroupsScreenState extends State<GroupsScreen>
         final groupList = snapshot.data!;
 
         return ListView.separated(
+          controller: _scrollController,
           padding: const EdgeInsets.only(top: 15),
           itemCount: groupList.length,
           separatorBuilder: (context, index) => const SizedBox(height: 15),
@@ -50,7 +53,7 @@ class _GroupsScreenState extends State<GroupsScreen>
             } else if (index == 1) {
               rankColor = Colors.white70;
             } else if (index == 2) {
-              rankColor = Colors.brown[900];
+              rankColor = Colors.brown[800];
             }
 
             return GroupCard(
@@ -102,7 +105,7 @@ class GroupCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "${group.groupPoints} H",
+                  "${group.points} H",
                   style: const TextStyle(color: Colors.white38),
                 )
               ],

@@ -4,16 +4,16 @@ class Group {
   final String id;
   final String name;
   final String description;
-  final int groupRank;
-  final int groupPoints;
+  final int rank;
+  final int points;
   final List<String> admins;
 
   Group({
     required this.id,
     required this.name,
     required this.description,
-    required this.groupRank,
-    required this.groupPoints,
+    required this.rank,
+    required this.points,
     required this.admins,
   });
 
@@ -24,8 +24,8 @@ class Group {
       id: snapshot.id,
       name: data["name"],
       description: data["description"],
-      groupRank: data["groupRank"],
-      groupPoints: data["groupPoints"],
+      rank: data["rank"],
+      points: data["points"],
       admins: List<String>.from(data["admins"]),
     );
   }
