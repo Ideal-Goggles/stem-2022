@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen>
         final foodPostList = snapshot.data!;
 
         return ListView.separated(
-          padding: const EdgeInsets.only(top: 15),
+          padding: const EdgeInsets.symmetric(vertical: 15),
           itemCount: foodPostList.length,
           separatorBuilder: (context, index) => const SizedBox(height: 15),
           itemBuilder: (context, index) =>
@@ -58,7 +58,6 @@ class FoodPostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).colorScheme.primary;
     final storage = Provider.of<StorageService>(context, listen: false);
     final db = Provider.of<DatabaseService>(context);
 
@@ -128,14 +127,16 @@ class FoodPostCard extends StatelessWidget {
                 }
 
                 return Container(
-                    decoration: BoxDecoration(
-                        border: Border(
-                            bottom: BorderSide(
-                                color: Colors.white.withOpacity(0.5), width: 1),
-                            top: BorderSide(
-                                color: Colors.white.withOpacity(0.5),
-                                width: 1))),
-                    child: Image.memory(snapshot.data!));
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                          color: Colors.white.withOpacity(0.5), width: 1),
+                      top: BorderSide(
+                          color: Colors.white.withOpacity(0.5), width: 1),
+                    ),
+                  ),
+                  child: Image.memory(snapshot.data!),
+                );
               },
             ),
             const SizedBox(height: 12),

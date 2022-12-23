@@ -44,6 +44,21 @@ class DatabaseService {
         .map((document) => AppUser.fromFirestore(document));
   }
 
+  Future<FoodPost?> getUserLatestFoodPost(String userId) async {
+    final snapshot = await _db
+        .collection("foodPosts")
+        .where("authorId", isEqualTo: userId)
+        .orderBy("dateAdded", descending: true)
+        .limit(1)
+        .get();
+
+    if (snapshot.docs.isEmpty) {
+      return null;
+    }
+
+    return FoodPost.fromFirestore(snapshot.docs.first);
+  }
+
   Future<List<FoodPost>> getRecentFoodPosts() async {
     final snapshot = await _db
         .collection("foodPosts")
@@ -53,6 +68,22 @@ class DatabaseService {
     return snapshot.docs
         .map((document) => FoodPost.fromFirestore(document))
         .toList();
+  }
+
+  Future<String> createFoodPost(String authorId, String caption) async {
+    final foodPost = FoodPost(
+      id: "",
+      authorId: authorId,
+      caption: caption,
+      totalRating: 0,
+      numberOfRatings: 0,
+      dateAdded: Timestamp.now(),
+    );
+
+    final docRef = _db.collection("foodPosts").doc();
+    await docRef.set(foodPost.toMap());
+
+    return docRef.id;
   }
 
   Future<List<Group>> getGroupsList() async {

@@ -70,7 +70,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '841360814435',
     projectId: 'stem-2022',
     storageBucket: 'stem-2022.appspot.com',
-    iosClientId: '841360814435-j7qrrtm56qga659ib8jpsrf6pjltr21t.apps.googleusercontent.com',
+    iosClientId:
+        '841360814435-j7qrrtm56qga659ib8jpsrf6pjltr21t.apps.googleusercontent.com',
     iosBundleId: 'com.ideal-duo.stem2022',
   );
 }

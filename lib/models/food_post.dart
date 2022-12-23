@@ -30,4 +30,14 @@ class FoodPost {
       dateAdded: data["dateAdded"],
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "authorId": authorId,
+      "caption": caption,
+      "totalRating": totalRating,
+      "numberOfRatings": numberOfRatings,
+      "dateAdded": dateAdded,
+    };
+  }
 }
