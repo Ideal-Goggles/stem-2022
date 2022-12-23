@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
-import 'package:image/image.dart' show decodePng, encodeJpg;
-import 'package:http/http.dart';
+import 'package:image/image.dart' as img;
+import 'package:http/http.dart' as http;
 
 import 'package:stem_2022/services/database_service.dart';
 import 'package:stem_2022/services/storage_service.dart';
@@ -73,13 +73,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
       // Download user's profile picture and upload to Storage
       if (user.photoURL != null) {
-        get(Uri.parse(user.photoURL!)).then((response) {
-          final image = decodePng(response.bodyBytes);
-          final jpegImage = encodeJpg(image!, quality: 80);
-          final jpegImageData = Uint8List.fromList(jpegImage);
+        http.get(Uri.parse(user.photoURL!)).then((response) {
+          final image = img.decodeImage(response.bodyBytes);
+          final jpgImage = img.encodeJpg(image!, quality: 80);
+          final jpgImageData = Uint8List.fromList(jpgImage);
 
           final storage = Provider.of<StorageService>(context, listen: false);
-          storage.setUserProfileImage(user.uid, jpegImageData);
+          storage.setUserProfileImage(user.uid, jpgImageData);
         });
       }
 
