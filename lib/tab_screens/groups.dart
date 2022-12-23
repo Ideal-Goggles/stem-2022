@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:stem_2022/models/group.dart';
 import 'package:stem_2022/services/database_service.dart';
 
+import 'package:fuzzy/fuzzy.dart';
+
 class GroupsScreen extends StatefulWidget {
   const GroupsScreen({super.key});
 
@@ -54,6 +56,8 @@ class _GroupsScreenState extends State<GroupsScreen>
               rankColor = Colors.white70;
             } else if (index == 2) {
               rankColor = Colors.brown[800];
+            } else {
+              rankColor = Colors.white54;
             }
 
             return GroupCard(
