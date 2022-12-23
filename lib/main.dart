@@ -76,14 +76,16 @@ class MyApp extends StatelessWidget {
             contentTextStyle: TextStyle(color: Colors.white),
           ),
         ),
-        home: const MyAppHome(),
+        home: MyAppHome(),
       ),
     );
   }
 }
 
 class MyAppHome extends StatelessWidget {
-  const MyAppHome({super.key});
+  MyAppHome({super.key});
+
+  final _bucket = PageStorageBucket();
 
   @override
   Widget build(BuildContext context) {
@@ -139,14 +141,17 @@ class MyAppHome extends StatelessWidget {
             ),
           ),
         ),
-        body: const SafeArea(
-          minimum: EdgeInsets.all(8),
-          child: TabBarView(
-            children: [
-              HomeScreen(),
-              GroupsScreen(),
-              SettingsScreen(),
-            ],
+        body: PageStorage(
+          bucket: _bucket,
+          child: const SafeArea(
+            minimum: EdgeInsets.all(8),
+            child: TabBarView(
+              children: [
+                HomeScreen(),
+                GroupsScreen(),
+                SettingsScreen(),
+              ],
+            ),
           ),
         ),
       ),

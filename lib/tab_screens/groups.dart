@@ -12,21 +12,20 @@ class GroupsScreen extends StatefulWidget {
 }
 
 class _GroupsScreenState extends State<GroupsScreen> {
-  final _scrollController =
-      ScrollController(keepScrollOffset: true, initialScrollOffset: 0);
-
   @override
   Widget build(BuildContext context) {
     final db = Provider.of<DatabaseService>(context, listen: false);
 
     return Column(
       children: [
-        const Padding(
-          padding: EdgeInsets.all(8.0),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
           child: TextField(
             decoration: InputDecoration(
               hintText: 'Search groups...',
-              border: OutlineInputBorder(),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
             ),
           ),
         ),
@@ -47,30 +46,33 @@ class _GroupsScreenState extends State<GroupsScreen> {
 
             final groupList = snapshot.data!;
 
-            return ListView.separated(
-              controller: _scrollController,
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              itemCount: groupList.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 15),
-              itemBuilder: (context, index) {
-                Color? rankColor;
+            return Expanded(
+              child: ListView.separated(
+                key: const PageStorageKey("groupsList"),
+                padding: const EdgeInsets.only(top: 7, bottom: 15),
+                itemCount: groupList.length,
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 15),
+                itemBuilder: (context, index) {
+                  Color? rankColor;
 
-                if (index == 0) {
-                  rankColor = Colors.yellow[800];
-                } else if (index == 1) {
-                  rankColor = Colors.white70;
-                } else if (index == 2) {
-                  rankColor = Colors.brown[800];
-                } else {
-                  rankColor = Colors.white54;
-                }
+                  if (index == 0) {
+                    rankColor = Colors.yellow[800];
+                  } else if (index == 1) {
+                    rankColor = Colors.white70;
+                  } else if (index == 2) {
+                    rankColor = Colors.brown[800];
+                  } else {
+                    rankColor = Colors.white54;
+                  }
 
-                return GroupCard(
-                  group: groupList[index],
-                  rank: index + 1,
-                  rankColor: rankColor,
-                );
-              },
+                  return GroupCard(
+                    group: groupList[index],
+                    rank: index + 1,
+                    rankColor: rankColor,
+                  );
+                },
+              ),
             );
           },
         )
