@@ -12,6 +12,8 @@ class GroupsScreen extends StatefulWidget {
 }
 
 class _GroupsScreenState extends State<GroupsScreen> {
+  String _searchQuery = "";
+
   @override
   Widget build(BuildContext context) {
     final db = Provider.of<DatabaseService>(context, listen: false);
@@ -21,6 +23,9 @@ class _GroupsScreenState extends State<GroupsScreen> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: TextField(
+            onChanged: (newValue) => setState(
+              () => _searchQuery = newValue.toLowerCase(),
+            ),
             decoration: InputDecoration(
               hintText: 'Search groups...',
               border: OutlineInputBorder(
@@ -44,11 +49,21 @@ class _GroupsScreenState extends State<GroupsScreen> {
               return const Center(child: Text("Loading..."));
             }
 
-            final groupList = snapshot.data!;
+            List<Group> groupList = [];
+
+            if (_searchQuery.isEmpty) {
+              groupList = snapshot.data!;
+            } else {
+              groupList = snapshot.data!
+                  .where((group) =>
+                      group.name.toLowerCase().contains(_searchQuery) ||
+                      group.description.toLowerCase().contains(_searchQuery))
+                  .toList();
+            }
 
             return Expanded(
               child: ListView.separated(
-                key: const PageStorageKey("groupsList"),
+                key: const PageStorageKey("groupList"),
                 padding: const EdgeInsets.only(top: 7, bottom: 15),
                 itemCount: groupList.length,
                 separatorBuilder: (context, index) =>
