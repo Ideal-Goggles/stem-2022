@@ -11,7 +11,7 @@ class GroupDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("School Group"),
+        title: Text(group.name),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
