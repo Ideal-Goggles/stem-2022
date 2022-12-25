@@ -31,7 +31,7 @@ class ProfileScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 18),
               decoration: BoxDecoration(
                 color: Colors.grey[900],
-                borderRadius: const BorderRadius.all(Radius.circular(50)),
+                borderRadius: BorderRadius.circular(50),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
