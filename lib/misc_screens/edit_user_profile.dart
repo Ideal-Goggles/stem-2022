@@ -3,19 +3,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 
+final _auth = FirebaseAuth.instance;
+
 class EditProfileScreen extends StatelessWidget {
   const EditProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final currentUser = Provider.of<User?>(context);
+    final currentUser = Provider.of<User>(context);
+    // final user = FirebaseAuth.instance;
 
     return Scaffold(
         appBar: AppBar(title: const Text("Edit Profile")),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: 15),
             SizedBox(
                 height: 116,
                 child: MaterialButton(
@@ -32,7 +34,7 @@ class EditProfileScreen extends StatelessWidget {
                         builder: (context) => const EditNameDialog(),
                       );
                       if (newDisplayName != null) {
-                        await currentUser?.updateDisplayName(newDisplayName);
+                        await currentUser.updateDisplayName(newDisplayName);
                       }
                     },
                     child: Column(
@@ -41,7 +43,7 @@ class EditProfileScreen extends StatelessWidget {
                           Flexible(
                             flex: 1,
                             child: Text(
-                              "${currentUser?.displayName}",
+                              "${currentUser.displayName}",
                               style: const TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w700,
@@ -58,32 +60,35 @@ class EditProfileScreen extends StatelessWidget {
                         ]),
                   ),
                 )),
-            const SizedBox(height: 15),
-            SizedBox(
-                height: 116,
-                child: MaterialButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => const ChangePasswordDialog(),
-                    );
-                  },
-                  color: Colors.grey[900],
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(14)),
-                  ),
-                  elevation: 0,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text("Change Password"),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Icon(Icons.password)
-                      ]),
-                )),
-            const SizedBox(height: 15),
+            const SizedBox(
+              height: 15,
+            ),
+            if (currentUser.providerData
+                .any((provider) => provider.providerId == 'password'))
+              SizedBox(
+                  height: 116,
+                  child: MaterialButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => const ChangePasswordDialog(),
+                      );
+                    },
+                    color: Colors.grey[900],
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(14)),
+                    ),
+                    elevation: 0,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Text("Change Password"),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Icon(Icons.password)
+                        ]),
+                  )),
           ],
         ));
   }
