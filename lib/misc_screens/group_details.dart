@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:stem_2022/models/group.dart';
 import 'package:stem_2022/services/database_service.dart';
+import 'package:stem_2022/services/storage_service.dart';
 
 class GroupDetails extends StatelessWidget {
   final Group group;
@@ -11,14 +12,15 @@ class GroupDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<DatabaseService>(context);
+    final db = Provider.of<DatabaseService>(context, listen: false);
+    final storage = Provider.of<StorageService>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(group.name),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(15),
         child: Column(
           children: [
             // Group Details
@@ -77,7 +79,8 @@ class GroupDetails extends StatelessWidget {
                         "Unable to fetch group members:\n${snapshot.error}",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            color: Theme.of(context).colorScheme.error),
+                          color: Theme.of(context).colorScheme.error,
+                        ),
                       ),
                     ),
                   );
@@ -95,12 +98,72 @@ class GroupDetails extends StatelessWidget {
                 return Expanded(
                   child: ListView.separated(
                     key: PageStorageKey("groupMemberList-${group.id}"),
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
                     itemCount: userList.length,
                     separatorBuilder: (context, index) =>
-                        const SizedBox(height: 5),
+                        const SizedBox(height: 10),
                     itemBuilder: (context, index) {
-                      return Text(userList[index].displayName);
+                      final member = userList[index];
+                      Color? rankColor;
+
+                      if (index == 0) {
+                        rankColor = Colors.yellow[800];
+                      } else if (index == 1) {
+                        rankColor = const Color.fromRGBO(192, 192, 192, 1);
+                      } else if (index == 2) {
+                        rankColor = const Color.fromRGBO(205, 127, 50, 1);
+                      }
+
+                      return ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 2, horizontal: 10),
+                        tileColor: Colors.grey[900],
+                        shape: const StadiumBorder(),
+                        title: Expanded(
+                          child: Text(
+                            member.displayName,
+                            maxLines: 1,
+                            softWrap: false,
+                            overflow: TextOverflow.fade,
+                          ),
+                        ),
+                        trailing: Text(
+                          "${member.overallRating} H",
+                          style: const TextStyle(color: Colors.grey),
+                        ),
+                        leading: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            FutureBuilder(
+                              future: storage.getUserProfileImage(member.id),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return CircleAvatar(
+                                    radius: 20,
+                                    foregroundImage:
+                                        MemoryImage(snapshot.data!),
+                                  );
+                                }
+
+                                return const CircleAvatar(
+                                  radius: 20,
+                                  foregroundImage: AssetImage(
+                                      "assets/images/defaultUserImage.jpg"),
+                                );
+                              },
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              "#${index + 1}",
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: rankColor ?? Colors.grey,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
                     },
                   ),
                 );

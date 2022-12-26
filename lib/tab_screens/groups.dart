@@ -79,8 +79,6 @@ class _GroupsScreenState extends State<GroupsScreen> {
                     rankColor = const Color.fromRGBO(192, 192, 192, 1);
                   } else if (index == 2) {
                     rankColor = const Color.fromRGBO(205, 127, 50, 1);
-                  } else {
-                    rankColor = Colors.white38;
                   }
 
                   return GroupCard(
@@ -156,16 +154,22 @@ class GroupCard extends StatelessWidget {
                 children: [
                   Text(
                     group.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                   Text(
                     group.description,
-                    style: const TextStyle(color: Colors.white38),
+                    maxLines: 1,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
                     textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.white38),
                   )
                 ],
               ),
