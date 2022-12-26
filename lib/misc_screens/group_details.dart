@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:stem_2022/models/group.dart';
 import 'package:stem_2022/services/database_service.dart';
@@ -10,14 +11,52 @@ class GroupDetails extends StatelessWidget {
 
   const GroupDetails({super.key, required this.group});
 
+  void joinGroup() {
+    // TODO
+  }
+
+  void leaveGroup() {
+    // TODO
+  }
+
   @override
   Widget build(BuildContext context) {
     final db = Provider.of<DatabaseService>(context, listen: false);
     final storage = Provider.of<StorageService>(context, listen: false);
+    final currentUser = Provider.of<User?>(context);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(group.name),
+        actions: [
+          if (currentUser != null)
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: StreamBuilder(
+                stream: db.streamAppUser(currentUser.uid),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Container();
+                  }
+
+                  final appUser = snapshot.data!;
+
+                  if (appUser.groupId == group.id) {
+                    return IconButton(
+                      icon: const Icon(Icons.exit_to_app),
+                      color: Theme.of(context).colorScheme.error,
+                      onPressed: leaveGroup,
+                    );
+                  } else {
+                    return IconButton(
+                      icon: const Icon(Icons.group_add),
+                      onPressed: joinGroup,
+                    );
+                  }
+                },
+              ),
+            ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(15),
@@ -29,7 +68,7 @@ class GroupDetails extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 18),
               decoration: BoxDecoration(
                 color: Colors.grey[900],
-                borderRadius: BorderRadius.circular(50),
+                borderRadius: BorderRadius.circular(35),
               ),
               child: Column(
                 children: [
@@ -118,13 +157,24 @@ class GroupDetails extends StatelessWidget {
                         contentPadding: const EdgeInsets.symmetric(
                             vertical: 2, horizontal: 10),
                         tileColor: Colors.grey[900],
-                        shape: const StadiumBorder(),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
                         title: Expanded(
-                          child: Text(
-                            member.displayName,
-                            maxLines: 1,
-                            softWrap: false,
-                            overflow: TextOverflow.fade,
+                          child: Row(
+                            children: [
+                              Text(
+                                member.displayName,
+                                maxLines: 1,
+                                softWrap: false,
+                                overflow: TextOverflow.fade,
+                              ),
+                              if (member.id == currentUser?.uid)
+                                const Text(
+                                  " (You)",
+                                  style: TextStyle(color: Colors.white38),
+                                ),
+                            ],
                           ),
                         ),
                         trailing: Text(
