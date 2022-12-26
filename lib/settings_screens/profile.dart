@@ -8,6 +8,37 @@ import 'package:stem_2022/services/storage_service.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
+  void showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(14)),
+        ),
+        backgroundColor: Colors.grey[900],
+        title: const Text('Confirm Logout'),
+        content: const Text('Are you sure you want to log out?'),
+        actions: [
+          MaterialButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          MaterialButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            color: const Color.fromRGBO(160, 0, 0, 1),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(14)),
+            ),
+            elevation: 0,
+            child: const Text('Log Out'),
+          ),
+        ],
+      ),
+    ).then((logoutConfirmed) {
+      if (logoutConfirmed) logout(context);
+    });
+  }
+
   void logout(BuildContext context) {
     final googleSignIn = GoogleSignIn();
 
@@ -88,38 +119,7 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 15),
             MaterialButton(
               minWidth: double.infinity,
-              onPressed: () async {
-                final confirmed = await showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(14)),
-                    ),
-                    backgroundColor: Colors.grey[900],
-                    title: const Text('Confirm Logout'),
-                    content: const Text('Are you sure you want to log out?'),
-                    actions: <Widget>[
-                      MaterialButton(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        child: const Text('Cancel'),
-                      ),
-                      MaterialButton(
-                        onPressed: () => Navigator.of(context).pop(true),
-                        color: const Color.fromRGBO(70, 0, 0, 1),
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(14)),
-                        ),
-                        elevation: 0,
-                        child: const Text('Log Out'),
-                      ),
-                    ],
-                  ),
-                );
-                if (confirmed) {
-                  // ignore: use_build_context_synchronously
-                  logout(context);
-                }
-              },
+              onPressed: () => showLogoutDialog(context),
               color: const Color.fromRGBO(70, 0, 0, 1),
               shape: const StadiumBorder(),
               elevation: 0,
