@@ -91,6 +91,7 @@ class DatabaseService {
         .collection("groups")
         .orderBy("points", descending: true)
         .get();
+
     return snapshot.docs
         .map((document) => Group.fromFirestore(document))
         .toList();
@@ -101,9 +102,24 @@ class DatabaseService {
         .collection("groups")
         .orderBy("points", descending: true)
         .snapshots();
+
     return snapshotStream.map(
       (snapshot) => snapshot.docs
           .map((document) => Group.fromFirestore(document))
+          .toList(),
+    );
+  }
+
+  Stream<List<AppUser>> streamGroupMembersByRank(String groupId) {
+    final snapshotStream = _db
+        .collection("users")
+        .where("groupId", isEqualTo: groupId)
+        .orderBy("overallRating", descending: true)
+        .snapshots();
+
+    return snapshotStream.map(
+      (snapshot) => snapshot.docs
+          .map((document) => AppUser.fromFirestore(document))
           .toList(),
     );
   }
