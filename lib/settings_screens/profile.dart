@@ -53,13 +53,29 @@ class ProfileScreen extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 15),
-                  Text(
-                    "${currentUser.displayName}",
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
-                    ),
-                    textAlign: TextAlign.center,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "${currentUser.displayName}",
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      MaterialButton(
+                        onPressed: () async {
+                          final newDisplayName = await showDialog(
+                            context: context,
+                            builder: (context) => const EditNameDialog(),
+                          );
+                          if (newDisplayName != null) {
+                            await currentUser.updateDisplayName(newDisplayName);
+                          }
+                        },
+                        child: const Icon(Icons.edit_rounded),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -72,7 +88,38 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 15),
             MaterialButton(
               minWidth: double.infinity,
-              onPressed: () => logout(context),
+              onPressed: () async {
+                final confirmed = await showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(14)),
+                    ),
+                    backgroundColor: Colors.grey[900],
+                    title: const Text('Confirm Logout'),
+                    content: const Text('Are you sure you want to log out?'),
+                    actions: <Widget>[
+                      MaterialButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: const Text('Cancel'),
+                      ),
+                      MaterialButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        color: const Color.fromRGBO(70, 0, 0, 1),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(14)),
+                        ),
+                        elevation: 0,
+                        child: const Text('Log Out'),
+                      ),
+                    ],
+                  ),
+                );
+                if (confirmed) {
+                  // ignore: use_build_context_synchronously
+                  logout(context);
+                }
+              },
               color: const Color.fromRGBO(70, 0, 0, 1),
               shape: const StadiumBorder(),
               elevation: 0,
@@ -91,6 +138,47 @@ class ProfileScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class EditNameDialog extends StatefulWidget {
+  const EditNameDialog({super.key});
+
+  @override
+  EditNameDialogState createState() => EditNameDialogState();
+}
+
+class EditNameDialogState extends State<EditNameDialog> {
+  final TextEditingController _nameController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(14)),
+      ),
+      backgroundColor: Colors.grey[900],
+      title: const Text('Edit Username'),
+      content: TextField(
+        controller: _nameController,
+        decoration: const InputDecoration(hintText: 'New username'),
+      ),
+      actions: <Widget>[
+        MaterialButton(
+          onPressed: () => Navigator.of(context).pop(null),
+          child: const Text('Cancel'),
+        ),
+        MaterialButton(
+          onPressed: () => Navigator.of(context).pop(_nameController.text),
+          color: const Color.fromRGBO(13, 71, 161, 0.5),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(14)),
+          ),
+          elevation: 0,
+          child: const Text('Save'),
+        ),
+      ],
     );
   }
 }
