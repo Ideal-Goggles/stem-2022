@@ -29,7 +29,7 @@ class GroupDetails extends StatelessWidget {
                   const CircleAvatar(
                     radius: 50,
                     foregroundImage:
-                        AssetImage("assets/images/defaultUserImage.jpg"),
+                        AssetImage("assets/images/defaultGroupImage.png"),
                   ),
                   const SizedBox(height: 15),
                   Text(
