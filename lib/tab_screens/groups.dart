@@ -76,11 +76,11 @@ class _GroupsScreenState extends State<GroupsScreen> {
                   if (index == 0) {
                     rankColor = Colors.yellow[800];
                   } else if (index == 1) {
-                    rankColor = Colors.white70;
+                    rankColor = const Color.fromRGBO(192, 192, 192, 1);
                   } else if (index == 2) {
-                    rankColor = Colors.brown[800];
+                    rankColor = const Color.fromRGBO(205, 127, 50, 1);
                   } else {
-                    rankColor = Colors.white54;
+                    rankColor = Colors.white38;
                   }
 
                   return GroupCard(
