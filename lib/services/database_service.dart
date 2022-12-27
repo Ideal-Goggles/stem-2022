@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:stem_2022/models/app_user.dart';
 import 'package:stem_2022/models/food_post.dart';
+import 'package:stem_2022/models/group.dart';
 
 class DatabaseService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -20,7 +21,7 @@ class DatabaseService {
     await docRef.set(appUser.toMap());
   }
 
-  Future<void> updateAppUser(
+  Future<void> updateAppUserDetails(
       String id, String email, String displayName) async {
     final docRef = _db.collection("users").doc(id);
 
@@ -33,6 +34,17 @@ class DatabaseService {
       // If updating the document fails, try creating it instead.
       await createAppUser(id, email, displayName);
     }
+  }
+
+  Future<void> updateAppUserGroup(String userId, String groupId) async {
+    final docRef = _db.collection("users").doc(userId);
+    await docRef.update({"groupId": groupId});
+  }
+
+  Future<AppUser> getAppUser(String id) async {
+    final docRef = _db.collection("users").doc(id);
+    final snapshot = await docRef.get();
+    return AppUser.fromFirestore(snapshot);
   }
 
   Stream<AppUser> streamAppUser(String id) {
@@ -83,5 +95,48 @@ class DatabaseService {
     await docRef.set(foodPost.toMap());
 
     return docRef.id;
+  }
+
+  Future<bool> groupExists(String groupId) async {
+    final snapshot = await _db.collection("groups").doc(groupId).get();
+    return snapshot.exists;
+  }
+
+  Future<List<Group>> getGroupsList() async {
+    final snapshot = await _db
+        .collection("groups")
+        .orderBy("points", descending: true)
+        .get();
+
+    return snapshot.docs
+        .map((document) => Group.fromFirestore(document))
+        .toList();
+  }
+
+  Stream<List<Group>> streamGroupsByRank() {
+    final snapshotStream = _db
+        .collection("groups")
+        .orderBy("points", descending: true)
+        .snapshots();
+
+    return snapshotStream.map(
+      (snapshot) => snapshot.docs
+          .map((document) => Group.fromFirestore(document))
+          .toList(),
+    );
+  }
+
+  Stream<List<AppUser>> streamGroupMembersByRank(String groupId) {
+    final snapshotStream = _db
+        .collection("users")
+        .where("groupId", isEqualTo: groupId)
+        .orderBy("overallRating", descending: true)
+        .snapshots();
+
+    return snapshotStream.map(
+      (snapshot) => snapshot.docs
+          .map((document) => AppUser.fromFirestore(document))
+          .toList(),
+    );
   }
 }

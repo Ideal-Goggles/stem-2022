@@ -5,21 +5,11 @@ import 'package:stem_2022/models/food_post.dart';
 import 'package:stem_2022/services/storage_service.dart';
 import 'package:stem_2022/services/database_service.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
     final db = Provider.of<DatabaseService>(context, listen: false);
 
     return FutureBuilder(
@@ -40,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen>
         final foodPostList = snapshot.data!;
 
         return ListView.separated(
+          key: const PageStorageKey("foodPostList"),
           padding: const EdgeInsets.symmetric(vertical: 15),
           itemCount: foodPostList.length,
           separatorBuilder: (context, index) => const SizedBox(height: 15),
@@ -51,15 +42,28 @@ class _HomeScreenState extends State<HomeScreen>
   }
 }
 
-class FoodPostCard extends StatelessWidget {
+class FoodPostCard extends StatefulWidget {
   final FoodPost foodPost;
 
   const FoodPostCard({super.key, required this.foodPost});
 
   @override
+  State<FoodPostCard> createState() => _FoodPostCardState();
+}
+
+class _FoodPostCardState extends State<FoodPostCard>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     final storage = Provider.of<StorageService>(context, listen: false);
     final db = Provider.of<DatabaseService>(context);
+
+    final foodPost = widget.foodPost;
 
     return Card(
       color: Colors.grey[900],
@@ -126,7 +130,17 @@ class FoodPostCard extends StatelessWidget {
                   return const CircularProgressIndicator.adaptive();
                 }
 
-                return Image.memory(snapshot.data!);
+                return Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                          color: Colors.white.withOpacity(0.5), width: 1),
+                      top: BorderSide(
+                          color: Colors.white.withOpacity(0.5), width: 1),
+                    ),
+                  ),
+                  child: Image.memory(snapshot.data!),
+                );
               },
             ),
             const SizedBox(height: 12),

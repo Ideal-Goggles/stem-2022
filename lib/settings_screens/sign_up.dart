@@ -73,7 +73,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final db = Provider.of<DatabaseService>(context, listen: false);
 
       // Update user's Firestore document
-      db.updateAppUser(user.uid, user.email!, user.displayName!);
+      db.updateAppUserDetails(user.uid, user.email!, user.displayName!);
 
       // Download user's profile picture and upload to Storage
       if (user.photoURL != null) {

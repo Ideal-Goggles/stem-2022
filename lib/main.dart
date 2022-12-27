@@ -76,14 +76,16 @@ class MyApp extends StatelessWidget {
             contentTextStyle: TextStyle(color: Colors.white),
           ),
         ),
-        home: const MyAppHome(),
+        home: MyAppHome(),
       ),
     );
   }
 }
 
 class MyAppHome extends StatelessWidget {
-  const MyAppHome({super.key});
+  MyAppHome({super.key});
+
+  final _bucket = PageStorageBucket();
 
   @override
   Widget build(BuildContext context) {
@@ -139,14 +141,17 @@ class MyAppHome extends StatelessWidget {
             ),
           ),
         ),
-        body: const SafeArea(
-          minimum: EdgeInsets.all(8),
-          child: TabBarView(
-            children: [
-              HomeScreen(),
-              GroupsScreen(),
-              SettingsScreen(),
-            ],
+        body: PageStorage(
+          bucket: _bucket,
+          child: const SafeArea(
+            minimum: EdgeInsets.all(8),
+            child: TabBarView(
+              children: [
+                HomeScreen(),
+                GroupsScreen(),
+                SettingsScreen(),
+              ],
+            ),
           ),
         ),
       ),
@@ -172,41 +177,73 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<User?>(context);
-    final storage = Provider.of<StorageService>(context);
 
-    final usernameTitle = currentUser?.displayName ?? "Guest";
+    if (currentUser == null) {
+      return AppBar(
+        title: Row(
+          children: [
+            getAvatar(null),
+            const SizedBox(width: 10),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: const [
+                Text(
+                  "Guest",
+                  style: TextStyle(fontSize: 15),
+                ),
+                SizedBox(width: 5),
+                Text(
+                  "(Not Signed In)",
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+
+    final storage = Provider.of<StorageService>(context);
+    final db = Provider.of<DatabaseService>(context);
 
     return AppBar(
+      titleTextStyle: const TextStyle(
+        fontSize: 15,
+      ),
       title: Row(
         children: [
-          if (currentUser == null) getAvatar(null),
-          if (currentUser != null)
-            FutureBuilder(
-              future: storage.getUserProfileImage(currentUser.uid),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return getAvatar(MemoryImage(snapshot.data!));
-                }
-                return getAvatar(null);
-              },
-            ),
+          FutureBuilder(
+            future: storage.getUserProfileImage(currentUser.uid),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return getAvatar(MemoryImage(snapshot.data!));
+              }
+              return getAvatar(null);
+            },
+          ),
           const SizedBox(width: 10),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                usernameTitle,
-                style: const TextStyle(
-                  fontSize: 15,
+          StreamBuilder(
+            stream: db.streamAppUser(currentUser.uid),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              final appUser = snapshot.data!;
+
+              return Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(appUser.displayName, maxLines: 1),
+                    Text(
+                      "${appUser.overallRating} H",
+                      style: const TextStyle(color: Colors.white54),
+                    ),
+                  ],
                 ),
-                maxLines: 1,
-              ),
-              if (currentUser == null) ...[
-                const SizedBox(width: 5),
-                const Text("(Not Signed In)",
-                    style: TextStyle(fontSize: 12, color: Colors.grey)),
-              ],
-            ],
+              );
+            },
           ),
         ],
       ),
