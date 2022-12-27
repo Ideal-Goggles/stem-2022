@@ -51,19 +51,6 @@ class GroupDetails extends StatelessWidget {
                     group.description,
                     style: const TextStyle(fontSize: 15, color: Colors.grey),
                   ),
-                  const SizedBox(height: 5),
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        const TextSpan(text: "Code: "),
-                        TextSpan(
-                          text: group.id,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                    style: const TextStyle(fontSize: 15, color: Colors.grey),
-                  ),
                 ],
               ),
             ),
