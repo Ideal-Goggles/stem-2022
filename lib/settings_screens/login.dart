@@ -65,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final db = Provider.of<DatabaseService>(context, listen: false);
 
       // Update user's Firestore document
-      db.updateAppUser(user.uid, user.email!, user.displayName!);
+      db.updateAppUserDetails(user.uid, user.email!, user.displayName!);
 
       // Display a SnackBar with a welcome message
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

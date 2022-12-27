@@ -36,6 +36,12 @@ class DatabaseService {
     }
   }
 
+  Future<AppUser> getAppUser(String id) async {
+    final docRef = _db.collection("users").doc(id);
+    final snapshot = await docRef.get();
+    return AppUser.fromFirestore(snapshot);
+  }
+
   Stream<AppUser> streamAppUser(String id) {
     return _db
         .collection("users")
