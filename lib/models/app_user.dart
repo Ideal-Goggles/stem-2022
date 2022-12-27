@@ -6,6 +6,7 @@ class AppUser {
   final String displayName;
   final int overallRating;
   final Timestamp dateCreated;
+  final String? groupId;
 
   AppUser({
     required this.id,
@@ -13,6 +14,7 @@ class AppUser {
     required this.displayName,
     required this.overallRating,
     required this.dateCreated,
+    this.groupId,
   });
 
   // TODO: Change to `fromMap`
@@ -25,6 +27,7 @@ class AppUser {
       displayName: data["displayName"],
       overallRating: data["overallRating"],
       dateCreated: data["dateCreated"],
+      groupId: data["groupId"],
     );
   }
 
@@ -34,6 +37,7 @@ class AppUser {
       "displayName": displayName,
       "overallRating": overallRating,
       "dateCreated": dateCreated,
+      "groupId": groupId,
     };
   }
 }
