@@ -21,7 +21,7 @@ class DatabaseService {
     await docRef.set(appUser.toMap());
   }
 
-  Future<void> updateAppUser(
+  Future<void> updateAppUserDetails(
       String id, String email, String displayName) async {
     final docRef = _db.collection("users").doc(id);
 
@@ -34,6 +34,11 @@ class DatabaseService {
       // If updating the document fails, try creating it instead.
       await createAppUser(id, email, displayName);
     }
+  }
+
+  Future<void> updateAppUserGroup(String userId, String groupId) async {
+    final docRef = _db.collection("users").doc(userId);
+    await docRef.update({"groupId": groupId});
   }
 
   Future<AppUser> getAppUser(String id) async {
@@ -90,6 +95,11 @@ class DatabaseService {
     await docRef.set(foodPost.toMap());
 
     return docRef.id;
+  }
+
+  Future<bool> groupExists(String groupId) async {
+    final snapshot = await _db.collection("groups").doc(groupId).get();
+    return snapshot.exists;
   }
 
   Future<List<Group>> getGroupsList() async {

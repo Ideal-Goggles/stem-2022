@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:stem_2022/services/database_service.dart';
 
 class JoinGroupScreen extends StatefulWidget {
   const JoinGroupScreen({super.key});
@@ -10,14 +14,80 @@ class JoinGroupScreen extends StatefulWidget {
 class _JoinGroupScreenState extends State<JoinGroupScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  String groupCode = "";
+  String _groupCode = "";
 
-  void showJoinGroupDialog() {
-    // TODO
+  Future<bool> showJoinGroupDialog() async {
+    return await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        backgroundColor: Colors.grey[900],
+        title: const Text("Join this group"),
+        content: const Text(
+          "Are you sure you want to join this group? You will automatically leave your current group.",
+        ),
+        actions: [
+          MaterialButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text("Cancel"),
+          ),
+          MaterialButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            color: const Color.fromRGBO(160, 0, 0, 1),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            child: const Text("Join"),
+          ),
+        ],
+      ),
+    );
   }
 
   void joinGroup() {
-    // TODO
+    if (!_formKey.currentState!.validate()) return;
+    _formKey.currentState!.save();
+
+    final db = Provider.of<DatabaseService>(context, listen: false);
+    final currentUser = Provider.of<User?>(context, listen: false);
+
+    db.getAppUser(currentUser!.uid).then((appUser) async {
+      if (_groupCode == appUser.groupId) {
+        throw Exception("You are already a member of this group.");
+      }
+
+      final groupExists = await db.groupExists(_groupCode);
+
+      if (!groupExists) {
+        throw Exception("No group was found that matches the given code.");
+      }
+
+      if (appUser.groupId == null) {
+        return db.updateAppUserGroup(currentUser.uid, _groupCode);
+      }
+
+      if (await showJoinGroupDialog()) {
+        return db.updateAppUserGroup(currentUser.uid, _groupCode);
+      }
+
+      throw Exception("Cancelled group change.");
+    }).then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text(
+          "Successfully joined group!",
+          textAlign: TextAlign.center,
+        ),
+      ));
+
+      Navigator.pop(context);
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+          error.toString(),
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      ));
+    });
   }
 
   @override
@@ -39,7 +109,7 @@ class _JoinGroupScreenState extends State<JoinGroupScreen> {
               ),
               const SizedBox(height: 30),
               TextFormField(
-                onSaved: (newValue) => groupCode = newValue ?? "",
+                onSaved: (newValue) => _groupCode = newValue ?? "",
                 keyboardType: TextInputType.number,
                 autocorrect: false,
                 maxLength: 4,
@@ -62,7 +132,7 @@ class _JoinGroupScreenState extends State<JoinGroupScreen> {
               SizedBox(
                 width: double.infinity,
                 child: MaterialButton(
-                  onPressed: showJoinGroupDialog,
+                  onPressed: joinGroup,
                   color: Colors.grey[900],
                   textColor: Theme.of(context).colorScheme.primary,
                   shape: const StadiumBorder(),
