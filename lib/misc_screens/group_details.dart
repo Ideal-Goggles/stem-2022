@@ -143,6 +143,7 @@ class GroupDetails extends StatelessWidget {
                         const SizedBox(height: 10),
                     itemBuilder: (context, index) {
                       final member = userList[index];
+                      final memberIsMe = member.id == currentUser?.uid;
                       Color? rankColor;
 
                       if (index == 0) {
@@ -159,23 +160,29 @@ class GroupDetails extends StatelessWidget {
                         tileColor: Colors.grey[900],
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
-                        ),
-                        title: Expanded(
-                          child: Row(
-                            children: [
-                              Text(
-                                member.displayName,
-                                maxLines: 1,
-                                softWrap: false,
-                                overflow: TextOverflow.fade,
-                              ),
-                              if (member.id == currentUser?.uid)
-                                const Text(
-                                  " (You)",
-                                  style: TextStyle(color: Colors.white38),
-                                ),
-                            ],
+                          side: BorderSide(
+                            color: memberIsMe
+                                ? Colors.white38
+                                : Colors.transparent,
                           ),
+                        ),
+                        title: Wrap(
+                          direction: Axis.horizontal,
+                          children: [
+                            Text(
+                              member.displayName,
+                              maxLines: 1,
+                              softWrap: false,
+                              overflow: TextOverflow.fade,
+                            ),
+                            if (memberIsMe) ...[
+                              const SizedBox(width: 5),
+                              const Text(
+                                "(You)",
+                                style: TextStyle(color: Colors.white38),
+                              ),
+                            ],
+                          ],
                         ),
                         trailing: Text(
                           "${member.overallRating} H",
