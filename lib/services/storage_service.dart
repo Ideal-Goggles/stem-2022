@@ -43,4 +43,14 @@ class StorageService {
 
     return imageData;
   }
+
+  Future<void> setUserProfileImage(String userId, Uint8List imageData) async {
+    final storageRef = _storage.ref("userProfileImages").child("$userId.jpg");
+    await storageRef.putData(
+      imageData,
+      SettableMetadata(contentType: "image/jpeg"),
+    );
+
+    _userProfileImageCache[userId] = imageData;
+  }
 }
