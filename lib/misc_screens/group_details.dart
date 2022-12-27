@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:stem_2022/models/group.dart';
+import 'package:stem_2022/models/app_user.dart';
 import 'package:stem_2022/services/database_service.dart';
 import 'package:stem_2022/services/storage_service.dart';
 
@@ -22,7 +23,6 @@ class GroupDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final db = Provider.of<DatabaseService>(context, listen: false);
-    final storage = Provider.of<StorageService>(context, listen: false);
     final currentUser = Provider.of<User?>(context);
 
     return Scaffold(
@@ -143,7 +143,9 @@ class GroupDetails extends StatelessWidget {
                         const SizedBox(height: 10),
                     itemBuilder: (context, index) {
                       final member = userList[index];
-                      final memberIsMe = member.id == currentUser?.uid;
+                      final Color? borderColor =
+                          member.id == currentUser?.uid ? Colors.white38 : null;
+
                       Color? rankColor;
 
                       if (index == 0) {
@@ -154,72 +156,11 @@ class GroupDetails extends StatelessWidget {
                         rankColor = const Color.fromRGBO(205, 127, 50, 1);
                       }
 
-                      return ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 2, horizontal: 10),
-                        tileColor: Colors.grey[900],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          side: BorderSide(
-                            color: memberIsMe
-                                ? Colors.white38
-                                : Colors.transparent,
-                          ),
-                        ),
-                        title: Wrap(
-                          direction: Axis.horizontal,
-                          children: [
-                            Text(
-                              member.displayName,
-                              maxLines: 1,
-                              softWrap: false,
-                              overflow: TextOverflow.fade,
-                            ),
-                            if (memberIsMe) ...[
-                              const SizedBox(width: 5),
-                              const Text(
-                                "(You)",
-                                style: TextStyle(color: Colors.white38),
-                              ),
-                            ],
-                          ],
-                        ),
-                        trailing: Text(
-                          "${member.overallRating} H",
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-                        leading: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            FutureBuilder(
-                              future: storage.getUserProfileImage(member.id),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  return CircleAvatar(
-                                    radius: 20,
-                                    foregroundImage:
-                                        MemoryImage(snapshot.data!),
-                                  );
-                                }
-
-                                return const CircleAvatar(
-                                  radius: 20,
-                                  foregroundImage: AssetImage(
-                                      "assets/images/defaultUserImage.jpg"),
-                                );
-                              },
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              "#${index + 1}",
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: rankColor ?? Colors.grey,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
+                      return MemberTile(
+                        member: member,
+                        rank: index + 1,
+                        rankColor: rankColor,
+                        borderColor: borderColor,
                       );
                     },
                   ),
@@ -228,6 +169,89 @@ class GroupDetails extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class MemberTile extends StatelessWidget {
+  final AppUser member;
+  final int rank;
+  final Color? borderColor;
+  final Color? rankColor;
+
+  const MemberTile({
+    super.key,
+    required this.member,
+    required this.rank,
+    this.borderColor,
+    this.rankColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final storage = Provider.of<StorageService>(context);
+    final currentUser = Provider.of<User?>(context);
+
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+      tileColor: Colors.grey[900],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+        side: BorderSide(color: borderColor ?? Colors.transparent),
+      ),
+      title: Wrap(
+        direction: Axis.horizontal,
+        children: [
+          Text(
+            member.displayName,
+            maxLines: 1,
+            softWrap: false,
+            overflow: TextOverflow.fade,
+          ),
+          if (member.id == currentUser?.uid) ...[
+            const SizedBox(width: 5),
+            const Text(
+              "(You)",
+              style: TextStyle(color: Colors.white38),
+            ),
+          ],
+        ],
+      ),
+      trailing: Text(
+        "${member.overallRating} H",
+        style: const TextStyle(color: Colors.grey),
+      ),
+      leading: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FutureBuilder(
+            future: storage.getUserProfileImage(member.id),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return CircleAvatar(
+                  radius: 20,
+                  foregroundImage: MemoryImage(snapshot.data!),
+                );
+              }
+
+              return const CircleAvatar(
+                radius: 20,
+                foregroundImage:
+                    AssetImage("assets/images/defaultUserImage.jpg"),
+              );
+            },
+          ),
+          const SizedBox(width: 10),
+          Text(
+            "#$rank",
+            style: TextStyle(
+              fontSize: 15,
+              color: rankColor ?? Colors.grey,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
