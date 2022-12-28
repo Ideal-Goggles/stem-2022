@@ -97,6 +97,29 @@ class DatabaseService {
     return docRef.id;
   }
 
+  Future<bool> foodPostRatingExists(String foodPostId, String userId) async {
+    final snapshot = await _db
+        .collection("foodPosts")
+        .doc(foodPostId)
+        .collection("ratings")
+        .doc(userId)
+        .get();
+
+    return snapshot.exists;
+  }
+
+  Future<void> addFoodPostRating(
+      String foodPostId, String userId, int rating) async {
+    final docRef = _db
+        .collection("foodPosts")
+        .doc(foodPostId)
+        .collection("ratings")
+        .doc(userId);
+
+    final ratingData = {"rating": rating};
+    await docRef.set(ratingData);
+  }
+
   Future<bool> groupExists(String groupId) async {
     final snapshot = await _db.collection("groups").doc(groupId).get();
     return snapshot.exists;
