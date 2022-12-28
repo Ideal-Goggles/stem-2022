@@ -62,5 +62,7 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Click pictures of your food.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Selecting a profile picture.</string>
 </dict>
 </plist>

@@ -9,181 +9,12 @@ import 'package:stem_2022/services/storage_service.dart';
 class EditProfileScreen extends StatelessWidget {
   const EditProfileScreen({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    final currentUser = Provider.of<User?>(context);
-    final storage = Provider.of<StorageService>(context, listen: false);
-    final db = Provider.of<DatabaseService>(context, listen: false);
-
-    final usesPasswordLogin = currentUser!.providerData
-        .any((provider) => provider.providerId == "password");
-
-    return Scaffold(
-        appBar: AppBar(title: const Text("Edit Profile")),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: 200,
-              width: double.infinity,
-              child: MaterialButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => const ChangePicDialog(),
-                  );
-                },
-                color: Colors.grey[900],
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(30)),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    FutureBuilder(
-                      future: storage.getUserProfileImage(currentUser.uid),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return CircleAvatar(
-                            radius: 50,
-                            foregroundImage: MemoryImage(snapshot.data!),
-                          );
-                        }
-                        return const CircleAvatar(
-                          radius: 50,
-                          foregroundImage:
-                              AssetImage("assets/images/defaultUserImage.jpg"),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 15),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text("Change Profile Picture"),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Icon(Icons.edit_rounded)
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 15),
-            SizedBox(
-              height: 116,
-              child: MaterialButton(
-                onPressed: () => const EditNameDialog(),
-                color: Colors.grey[900],
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(30)),
-                ),
-                elevation: 0,
-                child: MaterialButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => const EditNameDialog(),
-                    ).then((newDisplayName) {
-                      if (newDisplayName != null) {
-                        return currentUser
-                            .updateDisplayName(newDisplayName)
-                            .then((_) => db.updateAppUserDetails(
-                                currentUser.uid,
-                                currentUser.email!,
-                                newDisplayName))
-                            .then((_) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                              "Changed username to $newDisplayName",
-                              textAlign: TextAlign.center,
-                            ),
-                          ));
-                        });
-                      }
-                    });
-                  },
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Flexible(
-                        flex: 1,
-                        child: Text(
-                          currentUser.displayName!,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Text("Edit Username"),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Icon(Icons.edit_rounded)
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 15),
-            if (usesPasswordLogin)
-              SizedBox(
-                height: 116,
-                child: MaterialButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => const ChangePasswordDialog(),
-                    );
-                  },
-                  color: Colors.grey[900],
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                  ),
-                  elevation: 0,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text("Change Password"),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Icon(Icons.password)
-                      ]),
-                ),
-              ),
-          ],
-        ));
-  }
-}
-
-class ChangePicDialog extends StatefulWidget {
-  const ChangePicDialog({super.key});
-
-  @override
-  ChangePicDialogState createState() => ChangePicDialogState();
-}
-
-class ChangePicDialogState extends State<ChangePicDialog> {
-  void selectImageFromGallery() {
+  void selectNewProfilePicture(BuildContext context, ImageSource source) {
+    final currentUser = Provider.of<User?>(context, listen: false);
     final imagePicker = ImagePicker();
-    final currentUser = Provider.of<User>(context, listen: false);
-    final userId = currentUser.uid;
 
-    imagePicker.pickImage(
-        source: ImageSource.gallery, requestFullMetadata: false);
-    // ignore: use_build_context_synchronously
-    ImagePicker()
-        .pickImage(source: ImageSource.gallery)
+    imagePicker
+        .pickImage(source: source)
         .then((image) => image!.readAsBytes())
         .then((imageData) {
       final storage = Provider.of<StorageService>(context, listen: false);
@@ -195,16 +26,15 @@ class ChangePicDialogState extends State<ChangePicDialog> {
         ),
       ));
 
-      return storage.setUserProfileImage(userId, imageData);
+      return storage.setUserProfileImage(currentUser!.uid, imageData);
     }).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text(
-          "Successfully saved image!",
+          "Successfully changed profile picture! Note that it may take some time to update everywhere.",
           textAlign: TextAlign.center,
         ),
+        duration: Duration(seconds: 6),
       ));
-
-      Navigator.pop(context);
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         backgroundColor: Theme.of(context).colorScheme.error,
@@ -218,6 +48,171 @@ class ChangePicDialogState extends State<ChangePicDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = Provider.of<User?>(context);
+    final storage = Provider.of<StorageService>(context);
+    final db = Provider.of<DatabaseService>(context, listen: false);
+
+    final usesPasswordLogin = currentUser!.providerData
+        .any((provider) => provider.providerId == "password");
+
+    return Scaffold(
+      appBar: AppBar(title: const Text("Edit Profile")),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 200,
+            width: double.infinity,
+            child: MaterialButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => const ChangePicDialog(),
+                ).then((source) {
+                  if (source == null) {
+                    return;
+                  }
+                  selectNewProfilePicture(context, source);
+                });
+              },
+              color: Colors.grey[900],
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30)),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FutureBuilder(
+                    future: storage.getUserProfileImage(currentUser.uid),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return CircleAvatar(
+                          radius: 50,
+                          foregroundImage: MemoryImage(snapshot.data!),
+                        );
+                      }
+                      return const CircleAvatar(
+                        radius: 50,
+                        foregroundImage:
+                            AssetImage("assets/images/defaultUserImage.jpg"),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 15),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text("Change Profile Picture"),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Icon(Icons.edit_rounded)
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 15),
+          SizedBox(
+            height: 116,
+            child: MaterialButton(
+              onPressed: () => const EditNameDialog(),
+              color: Colors.grey[900],
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30)),
+              ),
+              elevation: 0,
+              child: MaterialButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => const EditNameDialog(),
+                  ).then((newDisplayName) {
+                    if (newDisplayName != null) {
+                      return currentUser
+                          .updateDisplayName(newDisplayName)
+                          .then((_) => db.updateAppUserDetails(currentUser.uid,
+                              currentUser.email!, newDisplayName))
+                          .then((_) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                            "Changed username to $newDisplayName",
+                            textAlign: TextAlign.center,
+                          ),
+                        ));
+                      });
+                    }
+                  });
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      flex: 1,
+                      child: Text(
+                        currentUser.displayName!,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Text("Edit Username"),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Icon(Icons.edit_rounded)
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 15),
+          if (usesPasswordLogin)
+            SizedBox(
+              height: 116,
+              child: MaterialButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => const ChangePasswordDialog(),
+                  );
+                },
+                color: Colors.grey[900],
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(30)),
+                ),
+                elevation: 0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text("Change Password"),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Icon(Icons.password)
+                  ],
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class ChangePicDialog extends StatelessWidget {
+  const ChangePicDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return AlertDialog(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(30)),
@@ -228,19 +223,21 @@ class ChangePicDialogState extends State<ChangePicDialog> {
       actions: <Widget>[
         MaterialButton(
           child: const Text('Cancel'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+          onPressed: () => Navigator.pop(context, null),
         ),
         MaterialButton(
-          onPressed: () {
-            selectImageFromGallery();
-            Navigator.of(context).pop();
-          },
+          onPressed: () => Navigator.pop(context, ImageSource.camera),
           color: const Color.fromRGBO(13, 71, 161, 0.5),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(30)),
-          ),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+          elevation: 0,
+          child: const Text('Camera'),
+        ),
+        MaterialButton(
+          onPressed: () => Navigator.pop(context, ImageSource.gallery),
+          color: const Color.fromRGBO(13, 71, 161, 0.5),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
           elevation: 0,
           child: const Text('Gallery'),
         ),
