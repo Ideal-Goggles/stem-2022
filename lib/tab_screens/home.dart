@@ -5,15 +5,28 @@ import 'package:stem_2022/models/food_post.dart';
 import 'package:stem_2022/services/storage_service.dart';
 import 'package:stem_2022/services/database_service.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final db = Provider.of<DatabaseService>(context, listen: false);
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
+class _HomeScreenState extends State<HomeScreen> {
+  Future<List<FoodPost>>? _foodPostsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final db = Provider.of<DatabaseService>(context, listen: false);
+    _foodPostsFuture = db.getRecentFoodPosts();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return FutureBuilder(
-      future: db.getRecentFoodPosts(),
+      future: _foodPostsFuture,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(
