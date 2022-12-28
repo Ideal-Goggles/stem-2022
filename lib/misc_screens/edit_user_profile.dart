@@ -57,77 +57,71 @@ class EditProfileScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text("Edit Profile")),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: 200,
-            width: double.infinity,
-            child: MaterialButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => const ChangePicDialog(),
-                ).then((source) {
-                  if (source == null) {
-                    return;
-                  }
-                  selectNewProfilePicture(context, source);
-                });
-              },
-              color: Colors.grey[900],
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(30)),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  FutureBuilder(
-                    future: storage.getUserProfileImage(currentUser.uid),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return CircleAvatar(
-                          radius: 50,
-                          foregroundImage: MemoryImage(snapshot.data!),
-                        );
-                      }
-                      return const CircleAvatar(
-                        radius: 50,
-                        foregroundImage:
-                            AssetImage("assets/images/defaultUserImage.jpg"),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 15),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Text("Change Profile Picture"),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Icon(Icons.edit_rounded)
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 15),
-          SizedBox(
-            height: 116,
-            child: MaterialButton(
-              onPressed: () => const EditNameDialog(),
-              color: Colors.grey[900],
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(30)),
-              ),
-              elevation: 0,
+      body: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 200,
+              width: double.infinity,
               child: MaterialButton(
                 onPressed: () {
                   showDialog(
                     context: context,
-                    builder: (context) => const EditNameDialog(),
+                    builder: (context) => const ChangePicDialog(),
+                  ).then((source) {
+                    if (source == null) {
+                      return;
+                    }
+                    selectNewProfilePicture(context, source);
+                  });
+                },
+                color: Colors.grey[900],
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FutureBuilder(
+                      future: storage.getUserProfileImage(currentUser.uid),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return CircleAvatar(
+                            radius: 60,
+                            foregroundImage: MemoryImage(snapshot.data!),
+                          );
+                        }
+                        return const CircleAvatar(
+                          radius: 60,
+                          foregroundImage:
+                              AssetImage("assets/images/defaultUserImage.jpg"),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Text("Change Profile Picture"),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Icon(Icons.edit_rounded)
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 15),
+            SizedBox(
+              height: 116,
+              child: MaterialButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => EditNameDialog(),
                   ).then((newDisplayName) {
                     if (newDisplayName != null) {
                       return currentUser
@@ -145,6 +139,10 @@ class EditProfileScreen extends StatelessWidget {
                     }
                   });
                 },
+                color: Colors.grey[900],
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30)),
+                elevation: 0,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -159,13 +157,12 @@ class EditProfileScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 5),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
                         Text("Edit Username"),
-                        SizedBox(
-                          width: 10,
-                        ),
+                        SizedBox(width: 10),
                         Icon(Icons.edit_rounded)
                       ],
                     ),
@@ -173,36 +170,36 @@ class EditProfileScreen extends StatelessWidget {
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 15),
-          if (usesPasswordLogin)
-            SizedBox(
-              height: 116,
-              child: MaterialButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => const ChangePasswordDialog(),
-                  );
-                },
-                color: Colors.grey[900],
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(30)),
-                ),
-                elevation: 0,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text("Change Password"),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Icon(Icons.password)
-                  ],
+            const SizedBox(height: 15),
+            if (usesPasswordLogin)
+              SizedBox(
+                height: 116,
+                child: MaterialButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => ChangePasswordDialog(),
+                    );
+                  },
+                  color: Colors.grey[900],
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                  ),
+                  elevation: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text("Change Password"),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Icon(Icons.password)
+                    ],
+                  ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -246,15 +243,10 @@ class ChangePicDialog extends StatelessWidget {
   }
 }
 
-class EditNameDialog extends StatefulWidget {
-  const EditNameDialog({super.key});
+class EditNameDialog extends StatelessWidget {
+  EditNameDialog({super.key});
 
-  @override
-  EditNameDialogState createState() => EditNameDialogState();
-}
-
-class EditNameDialogState extends State<EditNameDialog> {
-  final TextEditingController _nameController = TextEditingController();
+  final _nameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -291,66 +283,61 @@ class EditNameDialogState extends State<EditNameDialog> {
   }
 }
 
-class ChangePasswordDialog extends StatefulWidget {
-  const ChangePasswordDialog({super.key});
+class ChangePasswordDialog extends StatelessWidget {
+  ChangePasswordDialog({super.key});
 
-  @override
-  ChangePasswordDialogState createState() => ChangePasswordDialogState();
-}
-
-class ChangePasswordDialogState extends State<ChangePasswordDialog> {
   final _formKey = GlobalKey<FormState>();
   final _currentPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
 
-  void _changePassword() async {
+  void _changePassword(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      try {
-        final currentUser = FirebaseAuth.instance.currentUser;
-        final credential = EmailAuthProvider.credential(
-          email: currentUser!.email!,
-          password: _currentPasswordController.text,
-        );
-        final result =
-            await currentUser.reauthenticateWithCredential(credential);
+      final currentUser = FirebaseAuth.instance.currentUser;
+      final credential = EmailAuthProvider.credential(
+        email: currentUser!.email!,
+        password: _currentPasswordController.text,
+      );
 
-        if (result.user != null) {
-          await currentUser.updatePassword(_newPasswordController.text);
-          // ignore: use_build_context_synchronously
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: const Text("Changed Password Successfully!",
-                textAlign: TextAlign.center),
-            // ignore: use_build_context_synchronously
-            backgroundColor: Theme.of(context).colorScheme.primary,
-          ));
-        } else {
-          // ignore: use_build_context_synchronously
-          throw ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content:
-                const Text("Incorrect Password", textAlign: TextAlign.center),
-            // ignore: use_build_context_synchronously
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text(
+          "Changing password, please wait...",
+          textAlign: TextAlign.center,
+        ),
+        duration: Duration(seconds: 2),
+      ));
+
+      currentUser.reauthenticateWithCredential(credential).then((creds) {
+        if (creds.user == null) {
+          throw Exception("Incorrect Password!");
         }
-      } catch (error) {
+
+        return currentUser.updatePassword(_newPasswordController.text);
+      }).then((_) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+            "Changed Password Successfully!",
+            textAlign: TextAlign.center,
+          ),
+        ));
+
+        Navigator.of(context).pop();
+      }).catchError((error) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(error.toString(), textAlign: TextAlign.center),
           backgroundColor: Theme.of(context).colorScheme.error,
         ));
-      }
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(30)),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
       backgroundColor: Colors.grey[900],
       title: const Text('Change Password'),
       content: SizedBox(
-        height: 137,
+        height: 150,
         child: Form(
           key: _formKey,
           child: Column(
@@ -367,16 +354,17 @@ class ChangePasswordDialogState extends State<ChangePasswordDialog> {
                 decoration:
                     const InputDecoration(labelText: 'Current password'),
               ),
-              const SizedBox(
-                height: 15,
-              ),
+              const SizedBox(height: 15),
               TextFormField(
                 controller: _newPasswordController,
                 validator: (value) {
-                  if (value == null) {
-                    return 'Please enter your new password';
+                  if (value != null && value.isNotEmpty) {
+                    if (value.length < 8) {
+                      return "New password must be at least 8 characters long";
+                    }
+                    return null;
                   }
-                  return null;
+                  return "Please enter your new password";
                 },
                 obscureText: true,
                 decoration: const InputDecoration(labelText: 'New password'),
@@ -391,12 +379,7 @@ class ChangePasswordDialogState extends State<ChangePasswordDialog> {
           child: const Text('Cancel'),
         ),
         MaterialButton(
-          onPressed: () async {
-            _changePassword();
-            await Future.delayed(const Duration(milliseconds: 1500));
-            // ignore: use_build_context_synchronously
-            Navigator.of(context).pop();
-          },
+          onPressed: () => _changePassword(context),
           color: const Color.fromRGBO(13, 71, 161, 0.5),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(30)),
