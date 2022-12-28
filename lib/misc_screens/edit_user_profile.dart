@@ -6,8 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:stem_2022/services/database_service.dart';
 import 'package:stem_2022/services/storage_service.dart';
 
-class EditProfileScreen extends StatelessWidget {
-  const EditProfileScreen({super.key});
+class EditUserProfileScreen extends StatelessWidget {
+  const EditUserProfileScreen({super.key});
 
   void selectNewProfilePicture(BuildContext context, ImageSource source) {
     final currentUser = Provider.of<User?>(context, listen: false);
