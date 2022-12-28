@@ -5,6 +5,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:stem_2022/services/storage_service.dart';
 
+import "package:stem_2022/misc_screens/edit_user_profile.dart";
+
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -52,7 +54,20 @@ class ProfileScreen extends StatelessWidget {
     final storage = Provider.of<StorageService>(context, listen: false);
 
     return Scaffold(
-      appBar: AppBar(title: Text("Hello, ${currentUser?.displayName}")),
+      appBar: AppBar(
+        title: Text("Hello, ${currentUser?.displayName}"),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const EditUserProfileScreen(),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.edit)),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -84,29 +99,13 @@ class ProfileScreen extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 15),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "${currentUser.displayName}",
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      MaterialButton(
-                        onPressed: () async {
-                          final newDisplayName = await showDialog(
-                            context: context,
-                            builder: (context) => const EditNameDialog(),
-                          );
-                          if (newDisplayName != null) {
-                            await currentUser.updateDisplayName(newDisplayName);
-                          }
-                        },
-                        child: const Icon(Icons.edit_rounded),
-                      ),
-                    ],
+                  Text(
+                    currentUser.displayName!,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -138,47 +137,6 @@ class ProfileScreen extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class EditNameDialog extends StatefulWidget {
-  const EditNameDialog({super.key});
-
-  @override
-  EditNameDialogState createState() => EditNameDialogState();
-}
-
-class EditNameDialogState extends State<EditNameDialog> {
-  final TextEditingController _nameController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(14)),
-      ),
-      backgroundColor: Colors.grey[900],
-      title: const Text('Edit Username'),
-      content: TextField(
-        controller: _nameController,
-        decoration: const InputDecoration(hintText: 'New username'),
-      ),
-      actions: <Widget>[
-        MaterialButton(
-          onPressed: () => Navigator.of(context).pop(null),
-          child: const Text('Cancel'),
-        ),
-        MaterialButton(
-          onPressed: () => Navigator.of(context).pop(_nameController.text),
-          color: const Color.fromRGBO(13, 71, 161, 0.5),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(14)),
-          ),
-          elevation: 0,
-          child: const Text('Save'),
-        ),
-      ],
     );
   }
 }
