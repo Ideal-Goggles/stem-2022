@@ -258,6 +258,7 @@ class EditNameDialog extends StatelessWidget {
       title: const Text('Edit Username'),
       content: TextField(
         controller: _nameController,
+        autocorrect: false,
         decoration: const InputDecoration(hintText: 'New username'),
       ),
       actions: <Widget>[
@@ -350,6 +351,7 @@ class ChangePasswordDialog extends StatelessWidget {
                   }
                   return null;
                 },
+                keyboardType: TextInputType.visiblePassword,
                 obscureText: true,
                 decoration:
                     const InputDecoration(labelText: 'Current password'),
@@ -366,6 +368,7 @@ class ChangePasswordDialog extends StatelessWidget {
                   }
                   return "Please enter your new password";
                 },
+                keyboardType: TextInputType.visiblePassword,
                 obscureText: true,
                 decoration: const InputDecoration(labelText: 'New password'),
               ),
