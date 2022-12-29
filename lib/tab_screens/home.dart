@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:stem_2022/models/food_post.dart';
 import 'package:stem_2022/services/storage_service.dart';
 import 'package:stem_2022/services/database_service.dart';
+
+import "package:stem_2022/tab_screens/settings.dart";
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -76,7 +79,11 @@ class _FoodPostCardState extends State<FoodPostCard>
     final storage = Provider.of<StorageService>(context, listen: false);
     final db = Provider.of<DatabaseService>(context);
 
+    final currentUser = Provider.of<User?>(context, listen: false);
+
     final foodPost = widget.foodPost;
+
+    var userId;
 
     return Card(
       color: Colors.grey[900],
@@ -160,6 +167,7 @@ class _FoodPostCardState extends State<FoodPostCard>
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     foodPost.caption,
@@ -169,12 +177,126 @@ class _FoodPostCardState extends State<FoodPostCard>
                         color: Colors.grey[400]),
                     textAlign: TextAlign.start,
                   ),
+                  // if (!DatabaseService.foodPostRatingExists)
+                  MaterialButton(
+                      minWidth: 9,
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => const RatingDialog(),
+                        );
+                      },
+                      textColor: Theme.of(context).colorScheme.primary,
+                      child: const Icon(Icons.thumbs_up_down_rounded)),
+
+                  if (currentUser != null)
+                    FutureBuilder<bool>(
+                      future:
+                          db.foodPostRatingExists(foodPost.id, currentUser.uid),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return MaterialButton(
+                              minWidth: 9,
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => const RatingDialog(),
+                                );
+                              },
+                              textColor: Theme.of(context).colorScheme.primary,
+                              child: const Icon(Icons.thumbs_up_down_rounded));
+                        }
+                        return MaterialButton(
+                            onPressed: () => const SettingsScreen(),
+                            textColor: Theme.of(context).colorScheme.primary,
+                            child: const Icon(Icons.thumbs_up_down_rounded));
+                      },
+                    ),
                 ],
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class RatingDialog extends StatelessWidget {
+  const RatingDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    ratingSelect(int rating) {
+      //TODO rating func
+      Future.delayed(const Duration(milliseconds: 800));
+      Navigator.of(context).pop(true);
+    }
+
+    return AlertDialog(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(30)),
+      ),
+      backgroundColor: Colors.grey[900],
+      title: const Text('Rate it'),
+      content: SizedBox(
+        height: 109,
+        child: Column(
+          children: [
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(
+                  5,
+                  (index) => SizedBox(
+                    width: 40,
+                    child: MaterialButton(
+                      onPressed: () {
+                        ratingSelect(index + 1);
+                        Navigator.of(context).pop(true);
+                      },
+                      minWidth: 9,
+                      color: Colors.grey[800],
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(14)),
+                      ),
+                      elevation: 0,
+                      textColor: Theme.of(context).colorScheme.primary,
+                      child: Text("${index + 1}"),
+                    ),
+                  ),
+                )),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(
+                  5,
+                  (index) => SizedBox(
+                    width: 40,
+                    child: MaterialButton(
+                      onPressed: () {
+                        ratingSelect(index + 6);
+                      },
+                      minWidth: 9,
+                      color: Colors.grey[800],
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(14)),
+                      ),
+                      elevation: 0,
+                      textColor: Theme.of(context).colorScheme.primary,
+                      child: Text("${index + 6}"),
+                    ),
+                  ),
+                )),
+            const Text("1 being least healthy, and 10 being most healthy.",
+                style: TextStyle(color: Colors.grey, fontSize: 10))
+          ],
+        ),
+      ),
+      actions: <Widget>[
+        MaterialButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: const Text('Cancel'),
+        )
+      ],
     );
   }
 }
