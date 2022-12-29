@@ -6,8 +6,6 @@ import 'package:stem_2022/models/food_post.dart';
 import 'package:stem_2022/services/storage_service.dart';
 import 'package:stem_2022/services/database_service.dart';
 
-import "package:stem_2022/tab_screens/settings.dart";
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -47,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         return ListView.separated(
           key: const PageStorageKey("foodPostList"),
-          padding: const EdgeInsets.symmetric(vertical: 15),
+          padding: const EdgeInsets.only(top: 15, bottom: 75),
           itemCount: foodPostList.length,
           separatorBuilder: (context, index) => const SizedBox(height: 15),
           itemBuilder: (context, index) =>
@@ -72,6 +70,54 @@ class _FoodPostCardState extends State<FoodPostCard>
   @override
   bool get wantKeepAlive => true;
 
+  void showRatingDialog() {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    final foodPost = widget.foodPost;
+
+    if (currentUser == null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: const Text(
+          "You must be logged in to rate a post!",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      ));
+
+      return;
+    }
+
+    if (currentUser.uid == foodPost.authorId) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: const Text(
+          "You cannot rate your own post!",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      ));
+
+      return;
+    }
+
+    final db = Provider.of<DatabaseService>(context, listen: false);
+
+    db.foodPostRatingExists(foodPost.id, currentUser.uid).then((exists) {
+      if (exists) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text(
+            "You have already rated this post!",
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ));
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => RatingDialog(foodPostId: widget.foodPost.id),
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -79,11 +125,7 @@ class _FoodPostCardState extends State<FoodPostCard>
     final storage = Provider.of<StorageService>(context, listen: false);
     final db = Provider.of<DatabaseService>(context);
 
-    final currentUser = Provider.of<User?>(context, listen: false);
-
     final foodPost = widget.foodPost;
-
-    var userId;
 
     return Card(
       color: Colors.grey[900],
@@ -171,47 +213,14 @@ class _FoodPostCardState extends State<FoodPostCard>
                 children: [
                   Text(
                     foodPost.caption,
-                    style: TextStyle(
-                        fontSize: 13,
-                        // fontWeight: FontWeight.w600,
-                        color: Colors.grey[400]),
+                    style: TextStyle(fontSize: 13, color: Colors.grey[400]),
                     textAlign: TextAlign.start,
                   ),
-                  // if (!DatabaseService.foodPostRatingExists)
-                  MaterialButton(
-                      minWidth: 9,
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => const RatingDialog(),
-                        );
-                      },
-                      textColor: Theme.of(context).colorScheme.primary,
-                      child: const Icon(Icons.thumbs_up_down_rounded)),
-
-                  if (currentUser != null)
-                    FutureBuilder<bool>(
-                      future:
-                          db.foodPostRatingExists(foodPost.id, currentUser.uid),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return MaterialButton(
-                              minWidth: 9,
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => const RatingDialog(),
-                                );
-                              },
-                              textColor: Theme.of(context).colorScheme.primary,
-                              child: const Icon(Icons.thumbs_up_down_rounded));
-                        }
-                        return MaterialButton(
-                            onPressed: () => const SettingsScreen(),
-                            textColor: Theme.of(context).colorScheme.primary,
-                            child: const Icon(Icons.thumbs_up_down_rounded));
-                      },
-                    ),
+                  IconButton(
+                    onPressed: showRatingDialog,
+                    color: Theme.of(context).colorScheme.primary,
+                    icon: const Icon(Icons.thumbs_up_down_rounded),
+                  ),
                 ],
               ),
             ),
@@ -223,19 +232,31 @@ class _FoodPostCardState extends State<FoodPostCard>
 }
 
 class RatingDialog extends StatelessWidget {
-  const RatingDialog({super.key});
+  final String foodPostId;
+
+  const RatingDialog({super.key, required this.foodPostId});
+
+  ratingSelect(BuildContext context, int rating) {
+    final db = Provider.of<DatabaseService>(context, listen: false);
+    final currentUser = FirebaseAuth.instance.currentUser!;
+
+    db.addFoodPostRating(foodPostId, currentUser.uid, rating).then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+          "You have rated this post a $rating!",
+          textAlign: TextAlign.center,
+        ),
+      ));
+
+      Navigator.pop(context);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    ratingSelect(int rating) {
-      //TODO rating func
-      Future.delayed(const Duration(milliseconds: 800));
-      Navigator.of(context).pop(true);
-    }
-
     return AlertDialog(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(30)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30),
       ),
       backgroundColor: Colors.grey[900],
       title: const Text('Rate it'),
@@ -250,14 +271,11 @@ class RatingDialog extends StatelessWidget {
                   (index) => SizedBox(
                     width: 40,
                     child: MaterialButton(
-                      onPressed: () {
-                        ratingSelect(index + 1);
-                        Navigator.of(context).pop(true);
-                      },
+                      onPressed: () => ratingSelect(context, index + 1),
                       minWidth: 9,
                       color: Colors.grey[800],
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(14)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
                       ),
                       elevation: 0,
                       textColor: Theme.of(context).colorScheme.primary,
@@ -272,13 +290,11 @@ class RatingDialog extends StatelessWidget {
                   (index) => SizedBox(
                     width: 40,
                     child: MaterialButton(
-                      onPressed: () {
-                        ratingSelect(index + 6);
-                      },
+                      onPressed: () => ratingSelect(context, index + 6),
                       minWidth: 9,
                       color: Colors.grey[800],
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(14)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
                       ),
                       elevation: 0,
                       textColor: Theme.of(context).colorScheme.primary,
@@ -286,14 +302,16 @@ class RatingDialog extends StatelessWidget {
                     ),
                   ),
                 )),
-            const Text("1 being least healthy, and 10 being most healthy.",
-                style: TextStyle(color: Colors.grey, fontSize: 10))
+            const Text(
+              "1 being least healthy, and 10 being most healthy.",
+              style: TextStyle(color: Colors.grey, fontSize: 10),
+            )
           ],
         ),
       ),
       actions: <Widget>[
         MaterialButton(
-          onPressed: () => Navigator.of(context).pop(true),
+          onPressed: () => Navigator.of(context).pop(),
           child: const Text('Cancel'),
         )
       ],
