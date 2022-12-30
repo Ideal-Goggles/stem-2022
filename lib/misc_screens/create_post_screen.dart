@@ -1,7 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image/image.dart' as img;
 
 import 'package:stem_2022/services/database_service.dart';
 import 'package:stem_2022/services/storage_service.dart';
@@ -42,8 +45,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
           ),
         ));
 
+        final image = img.decodeImage(imageData);
+        final jpgImage = img.encodeJpg(image!, quality: 75);
+        final jpgImageData = Uint8List.fromList(jpgImage);
+
         return db.createFoodPost(currentUser!.uid, _caption).then(
-            (foodPostId) => storage.setFoodPostImage(foodPostId, imageData));
+            (foodPostId) => storage.setFoodPostImage(foodPostId, jpgImageData));
       }).then((_) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text(

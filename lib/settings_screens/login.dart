@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (user.photoURL != null) {
         http.get(Uri.parse(user.photoURL!)).then((response) {
           final image = img.decodeImage(response.bodyBytes);
-          final jpgImage = img.encodeJpg(image!, quality: 80);
+          final jpgImage = img.encodeJpg(image!, quality: 60);
           final jpgImageData = Uint8List.fromList(jpgImage);
 
           final storage = Provider.of<StorageService>(context, listen: false);
