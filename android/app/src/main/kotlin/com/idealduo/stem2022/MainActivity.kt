@@ -1,4 +1,4 @@
-package com.example.stem_2022
+package com.idealduo.stem2022
 
 import io.flutter.embedding.android.FlutterActivity
 

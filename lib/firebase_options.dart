@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -46,19 +49,9 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDbhLQhpM33TN85nU-OwMmyYmcGpFZ0rSc',
-    appId: '1:841360814435:web:c7526ad599f92e4dc52356',
-    messagingSenderId: '841360814435',
-    projectId: 'stem-2022',
-    authDomain: 'stem-2022.firebaseapp.com',
-    storageBucket: 'stem-2022.appspot.com',
-    measurementId: 'G-WDWQEWFBG1',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDf3aUKlZGyqw_-uB4QQ52ZSbnCUNTSh0U',
-    appId: '1:841360814435:android:6780283cead04e3bc52356',
+    appId: '1:841360814435:android:9e47ff69ead87402c52356',
     messagingSenderId: '841360814435',
     projectId: 'stem-2022',
     storageBucket: 'stem-2022.appspot.com',
@@ -66,12 +59,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyB1KaB5BLwHWY09CZTVXT8sW9oJF2afXiM',
-    appId: '1:841360814435:ios:2d288b680155bc56c52356',
+    appId: '1:841360814435:ios:69280a5916bd9fc1c52356',
     messagingSenderId: '841360814435',
     projectId: 'stem-2022',
     storageBucket: 'stem-2022.appspot.com',
-    iosClientId:
-        '841360814435-j7qrrtm56qga659ib8jpsrf6pjltr21t.apps.googleusercontent.com',
-    iosBundleId: 'com.ideal-duo.stem2022',
+    androidClientId: '841360814435-2tmd55ebujcqbc1f39vdlk6ebvr9n38g.apps.googleusercontent.com',
+    iosClientId: '841360814435-i62i73p82knnld63bkh3qb9rrlutcui5.apps.googleusercontent.com',
+    iosBundleId: 'com.idealduo.stem2022',
   );
 }
