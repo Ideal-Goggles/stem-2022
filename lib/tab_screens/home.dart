@@ -6,28 +6,15 @@ import 'package:stem_2022/models/food_post.dart';
 import 'package:stem_2022/services/storage_service.dart';
 import 'package:stem_2022/services/database_service.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  Future<List<FoodPost>>? _foodPostsFuture;
-
-  @override
-  void initState() {
-    super.initState();
-
-    final db = Provider.of<DatabaseService>(context, listen: false);
-    _foodPostsFuture = db.getRecentFoodPosts();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final db = Provider.of<DatabaseService>(context, listen: false);
+
     return FutureBuilder(
-      future: _foodPostsFuture,
+      future: db.getRecentFoodPosts(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(
@@ -158,21 +145,34 @@ class _FoodPostCardState extends State<FoodPostCard>
                   },
                 ),
                 const SizedBox(width: 10),
-                StreamBuilder(
-                  stream: db.streamAppUser(foodPost.authorId),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
+                Expanded(
+                  child: StreamBuilder(
+                    stream: db.streamAppUser(foodPost.authorId),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Text(
+                          snapshot.data!.displayName,
+                          maxLines: 1,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        );
+                      }
                       return Text(
-                        snapshot.data!.displayName,
-                        maxLines: 1,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        "Unknown User",
+                        style: TextStyle(color: Colors.blueGrey[300]),
                       );
-                    }
-                    return Text(
-                      "Unknown User",
-                      style: TextStyle(color: Colors.blueGrey[300]),
-                    );
-                  },
+                    },
+                  ),
+                ),
+                Text(
+                  "${foodPost.totalRating} H",
+                  style: const TextStyle(color: Colors.white38),
+                ),
+                const SizedBox(width: 12),
+                const Icon(Icons.people, color: Colors.white38, size: 22),
+                const SizedBox(width: 2),
+                Text(
+                  foodPost.numberOfRatings.toString(),
+                  style: const TextStyle(color: Colors.white38),
                 ),
               ]),
             ),
@@ -211,10 +211,12 @@ class _FoodPostCardState extends State<FoodPostCard>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    foodPost.caption,
-                    style: TextStyle(fontSize: 13, color: Colors.grey[400]),
-                    textAlign: TextAlign.start,
+                  Flexible(
+                    child: Text(
+                      foodPost.caption,
+                      style: TextStyle(fontSize: 13, color: Colors.grey[400]),
+                      textAlign: TextAlign.start,
+                    ),
                   ),
                   IconButton(
                     onPressed: showRatingDialog,
