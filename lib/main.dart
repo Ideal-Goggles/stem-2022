@@ -238,7 +238,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(appUser.displayName, maxLines: 1),
+                    Flexible(child: Text(appUser.displayName)),
                     Text(
                       "${appUser.overallRating} H",
                       style: const TextStyle(color: Colors.white54),

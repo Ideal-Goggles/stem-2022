@@ -153,6 +153,8 @@ class _FoodPostCardState extends State<FoodPostCard>
                         return Text(
                           snapshot.data!.displayName,
                           maxLines: 1,
+                          softWrap: false,
+                          overflow: TextOverflow.fade,
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         );
                       }
@@ -163,6 +165,7 @@ class _FoodPostCardState extends State<FoodPostCard>
                     },
                   ),
                 ),
+                const SizedBox(width: 10),
                 Text(
                   "${foodPost.totalRating} H",
                   style: const TextStyle(color: Colors.white38),
