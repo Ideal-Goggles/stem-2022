@@ -6,15 +6,29 @@ import 'package:stem_2022/models/food_post.dart';
 import 'package:stem_2022/services/storage_service.dart';
 import 'package:stem_2022/services/database_service.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => HomeScreenState();
+}
+
+class HomeScreenState extends State<HomeScreen> {
+  Future<List<FoodPost>>? _postsFuture;
+
+  @override
+  void initState() {
+    final db = Provider.of<DatabaseService>(context, listen: false);
+    super.initState();
+    _postsFuture = db.getRecentFoodPosts();
+  }
 
   @override
   Widget build(BuildContext context) {
     final db = Provider.of<DatabaseService>(context, listen: false);
 
     return FutureBuilder(
-      future: db.getRecentFoodPosts(),
+      future: _postsFuture,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(
@@ -30,13 +44,16 @@ class HomeScreen extends StatelessWidget {
 
         final foodPostList = snapshot.data!;
 
-        return ListView.separated(
-          key: const PageStorageKey("foodPostList"),
-          padding: const EdgeInsets.only(top: 15, bottom: 75),
-          itemCount: foodPostList.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 15),
-          itemBuilder: (context, index) =>
-              FoodPostCard(foodPost: foodPostList[index]),
+        return RefreshIndicator(
+          onRefresh: () async {},
+          child: ListView.separated(
+            key: const PageStorageKey("foodPostList"),
+            padding: const EdgeInsets.only(top: 15, bottom: 75),
+            itemCount: foodPostList.length,
+            separatorBuilder: (context, index) => const SizedBox(height: 15),
+            itemBuilder: (context, index) =>
+                FoodPostCard(foodPost: foodPostList[index]),
+          ),
         );
       },
     );
