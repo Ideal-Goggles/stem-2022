@@ -27,6 +27,9 @@ class MyApp extends StatelessWidget {
   static const primaryThemeColor = Colors.blue;
   static const primaryErrorColor = Colors.red;
 
+  static final db = DatabaseService();
+  static final storage = StorageService();
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -36,8 +39,8 @@ class MyApp extends StatelessWidget {
           value: FirebaseAuth.instance.userChanges(),
           initialData: FirebaseAuth.instance.currentUser,
         ),
-        Provider<StorageService>.value(value: StorageService()),
-        Provider<DatabaseService>.value(value: DatabaseService()),
+        Provider<DatabaseService>.value(value: db),
+        Provider<StorageService>.value(value: storage),
       ],
       child: MaterialApp(
         title: 'Ideal Food',
