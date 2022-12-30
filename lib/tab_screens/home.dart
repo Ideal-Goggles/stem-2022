@@ -25,8 +25,6 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<DatabaseService>(context, listen: false);
-
     return FutureBuilder(
       future: _postsFuture,
       builder: (context, snapshot) {
@@ -45,7 +43,12 @@ class HomeScreenState extends State<HomeScreen> {
         final foodPostList = snapshot.data!;
 
         return RefreshIndicator(
-          onRefresh: () async {},
+          onRefresh: () async {
+            final db = Provider.of<DatabaseService>(context, listen: false);
+            setState(() {
+              _postsFuture = db.getRecentFoodPosts();
+            });
+          },
           child: ListView.separated(
             key: const PageStorageKey("foodPostList"),
             padding: const EdgeInsets.only(top: 15, bottom: 75),
