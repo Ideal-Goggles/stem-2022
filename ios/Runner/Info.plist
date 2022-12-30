@@ -22,10 +22,27 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.841360814435-j7qrrtm56qga659ib8jpsrf6pjltr21t</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraPortraitEffectEnabled</key>
+	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Click pictures of your food.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Selecting a profile picture.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -47,22 +64,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.googleusercontent.apps.841360814435-j7qrrtm56qga659ib8jpsrf6pjltr21t</string>
-			</array>
-		</dict>
-	</array>
-	<key>NSCameraPortraitEffectEnabled</key>
-	<true/>
-	<key>NSCameraUsageDescription</key>
-	<string>Click pictures of your food.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Selecting a profile picture.</string>
 </dict>
 </plist>

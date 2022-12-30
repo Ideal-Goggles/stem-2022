@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:841360814435:android:6780283cead04e3bc52356",
+        "mobilesdk_app_id": "1:841360814435:android:9e47ff69ead87402c52356",
         "android_client_info": {
-          "package_name": "com.example.stem_2022"
+          "package_name": "com.idealduo.stem2022"
         }
       },
       "oauth_client": [
