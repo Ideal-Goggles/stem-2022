@@ -9,6 +9,8 @@ import 'package:http/http.dart' as http;
 import 'package:stem_2022/services/database_service.dart';
 import 'package:stem_2022/services/storage_service.dart';
 
+import "package:stem_2022/settings_screens/login.dart";
+
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
@@ -221,6 +223,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
               ),
+              MaterialButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()),
+                  );
+                },
+                textColor: Theme.of(context).colorScheme.primary,
+                child: const Text("Already a User?"),
+              )
             ],
           ),
         ),

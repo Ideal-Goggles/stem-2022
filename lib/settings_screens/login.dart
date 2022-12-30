@@ -9,6 +9,9 @@ import 'package:http/http.dart' as http;
 import 'package:stem_2022/services/database_service.dart';
 import 'package:stem_2022/services/storage_service.dart';
 
+import 'package:stem_2022/misc_screens/forget_password.dart';
+import "package:stem_2022/settings_screens/sign_up.dart";
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -200,6 +203,33 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  MaterialButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ForgotPasswordScreen()),
+                      );
+                    },
+                    textColor: Theme.of(context).colorScheme.primary,
+                    child: const Text("Forgot Password?"),
+                  ),
+                  MaterialButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SignUpScreen()),
+                      );
+                    },
+                    textColor: Theme.of(context).colorScheme.primary,
+                    child: const Text("New Here?"),
+                  )
+                ],
+              )
             ],
           ),
         ),
