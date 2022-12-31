@@ -208,7 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   MaterialButton(
                     onPressed: () {
-                      Navigator.pushReplacement(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const ForgotPasswordScreen(),
