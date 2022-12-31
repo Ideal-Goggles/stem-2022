@@ -125,6 +125,95 @@ class _FoodPostCardState extends State<FoodPostCard>
     });
   }
 
+  void showDeletionDialog() {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    final foodPost = widget.foodPost;
+
+    if (currentUser == null) return;
+
+    if (currentUser.uid != foodPost.authorId) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: const Text(
+          "You can only delete your own posts!",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      ));
+
+      return;
+    }
+
+    final now = DateTime.now();
+
+    if (now.difference(foodPost.dateAdded.toDate()).inHours >= 24) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: const Text(
+          "You created this post more than 24 hours ago, you cannot delete it now!",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      ));
+
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          backgroundColor: Colors.grey[900],
+          title: const Text("Delete Post?"),
+          content: const Text(
+            "This post will be permanently deleted.",
+            style: TextStyle(color: Colors.grey),
+          ),
+          actions: [
+            MaterialButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text("Cancel"),
+            ),
+            MaterialButton(
+              onPressed: () => Navigator.pop(context, true),
+              color: Theme.of(context).colorScheme.error,
+              shape: const StadiumBorder(),
+              child: const Text("Delete"),
+            ),
+          ],
+        );
+      },
+    ).then((deleteConfirmed) {
+      if (deleteConfirmed) {
+        final db = Provider.of<DatabaseService>(context, listen: false);
+        final storage = Provider.of<StorageService>(context, listen: false);
+
+        return storage
+            .deleteFoodPostImage(foodPost.id)
+            .then((_) => db.deleteFoodPost(foodPost.id))
+            .then((_) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+              "Successfully deleted your post!",
+              textAlign: TextAlign.center,
+            ),
+          ));
+
+          // Refresh home screen
+        }).catchError((error) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+              error.toString(),
+              textAlign: TextAlign.center,
+            ),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ));
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -134,122 +223,127 @@ class _FoodPostCardState extends State<FoodPostCard>
 
     final foodPost = widget.foodPost;
 
-    return Card(
-      color: Colors.grey[900],
-      clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-        side: BorderSide(color: Colors.white.withOpacity(0.5), width: 0.5),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 15),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Row(children: [
-                FutureBuilder(
-                  future: storage.getUserProfileImage(foodPost.authorId),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return CircleAvatar(
-                        radius: 20,
-                        foregroundImage: MemoryImage(snapshot.data!),
-                      );
-                    }
-                    return const CircleAvatar(
-                      radius: 20,
-                      foregroundImage:
-                          AssetImage("assets/images/defaultUserImage.jpg"),
-                    );
-                  },
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: StreamBuilder(
-                    stream: db.streamAppUser(foodPost.authorId),
+    return MaterialButton(
+      onPressed: null,
+      onLongPress: showDeletionDialog,
+      padding: EdgeInsets.zero,
+      child: Card(
+        color: Colors.grey[900],
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+          side: BorderSide(color: Colors.white.withOpacity(0.5), width: 0.5),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Row(children: [
+                  FutureBuilder(
+                    future: storage.getUserProfileImage(foodPost.authorId),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return Text(
-                          snapshot.data!.displayName,
-                          maxLines: 1,
-                          softWrap: false,
-                          overflow: TextOverflow.fade,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        return CircleAvatar(
+                          radius: 20,
+                          foregroundImage: MemoryImage(snapshot.data!),
                         );
                       }
-                      return Text(
-                        "Unknown User",
-                        style: TextStyle(color: Colors.blueGrey[300]),
+                      return const CircleAvatar(
+                        radius: 20,
+                        foregroundImage:
+                            AssetImage("assets/images/defaultUserImage.jpg"),
                       );
                     },
                   ),
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  "${foodPost.totalRating} H",
-                  style: const TextStyle(color: Colors.white38),
-                ),
-                const SizedBox(width: 12),
-                const Icon(Icons.people, color: Colors.white38, size: 22),
-                const SizedBox(width: 2),
-                Text(
-                  foodPost.numberOfRatings.toString(),
-                  style: const TextStyle(color: Colors.white38),
-                ),
-              ]),
-            ),
-            const SizedBox(height: 15),
-            FutureBuilder(
-              future: storage.getFoodPostImage(foodPost.id),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Icon(
-                    Icons.error_outline,
-                    color: Theme.of(context).colorScheme.error,
-                    size: 35,
-                  );
-                } else if (snapshot.connectionState ==
-                        ConnectionState.waiting ||
-                    !snapshot.hasData) {
-                  return const CircularProgressIndicator.adaptive();
-                }
-
-                return Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                          color: Colors.white.withOpacity(0.5), width: 1),
-                      top: BorderSide(
-                          color: Colors.white.withOpacity(0.5), width: 1),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: StreamBuilder(
+                      stream: db.streamAppUser(foodPost.authorId),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Text(
+                            snapshot.data!.displayName,
+                            maxLines: 1,
+                            softWrap: false,
+                            overflow: TextOverflow.fade,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          );
+                        }
+                        return Text(
+                          "Unknown User",
+                          style: TextStyle(color: Colors.blueGrey[300]),
+                        );
+                      },
                     ),
                   ),
-                  child: Image.memory(snapshot.data!),
-                );
-              },
-            ),
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    child: Text(
-                      foodPost.caption,
-                      style: TextStyle(fontSize: 13, color: Colors.grey[400]),
-                      textAlign: TextAlign.start,
-                    ),
+                  const SizedBox(width: 10),
+                  Text(
+                    "${foodPost.totalRating} H",
+                    style: const TextStyle(color: Colors.white38),
                   ),
-                  IconButton(
-                    onPressed: showRatingDialog,
-                    color: Theme.of(context).colorScheme.primary,
-                    icon: const Icon(Icons.thumbs_up_down_rounded),
+                  const SizedBox(width: 12),
+                  const Icon(Icons.people, color: Colors.white38, size: 22),
+                  const SizedBox(width: 2),
+                  Text(
+                    foodPost.numberOfRatings.toString(),
+                    style: const TextStyle(color: Colors.white38),
                   ),
-                ],
+                ]),
               ),
-            ),
-          ],
+              const SizedBox(height: 15),
+              FutureBuilder(
+                future: storage.getFoodPostImage(foodPost.id),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Icon(
+                      Icons.error_outline,
+                      color: Theme.of(context).colorScheme.error,
+                      size: 35,
+                    );
+                  } else if (snapshot.connectionState ==
+                          ConnectionState.waiting ||
+                      !snapshot.hasData) {
+                    return const CircularProgressIndicator.adaptive();
+                  }
+
+                  return Container(
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                            color: Colors.white.withOpacity(0.5), width: 1),
+                        top: BorderSide(
+                            color: Colors.white.withOpacity(0.5), width: 1),
+                      ),
+                    ),
+                    child: Image.memory(snapshot.data!),
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        foodPost.caption,
+                        style: TextStyle(fontSize: 13, color: Colors.grey[400]),
+                        textAlign: TextAlign.start,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: showRatingDialog,
+                      color: Theme.of(context).colorScheme.primary,
+                      icon: const Icon(Icons.thumbs_up_down_rounded),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -31,6 +31,11 @@ class StorageService {
     _foodPostImageCache[foodPostId] = imageData;
   }
 
+  Future<void> deleteFoodPostImage(String foodPostId) async {
+    final storageRef = _storage.ref("foodPostImages").child("$foodPostId.jpg");
+    await storageRef.delete();
+  }
+
   Future<Uint8List?> getUserProfileImage(String userId) async {
     if (_userProfileImageCache.containsKey(userId)) {
       return _userProfileImageCache[userId];

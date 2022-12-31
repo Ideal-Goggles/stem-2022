@@ -54,7 +54,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       }).then((_) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text(
-            "Successfully created post!",
+            "Successfully created post! Refresh the home page to see it.",
             textAlign: TextAlign.center,
           ),
         ));
@@ -89,6 +89,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               const Text(
                 "Create A New Post",
                 style: TextStyle(fontSize: 20),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                "You can delete your post within 24 hours of posting it by long pressing it on the home page.",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey),
               ),
               const SizedBox(height: 10),
               FutureBuilder(

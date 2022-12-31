@@ -97,6 +97,11 @@ class DatabaseService {
     return docRef.id;
   }
 
+  Future<void> deleteFoodPost(String foodPostId) async {
+    final docRef = _db.collection("foodPosts").doc(foodPostId);
+    await docRef.delete();
+  }
+
   Future<bool> foodPostRatingExists(String foodPostId, String userId) async {
     final snapshot = await _db
         .collection("foodPosts")
