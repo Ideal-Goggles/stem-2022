@@ -208,10 +208,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   MaterialButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const ForgotPasswordScreen()),
+                          builder: (context) => const ForgotPasswordScreen(),
+                        ),
                       );
                     },
                     textColor: Theme.of(context).colorScheme.primary,
@@ -219,10 +220,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   MaterialButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SignUpScreen()),
+                          builder: (context) => const SignUpScreen(),
+                        ),
                       );
                     },
                     textColor: Theme.of(context).colorScheme.primary,
