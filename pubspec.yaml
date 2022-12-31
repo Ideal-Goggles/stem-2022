@@ -45,6 +45,7 @@ dependencies:
   image_picker: ^0.8.6
   http: ^0.13.5
   image: ^3.2.2
+  event: ^2.1.2
 
 dev_dependencies:
   flutter_test:

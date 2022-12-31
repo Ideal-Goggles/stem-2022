@@ -1,10 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:event/event.dart';
 
 import 'package:stem_2022/models/food_post.dart';
 import 'package:stem_2022/services/storage_service.dart';
 import 'package:stem_2022/services/database_service.dart';
+
+class RefreshEvent extends Event {}
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,13 +19,24 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
+  final _refreshEvent = RefreshEvent();
   Future<List<FoodPost>>? _postsFuture;
 
   @override
   void initState() {
-    final db = Provider.of<DatabaseService>(context, listen: false);
     super.initState();
+
+    final db = Provider.of<DatabaseService>(context, listen: false);
     _postsFuture = db.getRecentFoodPosts();
+
+    _refreshEvent.subscribe(
+      (_) {
+        final future = db.getRecentFoodPosts();
+        setState(() {
+          _postsFuture = future;
+        });
+      },
+    );
   }
 
   @override
@@ -43,19 +59,27 @@ class HomeScreenState extends State<HomeScreen> {
         final foodPostList = snapshot.data!;
 
         return RefreshIndicator(
-          onRefresh: () async {
+          onRefresh: () {
             final db = Provider.of<DatabaseService>(context, listen: false);
+            final completer = Completer();
+
             setState(() {
               _postsFuture = db.getRecentFoodPosts();
+              _postsFuture!.then((_) => completer.complete(null));
             });
+
+            return completer.future;
           },
-          child: ListView.separated(
-            key: const PageStorageKey("foodPostList"),
-            padding: const EdgeInsets.only(top: 15, bottom: 75),
-            itemCount: foodPostList.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 15),
-            itemBuilder: (context, index) =>
-                FoodPostCard(foodPost: foodPostList[index]),
+          child: Provider.value(
+            value: _refreshEvent,
+            child: ListView.separated(
+              key: const PageStorageKey("foodPostList"),
+              padding: const EdgeInsets.only(top: 15, bottom: 75),
+              itemCount: foodPostList.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 15),
+              itemBuilder: (context, index) =>
+                  FoodPostCard(foodPost: foodPostList[index]),
+            ),
           ),
         );
       },
@@ -200,7 +224,10 @@ class _FoodPostCardState extends State<FoodPostCard>
             ),
           ));
 
-          // Refresh home screen
+          // Refresh post list
+          final refreshEvent =
+              Provider.of<RefreshEvent>(context, listen: false);
+          refreshEvent.broadcast();
         }).catchError((error) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(
