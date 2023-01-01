@@ -47,6 +47,7 @@ dependencies:
   image: ^3.2.2
   event: ^2.1.2
   shared_preferences: ^2.0.15
+  url_launcher: ^6.1.7
 
 dev_dependencies:
   flutter_test:

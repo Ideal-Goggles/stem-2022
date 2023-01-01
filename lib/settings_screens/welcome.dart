@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:stem_2022/settings_screens/login.dart';
@@ -21,16 +23,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     color: Colors.grey[900],
   );
 
-  Widget textPage(String content) {
+  Widget textPage(Text content) {
     return Container(
-        padding: const EdgeInsets.all(8),
-        decoration: _carouselDecoration,
-        child: Center(
-          child: Text(
-            content,
-            textAlign: TextAlign.center,
-          ),
-        ));
+      padding: const EdgeInsets.all(8),
+      decoration: _carouselDecoration,
+      child: Center(child: content),
+    );
   }
 
   void goToPage(Widget destination) {
@@ -44,12 +42,18 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     final loggedIn = user != null;
 
     final carouselItems = [
-      textPage(
-          "Hammit is an app that aims to reduce food wastage and junk food consumption."),
-      textPage(
-          "You can post a picture of your food at mealtimes and they will be judged by the community on how healthy they are."),
-      textPage(
-          "Optionally, you can join a school group and compete with other students to become the healthiest student in your school!"),
+      textPage(const Text(
+        "Hammit is an app that aims to reduce food wastage and junk food consumption.",
+        textAlign: TextAlign.center,
+      )),
+      textPage(const Text(
+        "You can post a picture of your food at mealtimes and they will be judged by the community on how healthy they are.\n\nBased on how the community rates your posts, you get H's (or points). Your total points are shown at the top of the screen along with your username and avatar.",
+        textAlign: TextAlign.center,
+      )),
+      textPage(const Text(
+        "Optionally, you can join a school group and compete with other students to become the healthiest student in your school!\n\nYour school may have given you a \"School Code\", which you can enter into the Join Group page and help raise your school's overall ranking as well.",
+        textAlign: TextAlign.center,
+      )),
       if (!loggedIn)
         Container(
           padding: const EdgeInsets.all(8),
@@ -90,7 +94,31 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               ],
             ),
           ),
-        )
+        ),
+      textPage(Text.rich(
+        TextSpan(
+          children: [
+            const TextSpan(
+              text: "All of this is just the start,\nvisit ",
+            ),
+            TextSpan(
+              text: "https://hammit.fun",
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  launchUrlString("https://hammit.fun");
+                },
+              style: const TextStyle(
+                color: Colors.blue,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+            const TextSpan(
+              text: " for more details.",
+            ),
+          ],
+        ),
+        textAlign: TextAlign.center,
+      )),
     ];
 
     return Scaffold(
