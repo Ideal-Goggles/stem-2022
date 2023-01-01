@@ -46,6 +46,7 @@ dependencies:
   http: ^0.13.5
   image: ^3.2.2
   event: ^2.1.2
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:

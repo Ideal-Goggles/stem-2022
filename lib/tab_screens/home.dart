@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:event/event.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:stem_2022/models/food_post.dart';
 import 'package:stem_2022/services/storage_service.dart';
 import 'package:stem_2022/services/database_service.dart';
+
+import 'package:stem_2022/settings_screens/welcome.dart';
 
 class RefreshEvent extends Event {}
 
@@ -39,8 +42,66 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Future<void> showWelcomeDialog() async {
+    final prefs = await SharedPreferences.getInstance();
+    final previousLaunch = prefs.getInt("appPreviousLaunch");
+
+    await prefs.setInt(
+      "appPreviousLaunch",
+      DateTime.now().millisecondsSinceEpoch,
+    );
+
+    // Check if user is opening app for the first time
+    if (previousLaunch != null) {
+      return;
+    }
+
+    await Future.delayed(const Duration(seconds: 2));
+
+    showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          backgroundColor: Colors.grey[900],
+          title: const Text("Welcome to Hammit!"),
+          content: const Text(
+            "Welcome to Hammit: The Food App! Would you like to take a quick tour?",
+            style: TextStyle(color: Colors.grey),
+          ),
+          actions: [
+            MaterialButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text("No, Thank You"),
+            ),
+            MaterialButton(
+              onPressed: () => Navigator.pop(context, true),
+              shape: const StadiumBorder(),
+              color: Theme.of(context).colorScheme.primary,
+              child: const Text("Yes Please!"),
+            ),
+          ],
+        );
+      },
+    ).then((redirect) {
+      if (redirect!) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const WelcomeScreen(),
+          ),
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    showWelcomeDialog();
+
     return FutureBuilder(
       future: _postsFuture,
       builder: (context, snapshot) {
