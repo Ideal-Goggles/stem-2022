@@ -7,6 +7,7 @@ class StorageService {
 
   final Map<String, Uint8List> _foodPostImageCache = {};
   final Map<String, Uint8List> _userProfileImageCache = {};
+  final Map<String, Uint8List> _groupImageCache = {};
 
   Future<Uint8List?> getFoodPostImage(String foodPostId) async {
     if (_foodPostImageCache.containsKey(foodPostId)) {
@@ -17,7 +18,6 @@ class StorageService {
     final imageData = await storageRef.getData(_maxSize);
 
     if (imageData != null) _foodPostImageCache[foodPostId] = imageData;
-
     return imageData;
   }
 
@@ -45,7 +45,6 @@ class StorageService {
     final imageData = await storageRef.getData(_maxSize);
 
     if (imageData != null) _userProfileImageCache[userId] = imageData;
-
     return imageData;
   }
 
@@ -57,5 +56,17 @@ class StorageService {
     );
 
     _userProfileImageCache[userId] = imageData;
+  }
+
+  Future<Uint8List?> getGroupImage(String groupId) async {
+    if (_groupImageCache.containsKey(groupId)) {
+      return _groupImageCache[groupId];
+    }
+
+    final storageRef = _storage.ref("groupImages").child("$groupId.jpg");
+    final imageData = await storageRef.getData(_maxSize);
+
+    if (imageData != null) _groupImageCache[groupId] = imageData;
+    return imageData;
   }
 }

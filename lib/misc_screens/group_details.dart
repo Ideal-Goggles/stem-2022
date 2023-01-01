@@ -14,6 +14,7 @@ class GroupDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final storage = Provider.of<StorageService>(context, listen: false);
     final db = Provider.of<DatabaseService>(context, listen: false);
     final currentUser = Provider.of<User?>(context);
 
@@ -33,10 +34,22 @@ class GroupDetails extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  const CircleAvatar(
-                    radius: 50,
-                    foregroundImage:
-                        AssetImage("assets/images/defaultGroupImage.png"),
+                  FutureBuilder(
+                    future: storage.getGroupImage(group.id),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return CircleAvatar(
+                          radius: 50,
+                          foregroundImage: MemoryImage(snapshot.data!),
+                        );
+                      }
+
+                      return const CircleAvatar(
+                        radius: 50,
+                        foregroundImage:
+                            AssetImage("assets/images/defaultGroupImage.png"),
+                      );
+                    },
                   ),
                   const SizedBox(height: 15),
                   Text(
