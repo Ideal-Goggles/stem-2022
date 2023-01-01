@@ -79,8 +79,9 @@ class HomeScreenState extends State<HomeScreen> {
             ),
             MaterialButton(
               onPressed: () => Navigator.pop(context, true),
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(14))),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
               color: Theme.of(context).colorScheme.primary,
               child: const Text("Yes Please!"),
             ),
