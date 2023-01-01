@@ -52,9 +52,9 @@ class HomeScreenState extends State<HomeScreen> {
     );
 
     // Check if user is opening app for the first time
-    if (previousLaunch != null) {
-      return;
-    }
+    // if (previousLaunch != null) {
+    //   return;
+    // }
 
     await Future.delayed(const Duration(seconds: 2));
 
@@ -79,7 +79,8 @@ class HomeScreenState extends State<HomeScreen> {
             ),
             MaterialButton(
               onPressed: () => Navigator.pop(context, true),
-              shape: const StadiumBorder(),
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(14))),
               color: Theme.of(context).colorScheme.primary,
               child: const Text("Yes Please!"),
             ),
