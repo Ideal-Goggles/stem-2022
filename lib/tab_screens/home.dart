@@ -52,9 +52,9 @@ class HomeScreenState extends State<HomeScreen> {
     );
 
     // Check if user is opening app for the first time
-    // if (previousLaunch != null) {
-    //   return;
-    // }
+    if (previousLaunch != null) {
+      return;
+    }
 
     await Future.delayed(const Duration(seconds: 2));
 
