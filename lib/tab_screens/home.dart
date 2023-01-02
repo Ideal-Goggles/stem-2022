@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:event/event.dart';
@@ -315,7 +316,10 @@ class _FoodPostCardState extends State<FoodPostCard>
 
     return MaterialButton(
       onPressed: null,
-      onLongPress: showDeletionDialog,
+      onLongPress: () {
+        HapticFeedback.mediumImpact();
+        showDeletionDialog();
+      },
       padding: EdgeInsets.zero,
       child: Card(
         color: Colors.grey[900],
