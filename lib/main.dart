@@ -9,6 +9,7 @@ import 'package:stem_2022/services/database_service.dart';
 
 import 'package:stem_2022/tab_screens/groups.dart';
 import 'package:stem_2022/tab_screens/home.dart';
+import 'package:stem_2022/tab_screens/trophies.dart';
 import 'package:stem_2022/tab_screens/settings.dart';
 
 import 'package:stem_2022/misc_screens/create_post_screen.dart';
@@ -93,7 +94,7 @@ class MyAppHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         appBar: const MyAppBar(),
         extendBodyBehindAppBar: true,
@@ -138,6 +139,7 @@ class MyAppHome extends StatelessWidget {
               tabs: const [
                 Tab(icon: Icon(Icons.home)),
                 Tab(icon: Icon(Icons.group)),
+                Tab(icon: Icon(Icons.star_rounded)),
                 Tab(icon: Icon(Icons.settings))
               ],
               indicatorColor: Colors.transparent,
@@ -152,6 +154,7 @@ class MyAppHome extends StatelessWidget {
               children: [
                 HomeScreen(),
                 GroupsScreen(),
+                TrophiesScreen(),
                 SettingsScreen(),
               ],
             ),
