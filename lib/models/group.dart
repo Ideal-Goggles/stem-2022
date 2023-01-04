@@ -20,10 +20,10 @@ class Group {
 
     return Group(
       id: snapshot.id,
-      name: data["name"],
-      description: data["description"],
-      points: data["points"],
-      admins: List<String>.from(data["admins"]),
+      name: data["name"] ?? "Group",
+      description: data["description"] ?? "",
+      points: data["points"] ?? 0,
+      admins: List<String>.from(data["admins"] ?? []),
     );
   }
 

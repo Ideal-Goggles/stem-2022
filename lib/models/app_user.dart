@@ -25,11 +25,11 @@ class AppUser {
 
     return AppUser(
       id: snapshot.id,
-      email: data["email"],
-      displayName: data["displayName"],
-      overallRating: data["overallRating"],
-      dateCreated: data["dateCreated"],
-      streak: data["streak"],
+      email: data["email"] ?? "",
+      displayName: data["displayName"] ?? "User",
+      overallRating: data["overallRating"] ?? 0,
+      dateCreated: data["dateCreated"] ?? Timestamp.now(),
+      streak: data["streak"] ?? 0,
       groupId: data["groupId"],
     );
   }
