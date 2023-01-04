@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:stem_2022/services/storage_service.dart';
+import 'package:stem_2022/services/database_service.dart';
 
 import "package:stem_2022/misc_screens/edit_user_profile.dart";
 
@@ -51,7 +53,8 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<User?>(context);
-    final storage = Provider.of<StorageService>(context, listen: false);
+    final storage = Provider.of<StorageService>(context);
+    final db = Provider.of<DatabaseService>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -109,9 +112,38 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    "Professional Cat",
+                    "Healthy Food Eater",
                     style: TextStyle(color: Colors.grey[300]),
-                  )
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(CupertinoIcons.flame, color: Colors.orange[600]),
+                      const SizedBox(width: 3),
+                      StreamBuilder(
+                        stream: db.streamAppUser(currentUser.uid),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            final appUser = snapshot.data!;
+                            return Text(
+                              appUser.streak.toString(),
+                              style: TextStyle(color: Colors.grey[300]),
+                            );
+                          }
+
+                          return SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.orange[600],
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
