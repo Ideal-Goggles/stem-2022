@@ -6,6 +6,7 @@ class AppUser {
   final String displayName;
   final int overallRating;
   final Timestamp dateCreated;
+  final int streak;
   final String? groupId;
 
   AppUser({
@@ -14,6 +15,7 @@ class AppUser {
     required this.displayName,
     required this.overallRating,
     required this.dateCreated,
+    required this.streak,
     this.groupId,
   });
 
@@ -27,6 +29,7 @@ class AppUser {
       displayName: data["displayName"],
       overallRating: data["overallRating"],
       dateCreated: data["dateCreated"],
+      streak: data["streak"],
       groupId: data["groupId"],
     );
   }
@@ -37,6 +40,7 @@ class AppUser {
       "displayName": displayName,
       "overallRating": overallRating,
       "dateCreated": dateCreated,
+      "streak": streak,
       "groupId": groupId,
     };
   }
