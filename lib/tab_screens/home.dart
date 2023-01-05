@@ -8,6 +8,8 @@ import 'package:event/event.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:stem_2022/models/food_post.dart';
+import 'package:stem_2022/models/app_user.dart';
+
 import 'package:stem_2022/services/storage_service.dart';
 import 'package:stem_2022/services/database_service.dart';
 
@@ -309,7 +311,7 @@ class _FoodPostCardState extends State<FoodPostCard>
   Widget build(BuildContext context) {
     super.build(context);
 
-    final storage = Provider.of<StorageService>(context, listen: false);
+    final storage = Provider.of<StorageService>(context);
     final db = Provider.of<DatabaseService>(context);
 
     final foodPost = widget.foodPost;
@@ -332,59 +334,64 @@ class _FoodPostCardState extends State<FoodPostCard>
           padding: const EdgeInsets.symmetric(vertical: 15),
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Row(children: [
-                  FutureBuilder(
-                    future: storage.getUserProfileImage(foodPost.authorId),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return CircleAvatar(
-                          radius: 20,
-                          foregroundImage: MemoryImage(snapshot.data!),
-                        );
-                      }
-                      return const CircleAvatar(
+              MultiProvider(
+                providers: [
+                  FutureProvider<Uint8List?>.value(
+                    value: storage.getUserProfileImage(foodPost.authorId),
+                    initialData: null,
+                    catchError: (context, error) => null,
+                  ),
+                  StreamProvider<AppUser>.value(
+                    value: db.streamAppUser(foodPost.authorId),
+                    initialData: AppUser.previewUser,
+                  ),
+                ],
+                builder: (context, child) {
+                  final userImage = Provider.of<Uint8List?>(context);
+                  final appUser = Provider.of<AppUser>(context);
+
+                  ImageProvider userImageProvider;
+
+                  if (userImage != null) {
+                    userImageProvider = MemoryImage(userImage);
+                  } else {
+                    userImageProvider = const AssetImage(
+                      "assets/images/defaultUserImage.jpg",
+                    );
+                  }
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Row(children: [
+                      CircleAvatar(
                         radius: 20,
-                        foregroundImage:
-                            AssetImage("assets/images/defaultUserImage.jpg"),
-                      );
-                    },
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: StreamBuilder(
-                      stream: db.streamAppUser(foodPost.authorId),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return Text(
-                            snapshot.data!.displayName,
-                            maxLines: 1,
-                            softWrap: false,
-                            overflow: TextOverflow.fade,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          );
-                        }
-                        return Text(
-                          "Unknown User",
-                          style: TextStyle(color: Colors.blueGrey[300]),
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Text(
-                    "${foodPost.totalRating} H",
-                    style: const TextStyle(color: Colors.white38),
-                  ),
-                  const SizedBox(width: 12),
-                  const Icon(Icons.people, color: Colors.white38, size: 22),
-                  const SizedBox(width: 2),
-                  Text(
-                    foodPost.numberOfRatings.toString(),
-                    style: const TextStyle(color: Colors.white38),
-                  ),
-                ]),
+                        foregroundImage: userImageProvider,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          appUser.displayName,
+                          maxLines: 1,
+                          softWrap: false,
+                          overflow: TextOverflow.fade,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        "${foodPost.totalRating} H",
+                        style: const TextStyle(color: Colors.white38),
+                      ),
+                      const SizedBox(width: 12),
+                      const Icon(Icons.people, color: Colors.white38, size: 22),
+                      const SizedBox(width: 2),
+                      Text(
+                        foodPost.numberOfRatings.toString(),
+                        style: const TextStyle(color: Colors.white38),
+                      ),
+                    ]),
+                  );
+                },
               ),
               const SizedBox(height: 15),
               FutureBuilder(

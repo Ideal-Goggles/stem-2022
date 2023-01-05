@@ -19,6 +19,15 @@ class AppUser {
     this.groupId,
   });
 
+  static AppUser get previewUser => AppUser(
+        id: "",
+        email: "user@mail.com",
+        displayName: "User",
+        overallRating: 0,
+        dateCreated: Timestamp.now(),
+        streak: 0,
+      );
+
   // TODO: Change to `fromMap`
   factory AppUser.fromFirestore(DocumentSnapshot snapshot) {
     final data = snapshot.data() as Map<String, dynamic>;
