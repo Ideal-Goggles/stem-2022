@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -351,6 +352,8 @@ class _FoodPostCardState extends State<FoodPostCard>
                   final appUser = Provider.of<AppUser>(context);
 
                   ImageProvider userImageProvider;
+                  Color? streakIndicatorColor =
+                      appUser.streak >= 3 ? Colors.orange[600] : null;
 
                   if (userImage != null) {
                     userImageProvider = MemoryImage(userImage);
@@ -363,9 +366,37 @@ class _FoodPostCardState extends State<FoodPostCard>
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     child: Row(children: [
-                      CircleAvatar(
-                        radius: 20,
-                        foregroundImage: userImageProvider,
+                      Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Container(
+                            decoration: ShapeDecoration(
+                              shape: CircleBorder(
+                                side: BorderSide(
+                                  strokeAlign: StrokeAlign.center,
+                                  width: 1.5,
+                                  color: streakIndicatorColor ??
+                                      Colors.transparent,
+                                ),
+                              ),
+                            ),
+                            child: CircleAvatar(
+                              radius: 20,
+                              foregroundImage: userImageProvider,
+                            ),
+                          ),
+                          if (streakIndicatorColor != null)
+                            Positioned.directional(
+                              textDirection: TextDirection.ltr,
+                              bottom: -3,
+                              end: -5,
+                              child: Icon(
+                                CupertinoIcons.flame_fill,
+                                color: streakIndicatorColor,
+                                size: 18,
+                              ),
+                            ),
+                        ],
                       ),
                       const SizedBox(width: 10),
                       Expanded(
