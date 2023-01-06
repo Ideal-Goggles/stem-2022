@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AppUser {
@@ -6,7 +8,7 @@ class AppUser {
   final String displayName;
   final int overallRating;
   final Timestamp dateCreated;
-  final int streak;
+  final int trueStreak;
   final String? groupId;
 
   AppUser({
@@ -15,7 +17,7 @@ class AppUser {
     required this.displayName,
     required this.overallRating,
     required this.dateCreated,
-    required this.streak,
+    required this.trueStreak,
     this.groupId,
   });
 
@@ -25,8 +27,10 @@ class AppUser {
         displayName: "User",
         overallRating: 0,
         dateCreated: Timestamp.now(),
-        streak: 0,
+        trueStreak: -1,
       );
+
+  int get streak => max(0, trueStreak);
 
   // TODO: Change to `fromMap`
   factory AppUser.fromFirestore(DocumentSnapshot snapshot) {
@@ -38,7 +42,7 @@ class AppUser {
       displayName: data["displayName"] ?? "User",
       overallRating: data["overallRating"] ?? 0,
       dateCreated: data["dateCreated"] ?? Timestamp.now(),
-      streak: data["streak"] ?? 0,
+      trueStreak: data["streak"] ?? -1,
       groupId: data["groupId"],
     );
   }
@@ -49,7 +53,7 @@ class AppUser {
       "displayName": displayName,
       "overallRating": overallRating,
       "dateCreated": dateCreated,
-      "streak": streak,
+      "streak": trueStreak,
       "groupId": groupId,
     };
   }

@@ -15,7 +15,7 @@ class DatabaseService {
       displayName: displayName,
       overallRating: 0,
       dateCreated: Timestamp.now(),
-      streak: 0,
+      trueStreak: -1,
     );
 
     final docRef = _db.collection("users").doc(id);
