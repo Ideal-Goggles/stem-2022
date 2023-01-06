@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -190,9 +191,39 @@ class MemberTile extends StatelessWidget {
             future: storage.getUserProfileImage(member.id),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return CircleAvatar(
-                  radius: 20,
-                  foregroundImage: MemoryImage(snapshot.data!),
+                Color? streakIndicatorColor =
+                    member.streak >= 3 ? Colors.orange[600] : null;
+
+                return Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      decoration: ShapeDecoration(
+                        shape: CircleBorder(
+                          side: BorderSide(
+                            strokeAlign: StrokeAlign.center,
+                            width: 1.5,
+                            color: streakIndicatorColor ?? Colors.transparent,
+                          ),
+                        ),
+                      ),
+                      child: CircleAvatar(
+                        radius: 20,
+                        foregroundImage: MemoryImage(snapshot.data!),
+                      ),
+                    ),
+                    if (streakIndicatorColor != null)
+                      Positioned.directional(
+                        textDirection: TextDirection.ltr,
+                        bottom: -3,
+                        end: -5,
+                        child: Icon(
+                          CupertinoIcons.flame_fill,
+                          color: streakIndicatorColor,
+                          size: 18,
+                        ),
+                      ),
+                  ],
                 );
               }
 
