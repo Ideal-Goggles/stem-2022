@@ -317,56 +317,64 @@ class _FoodPostCardState extends State<FoodPostCard>
 
     final foodPost = widget.foodPost;
 
-    return MaterialButton(
-      onPressed: null,
-      onLongPress: () {
-        HapticFeedback.mediumImpact();
-        showDeletionDialog();
-      },
-      padding: EdgeInsets.zero,
-      child: Card(
-        color: Colors.grey[900],
-        clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-          side: BorderSide(color: Colors.white.withOpacity(0.5), width: 0.5),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15),
-          child: Column(
-            children: [
-              MultiProvider(
-                providers: [
-                  FutureProvider<Uint8List?>.value(
-                    value: storage.getUserProfileImage(foodPost.authorId),
-                    initialData: null,
-                    catchError: (context, error) => null,
-                  ),
-                  StreamProvider<AppUser>.value(
-                    value: db.streamAppUser(foodPost.authorId),
-                    initialData: AppUser.previewUser,
-                  ),
-                ],
-                builder: (context, child) {
-                  final userImage = Provider.of<Uint8List?>(context);
-                  final appUser = Provider.of<AppUser>(context);
+    return Card(
+      color: Colors.grey[900],
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(color: Colors.white.withOpacity(0.5), width: 0.5),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Column(
+          children: [
+            MultiProvider(
+              providers: [
+                FutureProvider<Uint8List?>.value(
+                  value: storage.getUserProfileImage(foodPost.authorId),
+                  initialData: null,
+                  catchError: (context, error) => null,
+                ),
+                StreamProvider<AppUser>.value(
+                  value: db.streamAppUser(foodPost.authorId),
+                  initialData: AppUser.previewUser,
+                ),
+              ],
+              builder: (context, child) {
+                final userImage = Provider.of<Uint8List?>(context);
+                final appUser = Provider.of<AppUser>(context);
 
-                  ImageProvider userImageProvider;
-                  Color? streakIndicatorColor =
-                      appUser.streak >= 3 ? Colors.orange[600] : null;
+                ImageProvider userImageProvider;
+                Color? streakIndicatorColor =
+                    appUser.streak >= 3 ? Colors.orange[600] : null;
 
-                  if (userImage != null) {
-                    userImageProvider = MemoryImage(userImage);
-                  } else {
-                    userImageProvider = const AssetImage(
-                      "assets/images/defaultUserImage.jpg",
-                    );
-                  }
+                if (userImage != null) {
+                  userImageProvider = MemoryImage(userImage);
+                } else {
+                  userImageProvider = const AssetImage(
+                    "assets/images/defaultUserImage.jpg",
+                  );
+                }
 
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Row(children: [
-                      Stack(
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Row(children: [
+                    MaterialButton(
+                      onPressed: () {
+                        if (streakIndicatorColor != null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                "${appUser.displayName} is on a ${appUser.streak}-day streak!",
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      padding: EdgeInsets.zero,
+                      minWidth: 0,
+                      child: Stack(
                         clipBehavior: Clip.none,
                         children: [
                           Container(
@@ -398,49 +406,57 @@ class _FoodPostCardState extends State<FoodPostCard>
                             ),
                         ],
                       ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          appUser.displayName,
-                          maxLines: 1,
-                          softWrap: false,
-                          overflow: TextOverflow.fade,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        appUser.displayName,
+                        maxLines: 1,
+                        softWrap: false,
+                        overflow: TextOverflow.fade,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      const SizedBox(width: 10),
-                      Text(
-                        "${foodPost.totalRating} H",
-                        style: const TextStyle(color: Colors.white38),
-                      ),
-                      const SizedBox(width: 12),
-                      const Icon(Icons.people, color: Colors.white38, size: 22),
-                      const SizedBox(width: 2),
-                      Text(
-                        foodPost.numberOfRatings.toString(),
-                        style: const TextStyle(color: Colors.white38),
-                      ),
-                    ]),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      "${foodPost.totalRating} H",
+                      style: const TextStyle(color: Colors.white38),
+                    ),
+                    const SizedBox(width: 12),
+                    const Icon(Icons.people, color: Colors.white38, size: 22),
+                    const SizedBox(width: 2),
+                    Text(
+                      foodPost.numberOfRatings.toString(),
+                      style: const TextStyle(color: Colors.white38),
+                    ),
+                  ]),
+                );
+              },
+            ),
+            const SizedBox(height: 15),
+            FutureBuilder(
+              future: storage.getFoodPostImage(foodPost.id),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Icon(
+                    Icons.error_outline,
+                    color: Theme.of(context).colorScheme.error,
+                    size: 35,
                   );
-                },
-              ),
-              const SizedBox(height: 15),
-              FutureBuilder(
-                future: storage.getFoodPostImage(foodPost.id),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Icon(
-                      Icons.error_outline,
-                      color: Theme.of(context).colorScheme.error,
-                      size: 35,
-                    );
-                  } else if (snapshot.connectionState ==
-                          ConnectionState.waiting ||
-                      !snapshot.hasData) {
-                    return const CircularProgressIndicator.adaptive();
-                  }
+                } else if (snapshot.connectionState ==
+                        ConnectionState.waiting ||
+                    !snapshot.hasData) {
+                  return const CircularProgressIndicator.adaptive();
+                }
 
-                  return Container(
+                return MaterialButton(
+                  onPressed: null,
+                  onLongPress: () {
+                    HapticFeedback.mediumImpact();
+                    showDeletionDialog();
+                  },
+                  padding: EdgeInsets.zero,
+                  child: Container(
                     decoration: BoxDecoration(
                       border: Border(
                         bottom: BorderSide(
@@ -450,32 +466,32 @@ class _FoodPostCardState extends State<FoodPostCard>
                       ),
                     ),
                     child: Image.memory(snapshot.data!),
-                  );
-                },
-              ),
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        foodPost.caption,
-                        style: TextStyle(fontSize: 13, color: Colors.grey[400]),
-                        textAlign: TextAlign.start,
-                      ),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Text(
+                      foodPost.caption,
+                      style: TextStyle(fontSize: 13, color: Colors.grey[400]),
+                      textAlign: TextAlign.start,
                     ),
-                    IconButton(
-                      onPressed: showRatingDialog,
-                      color: Theme.of(context).colorScheme.primary,
-                      icon: const Icon(Icons.thumbs_up_down_rounded),
-                    ),
-                  ],
-                ),
+                  ),
+                  IconButton(
+                    onPressed: showRatingDialog,
+                    color: Theme.of(context).colorScheme.primary,
+                    icon: const Icon(Icons.thumbs_up_down_rounded),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
