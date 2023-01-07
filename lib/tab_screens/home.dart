@@ -360,20 +360,20 @@ class _FoodPostCardState extends State<FoodPostCard>
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Row(children: [
                     MaterialButton(
+                      padding: EdgeInsets.zero,
+                      minWidth: 0,
                       onPressed: () {
                         if (streakIndicatorColor != null) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                "${appUser.displayName} is on a ${appUser.streak}-day streak!",
+                                "${appUser.displayName} is on a ${appUser.streak}-day posting streak!",
                                 textAlign: TextAlign.center,
                               ),
                             ),
                           );
                         }
                       },
-                      padding: EdgeInsets.zero,
-                      minWidth: 0,
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [

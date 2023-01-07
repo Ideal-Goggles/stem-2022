@@ -154,6 +154,7 @@ class MemberTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final storage = Provider.of<StorageService>(context);
     final currentUser = Provider.of<User?>(context);
+    final streakIndicatorColor = member.streak >= 3 ? Colors.orange[600] : null;
 
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
@@ -187,54 +188,67 @@ class MemberTile extends StatelessWidget {
       leading: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          FutureBuilder(
-            future: storage.getUserProfileImage(member.id),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                Color? streakIndicatorColor =
-                    member.streak >= 3 ? Colors.orange[600] : null;
-
-                return Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Container(
-                      decoration: ShapeDecoration(
-                        shape: CircleBorder(
-                          side: BorderSide(
-                            strokeAlign: StrokeAlign.center,
-                            width: 1.5,
-                            color: streakIndicatorColor ?? Colors.transparent,
-                          ),
-                        ),
-                      ),
-                      child: CircleAvatar(
-                        radius: 20,
-                        foregroundImage: MemoryImage(snapshot.data!),
-                      ),
+          MaterialButton(
+            padding: EdgeInsets.zero,
+            minWidth: 0,
+            onPressed: () {
+              if (streakIndicatorColor != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      "${member.displayName} is on a ${member.streak}-day posting streak!",
+                      textAlign: TextAlign.center,
                     ),
-                    if (streakIndicatorColor != null)
-                      Positioned.directional(
-                        textDirection: TextDirection.ltr,
-                        bottom: -3,
-                        end: -5,
-                        child: Icon(
-                          CupertinoIcons.flame_fill,
-                          color: streakIndicatorColor,
-                          size: 18,
-                        ),
-                      ),
-                  ],
+                  ),
                 );
               }
-
-              return const CircleAvatar(
-                radius: 20,
-                foregroundImage:
-                    AssetImage("assets/images/defaultUserImage.jpg"),
-              );
             },
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  decoration: ShapeDecoration(
+                    shape: CircleBorder(
+                      side: BorderSide(
+                        strokeAlign: StrokeAlign.center,
+                        width: 1.5,
+                        color: streakIndicatorColor ?? Colors.transparent,
+                      ),
+                    ),
+                  ),
+                  child: FutureBuilder(
+                    future: storage.getUserProfileImage(member.id),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return CircleAvatar(
+                          radius: 20,
+                          foregroundImage: MemoryImage(snapshot.data!),
+                        );
+                      }
+
+                      return const CircleAvatar(
+                        radius: 20,
+                        foregroundImage:
+                            AssetImage("assets/images/defaultUserImage.jpg"),
+                      );
+                    },
+                  ),
+                ),
+                if (streakIndicatorColor != null)
+                  Positioned.directional(
+                    textDirection: TextDirection.ltr,
+                    bottom: -3,
+                    end: -5,
+                    child: Icon(
+                      CupertinoIcons.flame_fill,
+                      color: streakIndicatorColor,
+                      size: 18,
+                    ),
+                  ),
+              ],
+            ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 3),
           Text(
             "#$rank",
             style: TextStyle(
