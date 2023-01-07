@@ -1,13 +1,18 @@
 import 'dart:async';
+import 'dart:math' show pi;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:gradient_borders/gradient_borders.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:event/event.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:stem_2022/models/food_post.dart';
+import 'package:stem_2022/models/app_user.dart';
+
 import 'package:stem_2022/services/storage_service.dart';
 import 'package:stem_2022/services/database_service.dart';
 
@@ -161,7 +166,45 @@ class FoodPostCard extends StatefulWidget {
 }
 
 class _FoodPostCardState extends State<FoodPostCard>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
+  late AnimationController _streakAnimation;
+
+  @override
+  void initState() {
+    _streakAnimation = AnimationController(
+      vsync: this,
+      upperBound: 2 * pi,
+      duration: Duration(
+        // ignore: division_optimization
+        milliseconds: (2000 * pi / 0.75).toInt(),
+      ),
+    );
+
+    _streakAnimation.addStatusListener((status) {
+      switch (status) {
+        case AnimationStatus.completed:
+          _streakAnimation.forward(from: 0);
+          break;
+        case AnimationStatus.dismissed:
+          _streakAnimation.forward(from: 0);
+          break;
+        case AnimationStatus.forward:
+          break;
+        case AnimationStatus.reverse:
+          break;
+      }
+    });
+
+    _streakAnimation.forward();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _streakAnimation.dispose();
+    super.dispose();
+  }
+
   @override
   bool get wantKeepAlive => true;
 
@@ -309,100 +352,163 @@ class _FoodPostCardState extends State<FoodPostCard>
   Widget build(BuildContext context) {
     super.build(context);
 
-    final storage = Provider.of<StorageService>(context, listen: false);
+    final storage = Provider.of<StorageService>(context);
     final db = Provider.of<DatabaseService>(context);
 
     final foodPost = widget.foodPost;
 
-    return MaterialButton(
-      onPressed: null,
-      onLongPress: () {
-        HapticFeedback.mediumImpact();
-        showDeletionDialog();
-      },
-      padding: EdgeInsets.zero,
-      child: Card(
-        color: Colors.grey[900],
-        clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-          side: BorderSide(color: Colors.white.withOpacity(0.5), width: 0.5),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Row(children: [
-                  FutureBuilder(
-                    future: storage.getUserProfileImage(foodPost.authorId),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return CircleAvatar(
-                          radius: 20,
-                          foregroundImage: MemoryImage(snapshot.data!),
-                        );
-                      }
-                      return const CircleAvatar(
-                        radius: 20,
-                        foregroundImage:
-                            AssetImage("assets/images/defaultUserImage.jpg"),
-                      );
-                    },
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: StreamBuilder(
-                      stream: db.streamAppUser(foodPost.authorId),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return Text(
-                            snapshot.data!.displayName,
-                            maxLines: 1,
-                            softWrap: false,
-                            overflow: TextOverflow.fade,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+    return Card(
+      color: Colors.grey[900],
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(color: Colors.white.withOpacity(0.5), width: 0.5),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Column(
+          children: [
+            MultiProvider(
+              providers: [
+                FutureProvider<Uint8List?>.value(
+                  value: storage.getUserProfileImage(foodPost.authorId),
+                  initialData: null,
+                  catchError: (context, error) => null,
+                ),
+                StreamProvider<AppUser>.value(
+                  value: db.streamAppUser(foodPost.authorId),
+                  initialData: AppUser.previewUser,
+                ),
+              ],
+              builder: (context, child) {
+                final userImage = Provider.of<Uint8List?>(context);
+                final appUser = Provider.of<AppUser>(context);
+                final showStreak = appUser.streak >= 3;
+
+                ImageProvider userImageProvider;
+
+                if (userImage != null) {
+                  userImageProvider = MemoryImage(userImage);
+                } else {
+                  userImageProvider = const AssetImage(
+                    "assets/images/defaultUserImage.jpg",
+                  );
+                }
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Row(children: [
+                    MaterialButton(
+                      padding: EdgeInsets.zero,
+                      minWidth: 0,
+                      onPressed: () {
+                        if (showStreak) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                "${appUser.displayName} is on a ${appUser.streak}-day posting streak!",
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
                           );
                         }
-                        return Text(
-                          "Unknown User",
-                          style: TextStyle(color: Colors.blueGrey[300]),
-                        );
                       },
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          AnimatedBuilder(
+                            animation: _streakAnimation,
+                            builder: (context, child) {
+                              return Container(
+                                decoration: showStreak
+                                    ? BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: GradientBoxBorder(
+                                          width: 1.5,
+                                          gradient: LinearGradient(
+                                            transform: GradientRotation(
+                                                _streakAnimation.value),
+                                            colors: [
+                                              Colors.yellow,
+                                              Colors.orange.shade600,
+                                              Colors.orange.shade600,
+                                              Colors.red,
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    : null,
+                                child: CircleAvatar(
+                                  radius: 20,
+                                  foregroundImage: userImageProvider,
+                                ),
+                              );
+                            },
+                          ),
+                          if (showStreak)
+                            Positioned.directional(
+                              textDirection: TextDirection.ltr,
+                              bottom: -3,
+                              end: -5,
+                              child: Icon(
+                                CupertinoIcons.flame_fill,
+                                color: Colors.orange[600],
+                                size: 18,
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 10),
-                  Text(
-                    "${foodPost.totalRating} H",
-                    style: const TextStyle(color: Colors.white38),
-                  ),
-                  const SizedBox(width: 12),
-                  const Icon(Icons.people, color: Colors.white38, size: 22),
-                  const SizedBox(width: 2),
-                  Text(
-                    foodPost.numberOfRatings.toString(),
-                    style: const TextStyle(color: Colors.white38),
-                  ),
-                ]),
-              ),
-              const SizedBox(height: 15),
-              FutureBuilder(
-                future: storage.getFoodPostImage(foodPost.id),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Icon(
-                      Icons.error_outline,
-                      color: Theme.of(context).colorScheme.error,
-                      size: 35,
-                    );
-                  } else if (snapshot.connectionState ==
-                          ConnectionState.waiting ||
-                      !snapshot.hasData) {
-                    return const CircularProgressIndicator.adaptive();
-                  }
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        appUser.displayName,
+                        maxLines: 1,
+                        softWrap: false,
+                        overflow: TextOverflow.fade,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      "${foodPost.totalRating} H",
+                      style: const TextStyle(color: Colors.white38),
+                    ),
+                    const SizedBox(width: 12),
+                    const Icon(Icons.people, color: Colors.white38, size: 22),
+                    const SizedBox(width: 2),
+                    Text(
+                      foodPost.numberOfRatings.toString(),
+                      style: const TextStyle(color: Colors.white38),
+                    ),
+                  ]),
+                );
+              },
+            ),
+            const SizedBox(height: 15),
+            FutureBuilder(
+              future: storage.getFoodPostImage(foodPost.id),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Icon(
+                    Icons.error_outline,
+                    color: Theme.of(context).colorScheme.error,
+                    size: 35,
+                  );
+                } else if (snapshot.connectionState ==
+                        ConnectionState.waiting ||
+                    !snapshot.hasData) {
+                  return const CircularProgressIndicator.adaptive();
+                }
 
-                  return Container(
+                return MaterialButton(
+                  onPressed: null,
+                  onLongPress: () {
+                    HapticFeedback.mediumImpact();
+                    showDeletionDialog();
+                  },
+                  padding: EdgeInsets.zero,
+                  child: Container(
                     decoration: BoxDecoration(
                       border: Border(
                         bottom: BorderSide(
@@ -412,32 +518,32 @@ class _FoodPostCardState extends State<FoodPostCard>
                       ),
                     ),
                     child: Image.memory(snapshot.data!),
-                  );
-                },
-              ),
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        foodPost.caption,
-                        style: TextStyle(fontSize: 13, color: Colors.grey[400]),
-                        textAlign: TextAlign.start,
-                      ),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Text(
+                      foodPost.caption,
+                      style: TextStyle(fontSize: 13, color: Colors.grey[400]),
+                      textAlign: TextAlign.start,
                     ),
-                    IconButton(
-                      onPressed: showRatingDialog,
-                      color: Theme.of(context).colorScheme.primary,
-                      icon: const Icon(Icons.thumbs_up_down_rounded),
-                    ),
-                  ],
-                ),
+                  ),
+                  IconButton(
+                    onPressed: showRatingDialog,
+                    color: Theme.of(context).colorScheme.primary,
+                    icon: const Icon(Icons.thumbs_up_down_rounded),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

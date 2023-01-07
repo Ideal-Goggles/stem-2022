@@ -24,10 +24,10 @@ class FoodPost {
     return FoodPost(
       id: snapshot.id,
       authorId: data["authorId"],
-      caption: data["caption"],
-      totalRating: data["totalRating"],
-      numberOfRatings: data["numberOfRatings"],
-      dateAdded: data["dateAdded"],
+      caption: data["caption"] ?? "",
+      totalRating: data["totalRating"] ?? 0,
+      numberOfRatings: data["numberOfRatings"] ?? 0,
+      dateAdded: data["dateAdded"] ?? Timestamp.now(),
     );
   }
 

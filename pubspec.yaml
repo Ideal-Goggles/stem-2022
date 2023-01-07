@@ -49,6 +49,7 @@ dependencies:
   shared_preferences: ^2.0.15
   url_launcher: ^6.1.7
   firebase_analytics: ^10.1.0
+  gradient_borders: ^0.2.0
 
 dev_dependencies:
   flutter_test:

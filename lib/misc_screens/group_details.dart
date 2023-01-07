@@ -1,4 +1,8 @@
+import 'dart:math' show pi;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:gradient_borders/gradient_borders.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -135,7 +139,7 @@ class GroupDetails extends StatelessWidget {
   }
 }
 
-class MemberTile extends StatelessWidget {
+class MemberTile extends StatefulWidget {
   final AppUser member;
   final int rank;
   final Color? borderColor;
@@ -150,27 +154,71 @@ class MemberTile extends StatelessWidget {
   });
 
   @override
+  State<MemberTile> createState() => _MemberTileState();
+}
+
+class _MemberTileState extends State<MemberTile> with TickerProviderStateMixin {
+  late AnimationController _streakAnimation;
+
+  @override
+  void initState() {
+    _streakAnimation = AnimationController(
+      vsync: this,
+      upperBound: 2 * pi,
+      duration: Duration(
+        // ignore: division_optimization
+        milliseconds: (2000 * pi / 0.75).toInt(),
+      ),
+    );
+
+    _streakAnimation.addStatusListener((status) {
+      switch (status) {
+        case AnimationStatus.completed:
+          _streakAnimation.forward(from: 0);
+          break;
+        case AnimationStatus.dismissed:
+          _streakAnimation.forward(from: 0);
+          break;
+        case AnimationStatus.forward:
+          break;
+        case AnimationStatus.reverse:
+          break;
+      }
+    });
+
+    _streakAnimation.forward();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _streakAnimation.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final storage = Provider.of<StorageService>(context);
     final currentUser = Provider.of<User?>(context);
+    final showStreak = widget.member.streak >= 3;
 
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
       tileColor: Colors.grey[900],
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
-        side: BorderSide(color: borderColor ?? Colors.transparent),
+        side: BorderSide(color: widget.borderColor ?? Colors.transparent),
       ),
       title: Wrap(
         direction: Axis.horizontal,
         children: [
           Text(
-            member.displayName,
+            widget.member.displayName,
             maxLines: 1,
             softWrap: false,
             overflow: TextOverflow.fade,
           ),
-          if (member.id == currentUser?.uid) ...[
+          if (widget.member.id == currentUser?.uid) ...[
             const SizedBox(width: 5),
             const Text(
               "(You)",
@@ -180,35 +228,92 @@ class MemberTile extends StatelessWidget {
         ],
       ),
       trailing: Text(
-        "${member.overallRating} H",
+        "${widget.member.overallRating} H",
         style: const TextStyle(color: Colors.grey),
       ),
       leading: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          FutureBuilder(
-            future: storage.getUserProfileImage(member.id),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return CircleAvatar(
-                  radius: 20,
-                  foregroundImage: MemoryImage(snapshot.data!),
+          MaterialButton(
+            padding: EdgeInsets.zero,
+            minWidth: 0,
+            onPressed: () {
+              if (showStreak) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      "${widget.member.displayName} is on a ${widget.member.streak}-day posting streak!",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 );
               }
-
-              return const CircleAvatar(
-                radius: 20,
-                foregroundImage:
-                    AssetImage("assets/images/defaultUserImage.jpg"),
-              );
             },
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                AnimatedBuilder(
+                  animation: _streakAnimation,
+                  builder: (context, child) {
+                    return Container(
+                      decoration: showStreak
+                          ? BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: GradientBoxBorder(
+                                width: 1.5,
+                                gradient: LinearGradient(
+                                  transform:
+                                      GradientRotation(_streakAnimation.value),
+                                  colors: [
+                                    Colors.yellow,
+                                    Colors.orange.shade600,
+                                    Colors.orange.shade600,
+                                    Colors.red,
+                                  ],
+                                ),
+                              ),
+                            )
+                          : null,
+                      child: FutureBuilder(
+                        future: storage.getUserProfileImage(widget.member.id),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return CircleAvatar(
+                              radius: 20,
+                              foregroundImage: MemoryImage(snapshot.data!),
+                            );
+                          }
+
+                          return const CircleAvatar(
+                            radius: 20,
+                            foregroundImage: AssetImage(
+                                "assets/images/defaultUserImage.jpg"),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
+                if (showStreak)
+                  Positioned.directional(
+                    textDirection: TextDirection.ltr,
+                    bottom: -3,
+                    end: -5,
+                    child: Icon(
+                      CupertinoIcons.flame_fill,
+                      color: Colors.orange[600],
+                      size: 18,
+                    ),
+                  ),
+              ],
+            ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 3),
           Text(
-            "#$rank",
+            "#${widget.rank}",
             style: TextStyle(
               fontSize: 15,
-              color: rankColor ?? Colors.grey,
+              color: widget.rankColor ?? Colors.grey,
               fontWeight: FontWeight.bold,
             ),
           ),
