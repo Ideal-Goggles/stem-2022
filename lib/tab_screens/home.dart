@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:gradient_borders/gradient_borders.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:event/event.dart';
@@ -343,10 +344,9 @@ class _FoodPostCardState extends State<FoodPostCard>
               builder: (context, child) {
                 final userImage = Provider.of<Uint8List?>(context);
                 final appUser = Provider.of<AppUser>(context);
+                final showStreak = appUser.streak >= 3;
 
                 ImageProvider userImageProvider;
-                Color? streakIndicatorColor =
-                    appUser.streak >= 3 ? Colors.orange[600] : null;
 
                 if (userImage != null) {
                   userImageProvider = MemoryImage(userImage);
@@ -363,7 +363,7 @@ class _FoodPostCardState extends State<FoodPostCard>
                       padding: EdgeInsets.zero,
                       minWidth: 0,
                       onPressed: () {
-                        if (streakIndicatorColor != null) {
+                        if (showStreak) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
@@ -378,29 +378,34 @@ class _FoodPostCardState extends State<FoodPostCard>
                         clipBehavior: Clip.none,
                         children: [
                           Container(
-                            decoration: ShapeDecoration(
-                              shape: CircleBorder(
-                                side: BorderSide(
-                                  strokeAlign: StrokeAlign.center,
-                                  width: 1.5,
-                                  color: streakIndicatorColor ??
-                                      Colors.transparent,
-                                ),
-                              ),
-                            ),
+                            decoration: showStreak
+                                ? const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: GradientBoxBorder(
+                                      width: 1.5,
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.yellow,
+                                          Colors.orange,
+                                          Colors.red,
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                : null,
                             child: CircleAvatar(
                               radius: 20,
                               foregroundImage: userImageProvider,
                             ),
                           ),
-                          if (streakIndicatorColor != null)
+                          if (showStreak)
                             Positioned.directional(
                               textDirection: TextDirection.ltr,
                               bottom: -3,
                               end: -5,
                               child: Icon(
                                 CupertinoIcons.flame_fill,
-                                color: streakIndicatorColor,
+                                color: Colors.orange[600],
                                 size: 18,
                               ),
                             ),

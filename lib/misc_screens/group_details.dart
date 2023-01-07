@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:gradient_borders/gradient_borders.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -154,7 +155,7 @@ class MemberTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final storage = Provider.of<StorageService>(context);
     final currentUser = Provider.of<User?>(context);
-    final streakIndicatorColor = member.streak >= 3 ? Colors.orange[600] : null;
+    final showStreak = member.streak >= 3;
 
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
@@ -192,7 +193,7 @@ class MemberTile extends StatelessWidget {
             padding: EdgeInsets.zero,
             minWidth: 0,
             onPressed: () {
-              if (streakIndicatorColor != null) {
+              if (showStreak) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
@@ -207,15 +208,21 @@ class MemberTile extends StatelessWidget {
               clipBehavior: Clip.none,
               children: [
                 Container(
-                  decoration: ShapeDecoration(
-                    shape: CircleBorder(
-                      side: BorderSide(
-                        strokeAlign: StrokeAlign.center,
-                        width: 1.5,
-                        color: streakIndicatorColor ?? Colors.transparent,
-                      ),
-                    ),
-                  ),
+                  decoration: showStreak
+                      ? const BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: GradientBoxBorder(
+                            width: 1.5,
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.yellow,
+                                Colors.orange,
+                                Colors.red,
+                              ],
+                            ),
+                          ),
+                        )
+                      : null,
                   child: FutureBuilder(
                     future: storage.getUserProfileImage(member.id),
                     builder: (context, snapshot) {
@@ -234,14 +241,14 @@ class MemberTile extends StatelessWidget {
                     },
                   ),
                 ),
-                if (streakIndicatorColor != null)
+                if (showStreak)
                   Positioned.directional(
                     textDirection: TextDirection.ltr,
                     bottom: -3,
                     end: -5,
                     child: Icon(
                       CupertinoIcons.flame_fill,
-                      color: streakIndicatorColor,
+                      color: Colors.orange[600],
                       size: 18,
                     ),
                   ),
