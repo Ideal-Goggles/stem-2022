@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' show pi;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -165,7 +166,45 @@ class FoodPostCard extends StatefulWidget {
 }
 
 class _FoodPostCardState extends State<FoodPostCard>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
+  late AnimationController _streakAnimation;
+
+  @override
+  void initState() {
+    _streakAnimation = AnimationController(
+      vsync: this,
+      upperBound: 2 * pi,
+      duration: Duration(
+        // ignore: division_optimization
+        milliseconds: (2000 * pi / 0.75).toInt(),
+      ),
+    );
+
+    _streakAnimation.addStatusListener((status) {
+      switch (status) {
+        case AnimationStatus.completed:
+          _streakAnimation.forward(from: 0);
+          break;
+        case AnimationStatus.dismissed:
+          _streakAnimation.forward(from: 0);
+          break;
+        case AnimationStatus.forward:
+          break;
+        case AnimationStatus.reverse:
+          break;
+      }
+    });
+
+    _streakAnimation.forward();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _streakAnimation.dispose();
+    super.dispose();
+  }
+
   @override
   bool get wantKeepAlive => true;
 
@@ -377,26 +416,34 @@ class _FoodPostCardState extends State<FoodPostCard>
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [
-                          Container(
-                            decoration: showStreak
-                                ? const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: GradientBoxBorder(
-                                      width: 1.5,
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Colors.yellow,
-                                          Colors.orange,
-                                          Colors.red,
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                : null,
-                            child: CircleAvatar(
-                              radius: 20,
-                              foregroundImage: userImageProvider,
-                            ),
+                          AnimatedBuilder(
+                            animation: _streakAnimation,
+                            builder: (context, child) {
+                              return Container(
+                                decoration: showStreak
+                                    ? BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: GradientBoxBorder(
+                                          width: 1.5,
+                                          gradient: LinearGradient(
+                                            transform: GradientRotation(
+                                                _streakAnimation.value),
+                                            colors: [
+                                              Colors.yellow,
+                                              Colors.orange.shade600,
+                                              Colors.orange.shade600,
+                                              Colors.red,
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    : null,
+                                child: CircleAvatar(
+                                  radius: 20,
+                                  foregroundImage: userImageProvider,
+                                ),
+                              );
+                            },
                           ),
                           if (showStreak)
                             Positioned.directional(
