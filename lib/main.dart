@@ -7,8 +7,9 @@ import 'package:stem_2022/firebase_options.dart';
 import 'package:stem_2022/services/storage_service.dart';
 import 'package:stem_2022/services/database_service.dart';
 
-import 'package:stem_2022/tab_screens/groups.dart';
 import 'package:stem_2022/tab_screens/home.dart';
+import 'package:stem_2022/tab_screens/groups.dart';
+import 'package:stem_2022/tab_screens/my_group.dart';
 import 'package:stem_2022/tab_screens/settings.dart';
 
 import 'package:stem_2022/misc_screens/create_post_screen.dart';
@@ -152,6 +153,7 @@ class MyAppHome extends StatelessWidget {
               children: [
                 HomeScreen(),
                 GroupsScreen(),
+                MyGroupScreen(),
                 SettingsScreen(),
               ],
             ),
