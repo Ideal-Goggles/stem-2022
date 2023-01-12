@@ -5,14 +5,16 @@ class Group {
   final String name;
   final String description;
   final int points;
-  final List<String> admins;
+  final Map<String, String> supervisors;
+  final String admin;
 
   Group({
     required this.id,
     required this.name,
     required this.description,
     required this.points,
-    required this.admins,
+    required this.supervisors,
+    required this.admin,
   });
 
   factory Group.fromFirestore(DocumentSnapshot snapshot) {
@@ -23,9 +25,8 @@ class Group {
       name: data["name"],
       description: data["description"],
       points: data["points"],
-      admins: List<String>.from(data["admins"]),
+      supervisors: Map<String, String>.from(data["supervisors"]),
+      admin: data["admin"],
     );
   }
-
-  static fromMap(data) {}
 }

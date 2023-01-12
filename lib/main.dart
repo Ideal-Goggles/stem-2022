@@ -94,7 +94,7 @@ class MyAppHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         appBar: const MyAppBar(),
         extendBodyBehindAppBar: true,
@@ -139,6 +139,7 @@ class MyAppHome extends StatelessWidget {
               tabs: const [
                 Tab(icon: Icon(Icons.home)),
                 Tab(icon: Icon(Icons.group)),
+                Tab(icon: Icon(Icons.bar_chart)),
                 Tab(icon: Icon(Icons.settings))
               ],
               indicatorColor: Colors.transparent,
