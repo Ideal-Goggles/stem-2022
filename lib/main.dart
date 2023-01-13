@@ -56,22 +56,24 @@ class MyApp extends StatelessWidget {
           colorScheme: const ColorScheme.dark(
               primary: primaryThemeColor, error: primaryErrorColor),
           inputDecorationTheme: InputDecorationTheme(
+            filled: true,
+            fillColor: Colors.grey[900],
             focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: primaryThemeColor),
-              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(25),
             ),
             border: OutlineInputBorder(
-              borderSide: const BorderSide(color: primaryThemeColor),
-              borderRadius: BorderRadius.circular(20),
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(25),
             ),
             errorStyle: const TextStyle(color: primaryErrorColor),
             errorBorder: OutlineInputBorder(
               borderSide: const BorderSide(color: primaryErrorColor, width: 1),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(25),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderSide: const BorderSide(color: primaryErrorColor, width: 2),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(25),
             ),
           ),
           snackBarTheme: const SnackBarThemeData(
@@ -147,7 +149,9 @@ class MyAppHome extends State<AppHome> {
             foregroundColor: Colors.white,
             backgroundColor: Theme.of(context).colorScheme.primary,
           ),
-          child: const Icon(CupertinoIcons.plus_rectangle_fill_on_rectangle_fill, size: 25),
+          child: const Icon(
+              CupertinoIcons.plus_rectangle_fill_on_rectangle_fill,
+              size: 25),
         ),
         bottomNavigationBar: BottomNavyBar(
           backgroundColor: Colors.grey[900],

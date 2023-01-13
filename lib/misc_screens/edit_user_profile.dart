@@ -267,7 +267,8 @@ class EditNameDialog extends StatelessWidget {
       content: TextField(
         controller: _nameController,
         autocorrect: false,
-        decoration: const InputDecoration(hintText: 'New username'),
+        decoration: const InputDecoration(
+            fillColor: Colors.black38, hintText: 'New username'),
       ),
       actions: <Widget>[
         MaterialButton(
@@ -361,8 +362,8 @@ class ChangePasswordDialog extends StatelessWidget {
                 },
                 keyboardType: TextInputType.visiblePassword,
                 obscureText: true,
-                decoration:
-                    const InputDecoration(labelText: 'Current password'),
+                decoration: const InputDecoration(
+                    fillColor: Colors.black38, labelText: 'Current password'),
               ),
               const SizedBox(height: 15),
               TextFormField(
@@ -378,7 +379,8 @@ class ChangePasswordDialog extends StatelessWidget {
                 },
                 keyboardType: TextInputType.visiblePassword,
                 obscureText: true,
-                decoration: const InputDecoration(labelText: 'New password'),
+                decoration: const InputDecoration(
+                    fillColor: Colors.black38, labelText: 'New password'),
               ),
             ],
           ),

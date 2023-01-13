@@ -25,50 +25,65 @@ class GroupDetails extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(group.name)),
       body: Padding(
-        padding: const EdgeInsets.all(15),
+        padding: const EdgeInsets.all(10),
         child: Column(
           children: [
             // Group Details
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 18),
-              decoration: BoxDecoration(
-                color: Colors.grey[900],
-                borderRadius: BorderRadius.circular(35),
+              padding: const EdgeInsets.only(bottom: 30),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [
+                      Colors.black,
+                      Color.fromARGB(0, 0, 0, 0),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: [0.9, 1.0],
+                    tileMode: TileMode.clamp),
               ),
-              child: Column(
-                children: [
-                  FutureBuilder(
-                    future: storage.getGroupImage(group.id),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return CircleAvatar(
-                          radius: 50,
-                          foregroundImage: MemoryImage(snapshot.data!),
-                        );
-                      }
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 18),
+                decoration: BoxDecoration(
+                  color: Colors.grey[900],
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Column(
+                  children: [
+                    FutureBuilder(
+                      future: storage.getGroupImage(group.id),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return CircleAvatar(
+                            radius: 50,
+                            foregroundImage: MemoryImage(snapshot.data!),
+                          );
+                        }
 
-                      return const CircleAvatar(
-                        radius: 50,
-                        foregroundImage:
-                            AssetImage("assets/images/defaultGroupImage.png"),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 15),
-                  Text(
-                    group.name,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
+                        return const CircleAvatar(
+                          radius: 50,
+                          foregroundImage:
+                              AssetImage("assets/images/defaultGroupImage.png"),
+                        );
+                      },
                     ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    group.description,
-                    style: const TextStyle(fontSize: 15, color: Colors.grey),
-                  ),
-                ],
+                    const SizedBox(height: 15),
+                    Text(
+                      group.name,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      group.description,
+                      style: const TextStyle(fontSize: 15, color: Colors.grey),
+                    ),
+                  ],
+                ),
               ),
             ),
 
@@ -206,7 +221,7 @@ class _MemberTileState extends State<MemberTile> with TickerProviderStateMixin {
       contentPadding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
       tileColor: Colors.grey[900],
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(50),
         side: BorderSide(color: widget.borderColor ?? Colors.transparent),
       ),
       title: Wrap(

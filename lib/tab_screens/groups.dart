@@ -24,21 +24,23 @@ class _GroupsScreenState extends State<GroupsScreen> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(10),
+          padding:
+              const EdgeInsets.only(top: 15, right: 10, bottom: 10, left: 10),
           child: TextField(
             onChanged: (newValue) => setState(
               () => _searchQuery = newValue.toLowerCase(),
             ),
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.grey[900],
+            decoration: const InputDecoration(
               hintText: 'Search groups...',
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide:
-                      const BorderSide(width: 10, color: Colors.greenAccent)),
+              suffixIcon: Icon(CupertinoIcons.search),
             ),
           ),
+        ),
+        const Divider(
+          indent: 20,
+          endIndent: 20,
+          height: 20,
+          color: Colors.white12,
         ),
         StreamBuilder(
           stream: db.streamGroupsByRank(),
