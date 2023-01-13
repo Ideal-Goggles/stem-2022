@@ -51,8 +51,8 @@ class MyApp extends StatelessWidget {
           fontFamily: "Inter",
           highlightColor: Colors.transparent,
           splashColor: Colors.transparent,
-          scaffoldBackgroundColor: Colors.black,
-          appBarTheme: AppBarTheme(color: Colors.grey[900], elevation: 5),
+          scaffoldBackgroundColor: Colors.grey.shade900.withOpacity(0.2),
+          appBarTheme: AppBarTheme(color: Colors.grey[900], elevation: 0),
           colorScheme: const ColorScheme.dark(
               primary: primaryThemeColor, error: primaryErrorColor),
           inputDecorationTheme: InputDecorationTheme(
@@ -94,7 +94,7 @@ class AppHome extends StatefulWidget {
   State<AppHome> createState() => MyAppHome();
 }
 
-class MyAppHome extends State<AppHome> {  
+class MyAppHome extends State<AppHome> {
   int _currentIndex = 0;
   late PageController _pageController;
 
@@ -190,7 +190,7 @@ class MyAppHome extends State<AppHome> {
                 'Settings',
                 textAlign: TextAlign.center,
               ),
-              icon: const Icon(CupertinoIcons.settings_solid),
+              icon: const Icon(CupertinoIcons.gear_alt_fill),
               activeColor: Colors.blue,
               inactiveColor: Colors.white60,
             ),
