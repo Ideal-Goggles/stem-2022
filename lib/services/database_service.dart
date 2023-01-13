@@ -175,4 +175,14 @@ class DatabaseService {
           .toList(),
     );
   }
+
+  Stream<SubGroup> streamSubGroup(String groupId, String subGroupId) {
+    return _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .doc(subGroupId)
+        .snapshots()
+        .map((document) => SubGroup.fromFirestore(document));
+  }
 }

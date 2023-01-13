@@ -7,6 +7,7 @@ class AppUser {
   final int overallRating;
   final Timestamp dateCreated;
   final String? groupId;
+  final String? subGroupId;
 
   AppUser({
     required this.id,
@@ -15,6 +16,7 @@ class AppUser {
     required this.overallRating,
     required this.dateCreated,
     this.groupId,
+    this.subGroupId,
   });
 
   // TODO: Change to `fromMap`
@@ -28,6 +30,7 @@ class AppUser {
       overallRating: data["overallRating"],
       dateCreated: data["dateCreated"],
       groupId: data["groupId"],
+      subGroupId: data["subGroupId"],
     );
   }
 
@@ -38,6 +41,7 @@ class AppUser {
       "overallRating": overallRating,
       "dateCreated": dateCreated,
       "groupId": groupId,
+      "subGroupId": subGroupId,
     };
   }
 }
