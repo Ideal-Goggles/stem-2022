@@ -30,3 +30,43 @@ class Group {
     );
   }
 }
+
+class SubGroup {
+  final String id;
+  final String classTeacher;
+  final String section;
+  final int points;
+  final Timestamp lastUpdated;
+
+  const SubGroup({
+    required this.id,
+    required this.classTeacher,
+    required this.section,
+    required this.points,
+    required this.lastUpdated,
+  });
+}
+
+class HealthDataPoint {
+  final String id;
+  final double healthyPercent;
+  final Timestamp timestamp;
+
+  const HealthDataPoint({
+    required this.id,
+    required this.healthyPercent,
+    required this.timestamp,
+  });
+}
+
+class WastageDataPoint {
+  final String id;
+  final double totalWastage;
+  final Timestamp timestamp;
+
+  const WastageDataPoint({
+    required this.id,
+    required this.totalWastage,
+    required this.timestamp,
+  });
+}
