@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,8 @@ class SettingsScreen extends StatelessWidget {
     final loggedIn = user != null;
 
     final List<SettingsMenuEntry> entries = [
-      SettingsMenuEntry(Icons.help, "What is Hammit?", const WelcomeScreen()),
+      SettingsMenuEntry(CupertinoIcons.question_circle_fill, "What is Hammit?",
+          const WelcomeScreen()),
       if (!loggedIn) ...[
         SettingsMenuEntry(Icons.perm_contact_calendar, "Create an Account",
             const SignUpScreen()),
@@ -33,9 +35,10 @@ class SettingsScreen extends StatelessWidget {
             Icons.login, "Log Into Existing Account", const LoginScreen())
       ],
       if (loggedIn) ...[
-        SettingsMenuEntry(Icons.person, "Profile", const ProfileScreen()),
         SettingsMenuEntry(
-            Icons.group_add, "Join Group", const JoinGroupScreen()),
+            CupertinoIcons.person_fill, "Profile", const ProfileScreen()),
+        SettingsMenuEntry(
+            Icons.group_add_rounded, "Join Group", const JoinGroupScreen()),
       ],
     ];
 

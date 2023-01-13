@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -114,7 +115,7 @@ class EditUserProfileScreen extends StatelessWidget {
                         SizedBox(
                           width: 10,
                         ),
-                        Icon(Icons.edit_rounded)
+                        Icon(CupertinoIcons.person_crop_circle_badge_plus)
                       ],
                     ),
                   ],
@@ -170,7 +171,7 @@ class EditUserProfileScreen extends StatelessWidget {
                       children: const [
                         Text("Edit Username"),
                         SizedBox(width: 10),
-                        Icon(Icons.edit_rounded)
+                        Icon(CupertinoIcons.pencil)
                       ],
                     ),
                   ],
@@ -200,7 +201,7 @@ class EditUserProfileScreen extends StatelessWidget {
                       SizedBox(
                         width: 10,
                       ),
-                      Icon(Icons.password)
+                      Icon(CupertinoIcons.pencil_ellipsis_rectangle)
                     ],
                   ),
                 ),

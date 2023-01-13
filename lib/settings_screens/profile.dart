@@ -68,7 +68,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 );
               },
-              icon: const Icon(Icons.edit)),
+              icon: const Icon(CupertinoIcons.pencil)),
         ],
       ),
       body: Padding(

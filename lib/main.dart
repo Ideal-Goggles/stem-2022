@@ -61,7 +61,8 @@ class MyApp extends StatelessWidget {
               borderRadius: BorderRadius.circular(14),
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: primaryThemeColor),
+              borderRadius: BorderRadius.circular(20),
             ),
             errorStyle: const TextStyle(color: primaryErrorColor),
             errorBorder: OutlineInputBorder(
@@ -116,7 +117,7 @@ class MyAppHome extends State<AppHome> {
       length: 3,
       child: Scaffold(
         appBar: const MyAppBar(),
-        extendBodyBehindAppBar: true,
+        extendBodyBehindAppBar: false,
         extendBody: true,
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         floatingActionButton: ElevatedButton(
@@ -146,7 +147,7 @@ class MyAppHome extends State<AppHome> {
             foregroundColor: Colors.white,
             backgroundColor: Theme.of(context).colorScheme.primary,
           ),
-          child: const Icon(Icons.add, size: 25),
+          child: const Icon(CupertinoIcons.plus_rectangle_fill_on_rectangle_fill, size: 25),
         ),
         bottomNavigationBar: BottomNavyBar(
           backgroundColor: Colors.grey[900],

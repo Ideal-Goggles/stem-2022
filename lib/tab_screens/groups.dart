@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:stem_2022/models/group.dart';
 import 'package:stem_2022/services/database_service.dart';
@@ -23,16 +24,19 @@ class _GroupsScreenState extends State<GroupsScreen> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(10),
           child: TextField(
             onChanged: (newValue) => setState(
               () => _searchQuery = newValue.toLowerCase(),
             ),
             decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.grey[900],
               hintText: 'Search groups...',
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide:
+                      const BorderSide(width: 10, color: Colors.greenAccent)),
             ),
           ),
         ),
@@ -81,10 +85,13 @@ class _GroupsScreenState extends State<GroupsScreen> {
                     rankColor = const Color.fromRGBO(205, 127, 50, 1);
                   }
 
-                  return GroupCard(
-                    group: groupList[index],
-                    rank: index + 1,
-                    rankColor: rankColor,
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    child: GroupCard(
+                      group: groupList[index],
+                      rank: index + 1,
+                      rankColor: rankColor,
+                    ),
                   );
                 },
               ),
@@ -110,73 +117,67 @@ class GroupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.white.withOpacity(0.5), width: 1),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: MaterialButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => GroupDetails(group: group),
-            ),
-          );
-        },
-        color: Colors.grey[900],
-        textColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-        padding: const EdgeInsets.all(15),
-        height: 100,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Column(
+    return MaterialButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => GroupDetails(group: group),
+          ),
+        );
+      },
+      color: Colors.grey[900],
+      textColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+      padding: const EdgeInsets.all(15),
+      height: 100,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Column(
+            children: [
+              Text(
+                "#$rank",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: rankColor ?? Colors.white30,
+                ),
+              ),
+              Text(
+                "${group.points} H",
+                style: const TextStyle(color: Colors.white38),
+              )
+            ],
+          ),
+          SizedBox(
+            width: 200,
+            child: Column(
               children: [
                 Text(
-                  "#$rank",
-                  style: TextStyle(
-                    fontSize: 20,
+                  group.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: rankColor ?? Colors.white30,
                   ),
                 ),
                 Text(
-                  "${group.points} H",
+                  group.description,
+                  maxLines: 1,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                  textAlign: TextAlign.center,
                   style: const TextStyle(color: Colors.white38),
                 )
               ],
             ),
-            SizedBox(
-              width: 200,
-              child: Column(
-                children: [
-                  Text(
-                    group.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    group.description,
-                    maxLines: 1,
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.white38),
-                  )
-                ],
-              ),
-            ),
-            const Icon(Icons.chevron_right)
-          ],
-        ),
+          ),
+          const Icon(CupertinoIcons.chevron_forward)
+        ],
       ),
     );
   }

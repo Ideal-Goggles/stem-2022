@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -168,7 +169,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: const [
-                              Icon(Icons.camera_alt, size: 25),
+                              Icon(CupertinoIcons.photo_camera_solid, size: 25),
                               SizedBox(width: 5),
                               Text("Click a Picture"),
                             ],
