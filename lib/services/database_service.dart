@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:stem_2022/models/app_user.dart';
 import 'package:stem_2022/models/food_post.dart';
-import 'package:stem_2022/models/groups/group.dart';
+import 'package:stem_2022/models/group.dart';
 
 class DatabaseService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:stem_2022/models/groups/group.dart';
+import 'package:stem_2022/models/group.dart';
 import 'package:stem_2022/services/database_service.dart';
 
 import 'package:stem_2022/misc_screens/group_details.dart';

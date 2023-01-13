@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'package:stem_2022/models/groups/group.dart';
+import 'package:stem_2022/models/group.dart';
 import 'package:stem_2022/models/app_user.dart';
 import 'package:stem_2022/services/database_service.dart';
 import 'package:stem_2022/services/storage_service.dart';
