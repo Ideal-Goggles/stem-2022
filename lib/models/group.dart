@@ -45,6 +45,18 @@ class SubGroup {
     required this.points,
     required this.lastUpdated,
   });
+
+  factory SubGroup.fromFirestore(DocumentSnapshot snapshot) {
+    final data = snapshot.data() as Map<String, dynamic>;
+
+    return SubGroup(
+      id: snapshot.id,
+      classTeacher: data["classTeacher"],
+      section: data["section"],
+      points: data["points"],
+      lastUpdated: data["lastUpdated"],
+    );
+  }
 }
 
 class HealthDataPoint {
@@ -57,6 +69,16 @@ class HealthDataPoint {
     required this.healthyPercent,
     required this.timestamp,
   });
+
+  factory HealthDataPoint.fromFirestore(DocumentSnapshot snapshot) {
+    final data = snapshot.data() as Map<String, dynamic>;
+
+    return HealthDataPoint(
+      id: snapshot.id,
+      healthyPercent: data["healthyPercent"],
+      timestamp: data["timestamp"],
+    );
+  }
 }
 
 class WastageDataPoint {
@@ -69,4 +91,14 @@ class WastageDataPoint {
     required this.totalWastage,
     required this.timestamp,
   });
+
+  factory WastageDataPoint.fromFirestore(DocumentSnapshot snapshot) {
+    final data = snapshot.data() as Map<String, dynamic>;
+
+    return WastageDataPoint(
+      id: snapshot.id,
+      totalWastage: data["totalWastage"],
+      timestamp: data["timestamp"],
+    );
+  }
 }
