@@ -130,6 +130,14 @@ class DatabaseService {
     return snapshot.exists;
   }
 
+  Stream<Group> streamGroup(String groupId) {
+    return _db
+        .collection("groups")
+        .doc(groupId)
+        .snapshots()
+        .map((document) => Group.fromFirestore(document));
+  }
+
   Future<List<Group>> getGroupsList() async {
     final snapshot = await _db
         .collection("groups")
