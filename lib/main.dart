@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -79,16 +81,34 @@ class MyApp extends StatelessWidget {
             contentTextStyle: TextStyle(color: Colors.white),
           ),
         ),
-        home: MyAppHome(),
+        home: const AppHome(),
       ),
     );
   }
 }
 
-class MyAppHome extends StatelessWidget {
-  MyAppHome({super.key});
+class AppHome extends StatefulWidget {
+  const AppHome({super.key});
 
-  final _bucket = PageStorageBucket();
+  @override
+  State<AppHome> createState() => MyAppHome();
+}
+
+class MyAppHome extends State<AppHome> {  
+  int _currentIndex = 0;
+  late PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,34 +148,71 @@ class MyAppHome extends StatelessWidget {
           ),
           child: const Icon(Icons.add, size: 25),
         ),
-        bottomNavigationBar: Container(
-          color: Colors.grey[900],
-          padding: const EdgeInsets.only(bottom: 10, top: 10),
-          child: SafeArea(
-            child: TabBar(
-              labelColor: Theme.of(context).colorScheme.primary,
-              unselectedLabelColor: Colors.white38,
-              tabs: const [
-                Tab(icon: Icon(Icons.home)),
-                Tab(icon: Icon(Icons.group)),
-                Tab(icon: Icon(Icons.settings))
-              ],
-              indicatorColor: Colors.transparent,
+        bottomNavigationBar: BottomNavyBar(
+          backgroundColor: Colors.grey[900],
+          selectedIndex: _currentIndex,
+          onItemSelected: (index) => setState(() {
+            _currentIndex = index;
+            _pageController.animateToPage(index,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.ease);
+          }),
+          items: <BottomNavyBarItem>[
+            BottomNavyBarItem(
+              title: const Text(
+                'Home',
+                textAlign: TextAlign.center,
+              ),
+              icon: const Icon(CupertinoIcons.house_fill),
+              activeColor: Colors.orange,
+              inactiveColor: Colors.white60,
             ),
-          ),
+            BottomNavyBarItem(
+              title: const Text(
+                'Groups',
+                textAlign: TextAlign.center,
+              ),
+              icon: const Icon(CupertinoIcons.group_solid),
+              activeColor: Colors.yellow,
+              inactiveColor: Colors.white60,
+            ),
+            BottomNavyBarItem(
+              title: const Text(
+                'Stats',
+                textAlign: TextAlign.center,
+              ),
+              icon: const Icon(CupertinoIcons.chart_bar_alt_fill),
+              activeColor: Colors.green,
+              inactiveColor: Colors.white60,
+            ),
+            BottomNavyBarItem(
+              title: const Text(
+                'Settings',
+                textAlign: TextAlign.center,
+              ),
+              icon: const Icon(CupertinoIcons.settings_solid),
+              activeColor: Colors.blue,
+              inactiveColor: Colors.white60,
+            ),
+          ],
         ),
-        body: PageStorage(
-          bucket: _bucket,
-          child: const SafeArea(
-            minimum: EdgeInsets.all(8),
-            child: TabBarView(
-              children: [
-                HomeScreen(),
-                GroupsScreen(),
-                SettingsScreen(),
-              ],
+        body: PageView(
+          controller: _pageController,
+          onPageChanged: (index) {
+            setState(() => _currentIndex = index);
+          },
+          children: <Widget>[
+            const HomeScreen(),
+            const GroupsScreen(),
+            Container(
+              color: Colors.green,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [Text("Coming Soon!")],
+              ),
             ),
-          ),
+            const SettingsScreen(),
+          ],
         ),
       ),
     );

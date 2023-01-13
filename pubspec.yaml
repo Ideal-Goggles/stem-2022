@@ -50,6 +50,7 @@ dependencies:
   url_launcher: ^6.1.7
   firebase_analytics: ^10.1.0
   gradient_borders: ^0.2.0
+  bottom_navy_bar: ^6.0.0
 
 dev_dependencies:
   flutter_test:
