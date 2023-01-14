@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -218,35 +220,38 @@ class ChangePicDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(30)),
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+      child: AlertDialog(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(30)),
+        ),
+        backgroundColor: Colors.grey[900],
+        title: const Text('Change Profile Picture'),
+        content: const Text('Select a new profile picture from your device'),
+        actions: <Widget>[
+          MaterialButton(
+            child: const Text('Cancel'),
+            onPressed: () => Navigator.pop(context, null),
+          ),
+          MaterialButton(
+            onPressed: () => Navigator.pop(context, ImageSource.camera),
+            color: const Color.fromRGBO(13, 71, 161, 0.5),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            elevation: 0,
+            child: const Text('Camera'),
+          ),
+          MaterialButton(
+            onPressed: () => Navigator.pop(context, ImageSource.gallery),
+            color: const Color.fromRGBO(13, 71, 161, 0.5),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            elevation: 0,
+            child: const Text('Gallery'),
+          ),
+        ],
       ),
-      backgroundColor: Colors.grey[900],
-      title: const Text('Change Profile Picture'),
-      content: const Text('Select a new profile picture from your device'),
-      actions: <Widget>[
-        MaterialButton(
-          child: const Text('Cancel'),
-          onPressed: () => Navigator.pop(context, null),
-        ),
-        MaterialButton(
-          onPressed: () => Navigator.pop(context, ImageSource.camera),
-          color: const Color.fromRGBO(13, 71, 161, 0.5),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-          elevation: 0,
-          child: const Text('Camera'),
-        ),
-        MaterialButton(
-          onPressed: () => Navigator.pop(context, ImageSource.gallery),
-          color: const Color.fromRGBO(13, 71, 161, 0.5),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-          elevation: 0,
-          child: const Text('Gallery'),
-        ),
-      ],
     );
   }
 }
@@ -258,37 +263,40 @@ class EditNameDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(30)),
-      ),
-      backgroundColor: Colors.grey[900],
-      title: const Text('Edit Username'),
-      content: TextField(
-        controller: _nameController,
-        autocorrect: false,
-        decoration: const InputDecoration(
-            fillColor: Colors.black38, hintText: 'New username'),
-      ),
-      actions: <Widget>[
-        MaterialButton(
-          onPressed: () => Navigator.of(context).pop(null),
-          child: const Text('Cancel'),
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+      child: AlertDialog(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(30)),
         ),
-        MaterialButton(
-          onPressed: () {
-            if (_nameController.text.isNotEmpty) {
-              Navigator.of(context).pop(_nameController.text);
-            }
-          },
-          color: const Color.fromRGBO(13, 71, 161, 0.5),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(30)),
+        backgroundColor: Colors.grey[900],
+        title: const Text('Edit Username'),
+        content: TextField(
+          controller: _nameController,
+          autocorrect: false,
+          decoration: const InputDecoration(
+              fillColor: Colors.black38, hintText: 'New username'),
+        ),
+        actions: <Widget>[
+          MaterialButton(
+            onPressed: () => Navigator.of(context).pop(null),
+            child: const Text('Cancel'),
           ),
-          elevation: 0,
-          child: const Text('Save'),
-        ),
-      ],
+          MaterialButton(
+            onPressed: () {
+              if (_nameController.text.isNotEmpty) {
+                Navigator.of(context).pop(_nameController.text);
+              }
+            },
+            color: const Color.fromRGBO(13, 71, 161, 0.5),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(30)),
+            ),
+            elevation: 0,
+            child: const Text('Save'),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -342,65 +350,68 @@ class ChangePasswordDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-      backgroundColor: Colors.grey[900],
-      title: const Text('Change Password'),
-      content: SizedBox(
-        height: 150,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _currentPasswordController,
-                validator: (value) {
-                  if (value == null) {
-                    return 'Please enter your current password';
-                  }
-                  return null;
-                },
-                keyboardType: TextInputType.visiblePassword,
-                obscureText: true,
-                decoration: const InputDecoration(
-                    fillColor: Colors.black38, labelText: 'Current password'),
-              ),
-              const SizedBox(height: 15),
-              TextFormField(
-                controller: _newPasswordController,
-                validator: (value) {
-                  if (value != null && value.isNotEmpty) {
-                    if (value.length < 8) {
-                      return "New password must be at least 8 characters long";
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+      child: AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        backgroundColor: Colors.grey[900],
+        title: const Text('Change Password'),
+        content: SizedBox(
+          height: 150,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                TextFormField(
+                  controller: _currentPasswordController,
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Please enter your current password';
                     }
                     return null;
-                  }
-                  return "Please enter your new password";
-                },
-                keyboardType: TextInputType.visiblePassword,
-                obscureText: true,
-                decoration: const InputDecoration(
-                    fillColor: Colors.black38, labelText: 'New password'),
-              ),
-            ],
+                  },
+                  keyboardType: TextInputType.visiblePassword,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                      fillColor: Colors.black38, labelText: 'Current password'),
+                ),
+                const SizedBox(height: 15),
+                TextFormField(
+                  controller: _newPasswordController,
+                  validator: (value) {
+                    if (value != null && value.isNotEmpty) {
+                      if (value.length < 8) {
+                        return "New password must be at least 8 characters long";
+                      }
+                      return null;
+                    }
+                    return "Please enter your new password";
+                  },
+                  keyboardType: TextInputType.visiblePassword,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                      fillColor: Colors.black38, labelText: 'New password'),
+                ),
+              ],
+            ),
           ),
         ),
+        actions: <Widget>[
+          MaterialButton(
+            onPressed: () => Navigator.of(context).pop(null),
+            child: const Text('Cancel'),
+          ),
+          MaterialButton(
+            onPressed: () => _changePassword(context),
+            color: const Color.fromRGBO(13, 71, 161, 0.5),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(30)),
+            ),
+            elevation: 0,
+            child: const Text('Change'),
+          ),
+        ],
       ),
-      actions: <Widget>[
-        MaterialButton(
-          onPressed: () => Navigator.of(context).pop(null),
-          child: const Text('Cancel'),
-        ),
-        MaterialButton(
-          onPressed: () => _changePassword(context),
-          color: const Color.fromRGBO(13, 71, 161, 0.5),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(30)),
-          ),
-          elevation: 0,
-          child: const Text('Change'),
-        ),
-      ],
     );
   }
 }

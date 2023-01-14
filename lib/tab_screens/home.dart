@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math' show pi;
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -68,31 +69,33 @@ class HomeScreenState extends State<HomeScreen> {
       context: context,
       barrierDismissible: false,
       builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-          backgroundColor: Colors.grey[900],
-          title: const Text("Welcome to Hammit!"),
-          content: const Text(
-            "Welcome to Hammit: The Food App! Would you like to take a quick tour?",
-            style: TextStyle(color: Colors.grey),
-          ),
-          actions: [
-            MaterialButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text("No, Thank You"),
-            ),
-            MaterialButton(
-              onPressed: () => Navigator.pop(context, true),
+        return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: AlertDialog(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(30),
               ),
-              color: Theme.of(context).colorScheme.primary,
-              child: const Text("Yes Please!"),
-            ),
-          ],
-        );
+              backgroundColor: Colors.grey[900],
+              title: const Text("Welcome to Hammit!"),
+              content: const Text(
+                "Welcome to Hammit: The Food App! Would you like to take a quick tour?",
+                style: TextStyle(color: Colors.grey),
+              ),
+              actions: [
+                MaterialButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text("No, Thank You"),
+                ),
+                MaterialButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  color: Theme.of(context).colorScheme.primary,
+                  child: const Text("Yes Please!"),
+                ),
+              ],
+            ));
       },
     ).then((redirect) {
       if (redirect!) {
@@ -291,28 +294,31 @@ class _FoodPostCardState extends State<FoodPostCard>
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-          backgroundColor: Colors.grey[900],
-          title: const Text("Delete Post?"),
-          content: const Text(
-            "This post will be permanently deleted.",
-            style: TextStyle(color: Colors.grey),
-          ),
-          actions: [
-            MaterialButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text("Cancel"),
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
             ),
-            MaterialButton(
-              onPressed: () => Navigator.pop(context, true),
-              color: Theme.of(context).colorScheme.error,
-              shape: const StadiumBorder(),
-              child: const Text("Delete"),
+            backgroundColor: Colors.grey[900],
+            title: const Text("Delete Post?"),
+            content: const Text(
+              "This post will be permanently deleted.",
+              style: TextStyle(color: Colors.grey),
             ),
-          ],
+            actions: [
+              MaterialButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text("Cancel"),
+              ),
+              MaterialButton(
+                onPressed: () => Navigator.pop(context, true),
+                color: Theme.of(context).colorScheme.error,
+                shape: const StadiumBorder(),
+                child: const Text("Delete"),
+              ),
+            ],
+          ),
         );
       },
     ).then((deleteConfirmed) {
@@ -397,8 +403,7 @@ class _FoodPostCardState extends State<FoodPostCard>
                             BoxShadow(
                               color: Colors.black.withOpacity(0.4),
                               blurRadius: 16,
-                              offset: const Offset(
-                                  0, 2), // changes position of shadow
+                              offset: const Offset(0, 2),
                             ),
                           ],
                           borderRadius: const BorderRadius.only(
@@ -556,8 +561,7 @@ class _FoodPostCardState extends State<FoodPostCard>
                       BoxShadow(
                         color: Colors.black.withOpacity(0.2),
                         blurRadius: 16,
-                        offset:
-                            const Offset(0, 2), // changes position of shadow
+                        offset: const Offset(0, 2),
                       )
                     ],
                   ),
@@ -611,67 +615,70 @@ class RatingDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30),
-      ),
-      backgroundColor: Colors.grey[900],
-      title: const Text('Rate it'),
-      content: SizedBox(
-        height: 109,
-        child: Column(
-          children: [
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(
-                  5,
-                  (index) => SizedBox(
-                    width: 40,
-                    child: MaterialButton(
-                      onPressed: () => ratingSelect(context, index + 1),
-                      minWidth: 9,
-                      color: Colors.grey[800],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      elevation: 0,
-                      textColor: Theme.of(context).colorScheme.primary,
-                      child: Text("${index + 1}"),
-                    ),
-                  ),
-                )),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(
-                  5,
-                  (index) => SizedBox(
-                    width: 40,
-                    child: MaterialButton(
-                      onPressed: () => ratingSelect(context, index + 6),
-                      minWidth: 9,
-                      color: Colors.grey[800],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      elevation: 0,
-                      textColor: Theme.of(context).colorScheme.primary,
-                      child: Text("${index + 6}"),
-                    ),
-                  ),
-                )),
-            const Text(
-              "1 being least healthy, and 10 being most healthy.",
-              style: TextStyle(color: Colors.grey, fontSize: 10),
-            )
-          ],
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+      child: AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
         ),
+        backgroundColor: Colors.grey[900],
+        title: const Text('Rate it'),
+        content: SizedBox(
+          height: 109,
+          child: Column(
+            children: [
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: List.generate(
+                    5,
+                    (index) => SizedBox(
+                      width: 40,
+                      child: MaterialButton(
+                        onPressed: () => ratingSelect(context, index + 1),
+                        minWidth: 9,
+                        color: Colors.grey[800],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        elevation: 0,
+                        textColor: Theme.of(context).colorScheme.primary,
+                        child: Text("${index + 1}"),
+                      ),
+                    ),
+                  )),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: List.generate(
+                    5,
+                    (index) => SizedBox(
+                      width: 40,
+                      child: MaterialButton(
+                        onPressed: () => ratingSelect(context, index + 6),
+                        minWidth: 9,
+                        color: Colors.grey[800],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        elevation: 0,
+                        textColor: Theme.of(context).colorScheme.primary,
+                        child: Text("${index + 6}"),
+                      ),
+                    ),
+                  )),
+              const Text(
+                "1 being least healthy, and 10 being most healthy.",
+                style: TextStyle(color: Colors.grey, fontSize: 10),
+              )
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          MaterialButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          )
+        ],
       ),
-      actions: <Widget>[
-        MaterialButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
-        )
-      ],
     );
   }
 }

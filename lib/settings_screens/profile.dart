@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import 'package:provider/provider.dart';
@@ -15,28 +17,31 @@ class ProfileScreen extends StatelessWidget {
   void showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(14)),
-        ),
-        backgroundColor: Colors.grey[900],
-        title: const Text('Confirm Logout'),
-        content: const Text('Are you sure you want to log out?'),
-        actions: [
-          MaterialButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+      builder: (context) => BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: AlertDialog(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(14)),
           ),
-          MaterialButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            color: const Color.fromRGBO(160, 0, 0, 1),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(14)),
+          backgroundColor: Colors.grey[900],
+          title: const Text('Confirm Logout'),
+          content: const Text('Are you sure you want to log out?'),
+          actions: [
+            MaterialButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
             ),
-            elevation: 0,
-            child: const Text('Log Out'),
-          ),
-        ],
+            MaterialButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              color: const Color.fromRGBO(160, 0, 0, 1),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(14)),
+              ),
+              elevation: 0,
+              child: const Text('Log Out'),
+            ),
+          ],
+        ),
       ),
     ).then((logoutConfirmed) {
       if (logoutConfirmed) logout(context);
@@ -89,15 +94,37 @@ class ProfileScreen extends StatelessWidget {
                     future: storage.getUserProfileImage(currentUser!.uid),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return CircleAvatar(
-                          radius: 50,
-                          foregroundImage: MemoryImage(snapshot.data!),
+                        return Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.4),
+                                blurRadius: 16,
+                                offset: const Offset(0, 1),
+                              ),
+                            ],
+                          ),
+                          child: CircleAvatar(
+                            radius: 50,
+                            foregroundImage: MemoryImage(snapshot.data!),
+                          ),
                         );
                       }
-                      return const CircleAvatar(
-                        radius: 50,
-                        foregroundImage:
-                            AssetImage("assets/images/defaultUserImage.jpg"),
+                      return Container(
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.4),
+                              blurRadius: 16,
+                              offset: const Offset(0, 1),
+                            ),
+                          ],
+                        ),
+                        child: const CircleAvatar(
+                          radius: 50,
+                          foregroundImage:
+                              AssetImage("assets/images/defaultUserImage.jpg"),
+                        ),
                       );
                     },
                   ),
@@ -119,7 +146,8 @@ class ProfileScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(CupertinoIcons.flame, color: Colors.orange[600]),
+                      Icon(CupertinoIcons.flame_fill,
+                          color: Colors.orange[600]),
                       const SizedBox(width: 3),
                       StreamBuilder(
                         stream: db.streamAppUser(currentUser.uid),

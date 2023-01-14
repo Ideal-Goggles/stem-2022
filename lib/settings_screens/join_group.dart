@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,26 +21,30 @@ class _JoinGroupScreenState extends State<JoinGroupScreen> {
   Future<bool> showJoinGroupDialog() async {
     return await showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-        backgroundColor: Colors.grey[900],
-        title: const Text("Join this group"),
-        content: const Text(
-          "Are you sure you want to join this group? You will automatically leave your current group.",
+      builder: (context) => BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          backgroundColor: Colors.grey[900],
+          title: const Text("Join this group"),
+          content: const Text(
+            "Are you sure you want to join this group? You will automatically leave your current group.",
+          ),
+          actions: [
+            MaterialButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text("Cancel"),
+            ),
+            MaterialButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              color: const Color.fromRGBO(160, 0, 0, 1),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14)),
+              child: const Text("Join"),
+            ),
+          ],
         ),
-        actions: [
-          MaterialButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text("Cancel"),
-          ),
-          MaterialButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            color: const Color.fromRGBO(160, 0, 0, 1),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-            child: const Text("Join"),
-          ),
-        ],
       ),
     );
   }

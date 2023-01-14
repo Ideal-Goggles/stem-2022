@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/cupertino.dart';
@@ -52,7 +54,8 @@ class MyApp extends StatelessWidget {
           highlightColor: Colors.transparent,
           splashColor: Colors.transparent,
           scaffoldBackgroundColor: Colors.grey.shade900.withOpacity(0.2),
-          appBarTheme: AppBarTheme(color: Colors.grey[900], elevation: 0),
+          appBarTheme:
+              AppBarTheme(color: Colors.grey.shade900.withOpacity(0.5)),
           colorScheme: const ColorScheme.dark(
               primary: primaryThemeColor, error: primaryErrorColor),
           inputDecorationTheme: InputDecorationTheme(
@@ -143,7 +146,7 @@ class MyAppHome extends State<AppHome> {
             }
           },
           style: ElevatedButton.styleFrom(
-            elevation: 5,
+            elevation: 1,
             fixedSize: const Size.fromRadius(25),
             shape: const CircleBorder(),
             foregroundColor: Colors.white,
@@ -151,7 +154,7 @@ class MyAppHome extends State<AppHome> {
           ),
           child: const Icon(
               CupertinoIcons.plus_rectangle_fill_on_rectangle_fill,
-              size: 25),
+              size: 18),
         ),
         bottomNavigationBar: BottomNavyBar(
           backgroundColor: Colors.grey[900],
