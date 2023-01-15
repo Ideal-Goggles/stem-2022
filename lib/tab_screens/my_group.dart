@@ -1,13 +1,12 @@
-import 'dart:math';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fl_chart/fl_chart.dart';
 
 import 'package:stem_2022/models/app_user.dart';
 import 'package:stem_2022/models/group.dart';
 import 'package:stem_2022/services/database_service.dart';
+
+import 'package:stem_2022/chart_widgets/daily_health_chart.dart';
+import 'package:stem_2022/chart_widgets/daily_wastage_chart.dart';
 
 class MyGroupScreen extends StatelessWidget {
   const MyGroupScreen({super.key});
@@ -70,7 +69,7 @@ class MyGroupScreen extends StatelessWidget {
 
         return TeacherView(
           groupId: group.id,
-          subGroupId: subGroup!.id,
+          subGroup: subGroup!,
           writeable: subGroup.classTeacher == appUser.id,
         );
       },
@@ -78,184 +77,22 @@ class MyGroupScreen extends StatelessWidget {
   }
 }
 
-String? weekdayIntToString(int weekday) {
-  switch (weekday) {
-    case 1:
-      return "MON";
-    case 2:
-      return "TUE";
-    case 3:
-      return "WED";
-    case 4:
-      return "THU";
-    case 5:
-      return "FRI";
-    case 6:
-      return "SAT";
-    case 7:
-      return "SUN";
-    default:
-      return null;
-  }
-}
-
-LineChart _dailyWastageReportChart(List<WastageDataPoint> wastageData) {
-  return LineChart(
-    LineChartData(
-      minX: 0,
-      maxX: min(7, wastageData.length).toDouble(),
-      minY: 0,
-      borderData: FlBorderData(
-        border: Border.all(color: Colors.blueGrey, width: 0.5),
-      ),
-      gridData: FlGridData(verticalInterval: 1),
-      titlesData: FlTitlesData(
-        rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        leftTitles: AxisTitles(
-          drawBehindEverything: true,
-          sideTitles: SideTitles(
-            showTitles: true,
-            reservedSize: 45,
-            getTitlesWidget: (value, meta) {
-              final v = value >= 1000
-                  ? "${value ~/ 1000} K"
-                  : value.toInt().toString();
-
-              return Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: Text(
-                  "${v}g",
-                  textAlign: TextAlign.end,
-                  style: TextStyle(fontSize: 12, color: Colors.grey[400]),
-                ),
-              );
-            },
-          ),
-        ),
-        bottomTitles: AxisTitles(
-          drawBehindEverything: true,
-          sideTitles: SideTitles(
-            showTitles: true,
-            interval: 1,
-            reservedSize: 28,
-            getTitlesWidget: (value, meta) {
-              if (value >= wastageData.length) return const Text("");
-              final date = wastageData[value.toInt()].timestamp.toDate();
-
-              return Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  weekdayIntToString(date.weekday) ?? "DAY",
-                  style: TextStyle(fontSize: 12, color: Colors.grey[400]),
-                ),
-              );
-            },
-          ),
-        ),
-      ),
-      lineBarsData: [
-        LineChartBarData(
-          isCurved: true,
-          spots: wastageData
-              .asMap()
-              .map(
-                (idx, dataPoint) => MapEntry(
-                  idx,
-                  FlSpot(idx.toDouble(), dataPoint.totalWastage),
-                ),
-              )
-              .values
-              .toList(),
-        ),
-      ],
-    ),
-  );
-}
-
-LineChart _dailyHealthReportChart(List<HealthDataPoint> healthData) {
-  return LineChart(
-    LineChartData(
-      minX: 0,
-      maxX: min(7, healthData.length).toDouble(),
-      minY: 0,
-      maxY: 100,
-      borderData: FlBorderData(
-        border: Border.all(color: Colors.blueGrey, width: 0.5),
-      ),
-      gridData: FlGridData(verticalInterval: 1),
-      titlesData: FlTitlesData(
-        rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        leftTitles: AxisTitles(
-          drawBehindEverything: true,
-          sideTitles: SideTitles(
-            showTitles: true,
-            reservedSize: 45,
-            getTitlesWidget: (value, meta) {
-              return Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: Text(
-                  "${value.toInt()}%",
-                  textAlign: TextAlign.end,
-                  style: TextStyle(fontSize: 12, color: Colors.grey[400]),
-                ),
-              );
-            },
-          ),
-        ),
-        bottomTitles: AxisTitles(
-          drawBehindEverything: true,
-          sideTitles: SideTitles(
-            showTitles: true,
-            interval: 1,
-            reservedSize: 28,
-            getTitlesWidget: (value, meta) {
-              if (value >= healthData.length) return const Text("");
-              final date = healthData[value.toInt()].timestamp.toDate();
-
-              return Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  weekdayIntToString(date.weekday) ?? "DAY",
-                  style: TextStyle(fontSize: 12, color: Colors.grey[400]),
-                ),
-              );
-            },
-          ),
-        ),
-      ),
-      lineBarsData: [
-        LineChartBarData(
-          isCurved: true,
-          spots: healthData
-              .asMap()
-              .map(
-                (idx, dataPoint) => MapEntry(
-                  idx,
-                  FlSpot(idx.toDouble(), dataPoint.healthyPercent * 100),
-                ),
-              )
-              .values
-              .toList(),
-        ),
-      ],
-    ),
-  );
-}
-
 class TeacherView extends StatelessWidget {
   final String groupId;
-  final String subGroupId;
+  final SubGroup subGroup;
   final bool writeable;
 
   const TeacherView({
     super.key,
     required this.groupId,
-    required this.subGroupId,
+    required this.subGroup,
     required this.writeable,
   });
 
+  TextStyle get _bodyTextStyle => TextStyle(
+        color: Colors.grey.shade300,
+        fontSize: 15,
+      );
   Divider get _divider => const Divider(thickness: 1, color: Colors.white38);
 
   @override
@@ -267,7 +104,11 @@ class TeacherView extends StatelessWidget {
       child: ListView(
         children: [
           _divider,
-          const Text("Daily Report", style: TextStyle(fontSize: 20)),
+          Text(
+            "Daily Report of ${subGroup.id}",
+            style: const TextStyle(fontSize: 20),
+          ),
+          Text("Total Points: ${subGroup.points} H", style: _bodyTextStyle),
 
           // Wastage Report
           const SizedBox(height: 15),
@@ -284,7 +125,7 @@ class TeacherView extends StatelessWidget {
               color: const Color.fromRGBO(17, 40, 106, 1),
             ),
             child: StreamBuilder(
-              stream: db.streamPreviousWeekWastageData(groupId, subGroupId),
+              stream: db.streamPreviousWeekWastageData(groupId, subGroup.id),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Center(
@@ -302,7 +143,7 @@ class TeacherView extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                return _dailyWastageReportChart(snapshot.data!);
+                return DailyWastageChart(data: snapshot.data!);
               },
             ),
           ),
@@ -328,7 +169,7 @@ class TeacherView extends StatelessWidget {
               color: const Color.fromRGBO(17, 40, 106, 1),
             ),
             child: StreamBuilder(
-              stream: db.streamPreviousWeekHealthData(groupId, subGroupId),
+              stream: db.streamPreviousWeekHealthData(groupId, subGroup.id),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Center(
@@ -346,7 +187,7 @@ class TeacherView extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                return _dailyHealthReportChart(snapshot.data!);
+                return DailyHealthChart(data: snapshot.data!);
               },
             ),
           ),
