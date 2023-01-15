@@ -83,7 +83,7 @@ class HealthDataPoint {
 
 class WastageDataPoint {
   final String id;
-  final double totalWastage;
+  final int totalWastage;
   final Timestamp timestamp;
 
   const WastageDataPoint({

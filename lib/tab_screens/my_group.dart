@@ -69,7 +69,8 @@ class MyGroupScreen extends StatelessWidget {
         }
 
         return TeacherView(
-          subGroup: subGroup!,
+          groupId: group.id,
+          subGroupId: subGroup!.id,
           writeable: subGroup.classTeacher == appUser.id,
         );
       },
@@ -78,24 +79,23 @@ class MyGroupScreen extends StatelessWidget {
 }
 
 class TeacherView extends StatelessWidget {
-  final SubGroup subGroup;
+  final String groupId;
+  final String subGroupId;
   final bool writeable;
 
   const TeacherView({
     super.key,
-    required this.subGroup,
+    required this.groupId,
+    required this.subGroupId,
     required this.writeable,
   });
 
   Divider get _divider => const Divider(thickness: 1, color: Colors.white38);
 
-  Widget dailyReportChart({
-    required List<WastageDataPoint> wastageData,
-    required List<HealthDataPoint> healthData,
-  }) {
+  Widget dailyWastageReportChart(List<WastageDataPoint> wastageData) {
     return Container(
       height: 300,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
+      padding: const EdgeInsets.only(left: 6, bottom: 6, right: 10, top: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: const Color.fromRGBO(17, 40, 106, 1),
@@ -179,7 +179,9 @@ class TeacherView extends StatelessWidget {
                   .asMap()
                   .map(
                     (idx, dataPoint) => MapEntry(
-                        idx, FlSpot(idx.toDouble(), dataPoint.totalWastage)),
+                      idx,
+                      FlSpot(idx.toDouble(), dataPoint.totalWastage.toDouble()),
+                    ),
                   )
                   .values
                   .toList(),
@@ -192,6 +194,8 @@ class TeacherView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final db = Provider.of<DatabaseService>(context);
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -200,32 +204,27 @@ class TeacherView extends StatelessWidget {
           _divider,
           const Text("Daily Report", style: TextStyle(fontSize: 20)),
           const SizedBox(height: 10),
+          StreamBuilder(
+              stream: db.streamPreviousWeekWastageData(groupId, subGroupId),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text(
+                      snapshot.error.toString(),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                        fontSize: 18,
+                      ),
+                    ),
+                  );
+                }
 
-          // TODO: Add real data
-          dailyReportChart(
-            wastageData: [
-              WastageDataPoint(
-                id: "",
-                totalWastage: 350,
-                timestamp: Timestamp.now(),
-              ),
-              WastageDataPoint(
-                id: "",
-                totalWastage: 637,
-                timestamp: Timestamp.fromDate(
-                  DateTime.now().add(const Duration(days: 1)),
-                ),
-              ),
-              WastageDataPoint(
-                id: "",
-                totalWastage: 103,
-                timestamp: Timestamp.fromDate(
-                  DateTime.now().add(const Duration(days: 2)),
-                ),
-              ),
-            ],
-            healthData: [],
-          ),
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                return dailyWastageReportChart(snapshot.data!);
+              }),
         ],
       ),
     );

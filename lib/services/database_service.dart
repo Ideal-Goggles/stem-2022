@@ -185,4 +185,42 @@ class DatabaseService {
         .snapshots()
         .map((document) => SubGroup.fromFirestore(document));
   }
+
+  Stream<List<WastageDataPoint>> streamPreviousWeekWastageData(
+      String groupId, String subGroupId) {
+    final snapshotStream = _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .doc(subGroupId)
+        .collection("wastage")
+        .orderBy("timestamp")
+        .limit(7)
+        .snapshots();
+
+    return snapshotStream.map(
+      (snapshot) => snapshot.docs
+          .map((document) => WastageDataPoint.fromFirestore(document))
+          .toList(),
+    );
+  }
+
+  Stream<List<HealthDataPoint>> streamPreviousWeekHealthData(
+      String groupId, String subGroupId) {
+    final snapshotStream = _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .doc(subGroupId)
+        .collection("health")
+        .orderBy("timestamp")
+        .limit(7)
+        .snapshots();
+
+    return snapshotStream.map(
+      (snapshot) => snapshot.docs
+          .map((document) => HealthDataPoint.fromFirestore(document))
+          .toList(),
+    );
+  }
 }
