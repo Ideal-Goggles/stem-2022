@@ -83,7 +83,7 @@ class HealthDataPoint {
 
 class WastageDataPoint {
   final String id;
-  final int totalWastage;
+  final double totalWastage;
   final Timestamp timestamp;
 
   const WastageDataPoint({
@@ -97,7 +97,7 @@ class WastageDataPoint {
 
     return WastageDataPoint(
       id: snapshot.id,
-      totalWastage: data["totalWastage"],
+      totalWastage: data["totalWastage"].toDouble(),
       timestamp: data["timestamp"],
     );
   }
