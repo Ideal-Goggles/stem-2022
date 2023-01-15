@@ -34,45 +34,48 @@ class MyGroupScreen extends StatelessWidget {
       return centerText("Join a group to view group details");
     }
 
-    return MultiProvider(
-      providers: [
-        StreamProvider<Group?>.value(
-          value: db.streamGroup(appUser.groupId!),
-          initialData: null,
-        ),
-        StreamProvider<SubGroup?>.value(
-          value: appUser.subGroupId == null
-              ? null
-              : db.streamSubGroup(appUser.groupId!, appUser.subGroupId!),
-          initialData: null,
-        ),
-      ],
-      builder: (context, child) {
-        final group = Provider.of<Group?>(context);
-        final subGroup = Provider.of<SubGroup?>(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: MultiProvider(
+        providers: [
+          StreamProvider<Group?>.value(
+            value: db.streamGroup(appUser.groupId!),
+            initialData: null,
+          ),
+          StreamProvider<SubGroup?>.value(
+            value: appUser.subGroupId == null
+                ? null
+                : db.streamSubGroup(appUser.groupId!, appUser.subGroupId!),
+            initialData: null,
+          ),
+        ],
+        builder: (context, child) {
+          final group = Provider.of<Group?>(context);
+          final subGroup = Provider.of<SubGroup?>(context);
 
-        if (group == null) {
-          return const Center(child: CircularProgressIndicator());
-        }
+          if (group == null) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-        if (group.admin == appUser.id) {
-          return const PrincipalView();
-        }
+          if (group.admin == appUser.id) {
+            return const PrincipalView();
+          }
 
-        if (group.supervisors.containsKey(appUser.id)) {
-          return SupervisorView(section: group.supervisors[appUser.id]!);
-        }
+          if (group.supervisors.containsKey(appUser.id)) {
+            return SupervisorView(section: group.supervisors[appUser.id]!);
+          }
 
-        if (appUser.subGroupId == null) {
-          return centerText("Join a class to view class details");
-        }
+          if (appUser.subGroupId == null) {
+            return centerText("Join a class to view class details");
+          }
 
-        return TeacherView(
-          groupId: group.id,
-          subGroup: subGroup!,
-          writeable: subGroup.classTeacher == appUser.id,
-        );
-      },
+          return TeacherView(
+            groupId: group.id,
+            subGroup: subGroup!,
+            writeable: subGroup.classTeacher == appUser.id,
+          );
+        },
+      ),
     );
   }
 }
@@ -99,106 +102,104 @@ class TeacherView extends StatelessWidget {
   Widget build(BuildContext context) {
     final db = Provider.of<DatabaseService>(context);
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ListView(
-        children: [
-          _divider,
-          Text(
-            "Daily Report of ${subGroup.id}",
-            style: const TextStyle(fontSize: 20),
-          ),
-          Text("Total Points: ${subGroup.points} H", style: _bodyTextStyle),
+    return ListView(
+      padding: const EdgeInsets.only(bottom: 75),
+      children: [
+        _divider,
+        Text(
+          "Daily Report of ${subGroup.id}",
+          style: const TextStyle(fontSize: 20),
+        ),
+        Text("Total Points: ${subGroup.points} H", style: _bodyTextStyle),
 
-          // Wastage Report
-          const SizedBox(height: 15),
-          Container(
-            height: 280,
-            padding: const EdgeInsets.only(
-              left: 6,
-              bottom: 6,
-              right: 10,
-              top: 12,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: const Color.fromRGBO(17, 40, 106, 1),
-            ),
-            child: StreamBuilder(
-              stream: db.streamPreviousWeekWastageData(groupId, subGroup.id),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text(
-                      snapshot.error.toString(),
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.error,
-                        fontSize: 18,
-                      ),
+        // Wastage Report
+        const SizedBox(height: 15),
+        Container(
+          height: 280,
+          padding: const EdgeInsets.only(
+            left: 6,
+            bottom: 6,
+            right: 10,
+            top: 12,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: const Color.fromRGBO(17, 40, 106, 1),
+          ),
+          child: StreamBuilder(
+            stream: db.streamPreviousWeekWastageData(groupId, subGroup.id),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text(
+                    snapshot.error.toString(),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                      fontSize: 18,
                     ),
-                  );
-                }
+                  ),
+                );
+              }
 
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-                return DailyWastageChart(data: snapshot.data!);
-              },
-            ),
+              return DailyWastageChart(data: snapshot.data!);
+            },
           ),
-          const Center(
-            child: Text(
-              "Wastage Report",
-              style: TextStyle(fontSize: 15, color: Colors.grey),
-            ),
+        ),
+        const Center(
+          child: Text(
+            "Wastage Report",
+            style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
+        ),
 
-          // Health Report
-          const SizedBox(height: 20),
-          Container(
-            height: 280,
-            padding: const EdgeInsets.only(
-              left: 6,
-              bottom: 6,
-              right: 10,
-              top: 12,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: const Color.fromRGBO(17, 40, 106, 1),
-            ),
-            child: StreamBuilder(
-              stream: db.streamPreviousWeekHealthData(groupId, subGroup.id),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text(
-                      snapshot.error.toString(),
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.error,
-                        fontSize: 18,
-                      ),
+        // Health Report
+        const SizedBox(height: 20),
+        Container(
+          height: 280,
+          padding: const EdgeInsets.only(
+            left: 6,
+            bottom: 6,
+            right: 10,
+            top: 12,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: const Color.fromRGBO(17, 40, 106, 1),
+          ),
+          child: StreamBuilder(
+            stream: db.streamPreviousWeekHealthData(groupId, subGroup.id),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text(
+                    snapshot.error.toString(),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                      fontSize: 18,
                     ),
-                  );
-                }
+                  ),
+                );
+              }
 
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-                return DailyHealthChart(data: snapshot.data!);
-              },
-            ),
+              return DailyHealthChart(data: snapshot.data!);
+            },
           ),
-          const Center(
-            child: Text(
-              "Health Report",
-              style: TextStyle(fontSize: 15, color: Colors.grey),
-            ),
+        ),
+        const Center(
+          child: Text(
+            "Health Report",
+            style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
