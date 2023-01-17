@@ -186,8 +186,11 @@ class DatabaseService {
         .map((document) => SubGroup.fromFirestore(document));
   }
 
-  Stream<List<WastageDataPoint>> streamPreviousWeekWastageData(
-      String groupId, String subGroupId) {
+  Stream<List<WastageDataPoint>> streamWastageData(
+    String groupId,
+    String subGroupId, {
+    int limit = 5,
+  }) {
     final snapshotStream = _db
         .collection("groups")
         .doc(groupId)
@@ -195,7 +198,7 @@ class DatabaseService {
         .doc(subGroupId)
         .collection("wastage")
         .orderBy("timestamp")
-        .limit(7)
+        .limit(limit)
         .snapshots();
 
     return snapshotStream.map(
@@ -205,8 +208,11 @@ class DatabaseService {
     );
   }
 
-  Stream<List<HealthDataPoint>> streamPreviousWeekHealthData(
-      String groupId, String subGroupId) {
+  Stream<List<HealthDataPoint>> streamHealthData(
+    String groupId,
+    String subGroupId, {
+    int limit = 5,
+  }) {
     final snapshotStream = _db
         .collection("groups")
         .doc(groupId)
@@ -214,7 +220,7 @@ class DatabaseService {
         .doc(subGroupId)
         .collection("health")
         .orderBy("timestamp")
-        .limit(7)
+        .limit(limit)
         .snapshots();
 
     return snapshotStream.map(
@@ -222,5 +228,35 @@ class DatabaseService {
           .map((document) => HealthDataPoint.fromFirestore(document))
           .toList(),
     );
+  }
+
+  Future<void> addSubGroupData({
+    required String groupId,
+    required String subGroupId,
+    required double totalWastage,
+    required double healthyPercent,
+  }) async {
+    final subGroupDocRef = _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .doc(subGroupId);
+
+    final wastageDocRef = subGroupDocRef.collection("wastage").doc();
+    final healthDocRef = subGroupDocRef.collection("health").doc();
+
+    final now = Timestamp.now();
+    final wastageData = WastageDataPoint(
+        id: wastageDocRef.id, totalWastage: totalWastage, timestamp: now);
+    final healthData = HealthDataPoint(
+        id: healthDocRef.id, healthyPercent: healthyPercent, timestamp: now);
+
+    final wastageFuture = wastageDocRef.set(wastageData.toMap());
+    final healthFuture = healthDocRef.set(healthData.toMap());
+
+    // Update subgroup after adding new datapoints
+    return wastageFuture
+        .then((_) => healthFuture)
+        .then((_) => subGroupDocRef.update({"lastUpdated": now}));
   }
 }

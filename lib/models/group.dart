@@ -79,6 +79,13 @@ class HealthDataPoint {
       timestamp: data["timestamp"],
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "healthyPercent": healthyPercent,
+      "timestamp": timestamp,
+    };
+  }
 }
 
 class WastageDataPoint {
@@ -100,5 +107,12 @@ class WastageDataPoint {
       totalWastage: data["totalWastage"].toDouble(),
       timestamp: data["timestamp"],
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "totalWastage": totalWastage,
+      "timestamp": timestamp,
+    };
   }
 }

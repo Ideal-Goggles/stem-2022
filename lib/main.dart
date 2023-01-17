@@ -98,7 +98,9 @@ class MyAppHome extends StatelessWidget {
     final currentUser = Provider.of<User?>(context);
 
     return StreamProvider.value(
-      value: currentUser == null ? null : db.streamAppUser(currentUser.uid),
+      value: currentUser == null
+          ? Stream.value(null)
+          : db.streamAppUser(currentUser.uid),
       initialData: null,
       child: DefaultTabController(
         length: 4,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:stem_2022/misc.dart';
 import 'package:stem_2022/models/app_user.dart';
 import 'package:stem_2022/models/group.dart';
 import 'package:stem_2022/services/database_service.dart';
@@ -101,10 +102,11 @@ class _AddDataAlertDialogState extends State<AddDataAlertDialog> {
       title: const Text("Add Class Data"),
       content: SizedBox(
         width: 300,
-        height: 140,
+        height: 180,
         child: Form(
           key: _formKey,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextFormField(
                 onSaved: (newValue) => foodWastage = double.parse(newValue!),
@@ -116,13 +118,13 @@ class _AddDataAlertDialogState extends State<AddDataAlertDialog> {
                   label: Text("Food Wastage (grams)"),
                 ),
                 validator: (value) {
-                  if (value != null) {
+                  if (value != null && value.isNotEmpty) {
                     if (double.tryParse(value) == null) {
-                      return "Enter a valid number!";
+                      return "Enter a valid number";
                     }
                     return null;
                   }
-                  return "Please enter a number!";
+                  return "Please enter a number";
                 },
               ),
               const SizedBox(height: 15),
@@ -136,13 +138,17 @@ class _AddDataAlertDialogState extends State<AddDataAlertDialog> {
                   label: Text("Percentage of Healthy Students"),
                 ),
                 validator: (value) {
-                  if (value != null) {
-                    if (double.tryParse(value) == null) {
-                      return "Enter a valid number!";
+                  if (value != null && value.isNotEmpty) {
+                    final numValue = double.tryParse(value);
+
+                    if (numValue == null) {
+                      return "Enter a valid number";
+                    } else if (numValue < 0 || numValue > 100) {
+                      return "Percentage must be between 0% and 100%";
                     }
                     return null;
                   }
-                  return "Please enter a number!";
+                  return "Please enter a number";
                 },
               ),
             ],
@@ -150,13 +156,21 @@ class _AddDataAlertDialogState extends State<AddDataAlertDialog> {
         ),
       ),
       actions: [
-        // TODO: Actions
         MaterialButton(
-          onPressed: () {},
+          onPressed: () => Navigator.pop(context),
           child: const Text("Cancel"),
         ),
         MaterialButton(
-          onPressed: () {},
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              _formKey.currentState!.save();
+
+              Navigator.pop(
+                context,
+                Pair(first: foodWastage, second: healthyPercent / 100),
+              );
+            }
+          },
           color: Theme.of(context).colorScheme.primary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
@@ -217,13 +231,39 @@ class TeacherView extends StatelessWidget {
       return;
     }
 
-    await showDialog(
+    showDialog<Pair?>(
       context: context,
       barrierDismissible: false,
       builder: (context) {
         return const AddDataAlertDialog();
       },
-    );
+    ).then<bool>((dataPair) {
+      if (dataPair == null) return false;
+      final db = Provider.of<DatabaseService>(context, listen: false);
+
+      return db
+          .addSubGroupData(
+            groupId: groupId,
+            subGroupId: subGroup.id,
+            totalWastage: dataPair.first,
+            healthyPercent: dataPair.second,
+          )
+          .then((_) => true);
+    }).then((value) {
+      if (value) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+            "Successfully added new data!",
+            textAlign: TextAlign.center,
+          ),
+        ));
+      }
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(error.toString(), textAlign: TextAlign.center),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      ));
+    });
   }
 
   @override
@@ -255,7 +295,7 @@ class TeacherView extends StatelessWidget {
             color: const Color.fromRGBO(17, 40, 106, 1),
           ),
           child: StreamBuilder(
-            stream: db.streamPreviousWeekWastageData(groupId, subGroup.id),
+            stream: db.streamWastageData(groupId, subGroup.id),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Center(
@@ -279,7 +319,7 @@ class TeacherView extends StatelessWidget {
         ),
         const Center(
           child: Text(
-            "Wastage Report",
+            "Wastage Report (Previous Week)",
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ),
@@ -299,7 +339,7 @@ class TeacherView extends StatelessWidget {
             color: const Color.fromRGBO(17, 40, 106, 1),
           ),
           child: StreamBuilder(
-            stream: db.streamPreviousWeekHealthData(groupId, subGroup.id),
+            stream: db.streamHealthData(groupId, subGroup.id),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Center(
@@ -323,7 +363,7 @@ class TeacherView extends StatelessWidget {
         ),
         const Center(
           child: Text(
-            "Health Report",
+            "Health Report (Previous Week)",
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ),
