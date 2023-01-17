@@ -80,6 +80,94 @@ class MyGroupScreen extends StatelessWidget {
   }
 }
 
+class AddDataAlertDialog extends StatefulWidget {
+  const AddDataAlertDialog({super.key});
+
+  @override
+  State<AddDataAlertDialog> createState() => _AddDataAlertDialogState();
+}
+
+class _AddDataAlertDialogState extends State<AddDataAlertDialog> {
+  final _formKey = GlobalKey<FormState>();
+
+  double foodWastage = 0;
+  double healthyPercent = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: Colors.grey[900],
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      title: const Text("Add Class Data"),
+      content: SizedBox(
+        width: 300,
+        height: 140,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                onSaved: (newValue) => foodWastage = double.parse(newValue!),
+                keyboardType: const TextInputType.numberWithOptions(
+                  signed: false,
+                  decimal: true,
+                ),
+                decoration: const InputDecoration(
+                  label: Text("Food Wastage (grams)"),
+                ),
+                validator: (value) {
+                  if (value != null) {
+                    if (double.tryParse(value) == null) {
+                      return "Enter a valid number!";
+                    }
+                    return null;
+                  }
+                  return "Please enter a number!";
+                },
+              ),
+              const SizedBox(height: 15),
+              TextFormField(
+                onSaved: (newValue) => healthyPercent = double.parse(newValue!),
+                keyboardType: const TextInputType.numberWithOptions(
+                  signed: false,
+                  decimal: true,
+                ),
+                decoration: const InputDecoration(
+                  label: Text("Percentage of Healthy Students"),
+                ),
+                validator: (value) {
+                  if (value != null) {
+                    if (double.tryParse(value) == null) {
+                      return "Enter a valid number!";
+                    }
+                    return null;
+                  }
+                  return "Please enter a number!";
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        // TODO: Actions
+        MaterialButton(
+          onPressed: () {},
+          child: const Text("Cancel"),
+        ),
+        MaterialButton(
+          onPressed: () {},
+          color: Theme.of(context).colorScheme.primary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: const Text("Submit"),
+        ),
+      ],
+    );
+  }
+}
+
 class TeacherView extends StatelessWidget {
   final String groupId;
   final SubGroup subGroup;
@@ -92,11 +180,51 @@ class TeacherView extends StatelessWidget {
     required this.writeable,
   });
 
+  final _dataTimeGap = const Duration(hours: 20);
+
   TextStyle get _bodyTextStyle => TextStyle(
         color: Colors.grey.shade300,
         fontSize: 15,
       );
   Divider get _divider => const Divider(thickness: 1, color: Colors.white38);
+
+  Future<void> showAddDataDialog(BuildContext context) async {
+    if (!writeable) return;
+
+    final now = DateTime.now();
+    final timeDiff = now.difference(subGroup.lastUpdated.toDate());
+
+    if (timeDiff <= _dataTimeGap) {
+      final nextDataTime = subGroup.lastUpdated.toDate().add(_dataTimeGap);
+      final timeTillNext = nextDataTime.difference(now);
+
+      String timeString;
+
+      if (timeTillNext.inSeconds > 60) {
+        final timeStringSplit = timeTillNext.toString().split(":");
+        timeString = "${timeStringSplit[0]}:${timeStringSplit[1]} hour(s)";
+      } else {
+        timeString = "${timeTillNext.inSeconds} second(s)";
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+          "You have already added data today, come back in $timeString.",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      ));
+      return;
+    }
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return const AddDataAlertDialog();
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -199,6 +327,23 @@ class TeacherView extends StatelessWidget {
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ),
+
+        // Add Data Button
+        if (writeable) ...[
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 50),
+            child: MaterialButton(
+              height: 42,
+              onPressed: () => showAddDataDialog(context),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              color: Theme.of(context).colorScheme.primary,
+              child: const Text("Add Data"),
+            ),
+          ),
+        ],
       ],
     );
   }
