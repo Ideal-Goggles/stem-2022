@@ -36,7 +36,7 @@ class SubGroup {
   final String classTeacher;
   final String section;
   final int points;
-  final Timestamp lastUpdated;
+  final Timestamp? lastUpdated;
 
   const SubGroup({
     required this.id,

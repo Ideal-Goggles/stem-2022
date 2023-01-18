@@ -205,30 +205,32 @@ class TeacherView extends StatelessWidget {
   Future<void> showAddDataDialog(BuildContext context) async {
     if (!writeable) return;
 
-    final now = DateTime.now();
-    final timeDiff = now.difference(subGroup.lastUpdated.toDate());
+    if (subGroup.lastUpdated != null) {
+      final now = DateTime.now();
+      final timeDiff = now.difference(subGroup.lastUpdated!.toDate());
 
-    if (timeDiff <= _dataTimeGap) {
-      final nextDataTime = subGroup.lastUpdated.toDate().add(_dataTimeGap);
-      final timeTillNext = nextDataTime.difference(now);
+      if (timeDiff <= _dataTimeGap) {
+        final nextDataTime = subGroup.lastUpdated!.toDate().add(_dataTimeGap);
+        final timeTillNext = nextDataTime.difference(now);
 
-      String timeString;
+        String timeString;
 
-      if (timeTillNext.inSeconds > 60) {
-        final timeStringSplit = timeTillNext.toString().split(":");
-        timeString = "${timeStringSplit[0]}:${timeStringSplit[1]} hour(s)";
-      } else {
-        timeString = "${timeTillNext.inSeconds} second(s)";
+        if (timeTillNext.inSeconds > 60) {
+          final timeStringSplit = timeTillNext.toString().split(":");
+          timeString = "${timeStringSplit[0]}:${timeStringSplit[1]} hour(s)";
+        } else {
+          timeString = "${timeTillNext.inSeconds} second(s)";
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+            "You have already added data today, come back in $timeString.",
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ));
+        return;
       }
-
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
-          "You have already added data today, come back in $timeString.",
-          textAlign: TextAlign.center,
-        ),
-        backgroundColor: Theme.of(context).colorScheme.error,
-      ));
-      return;
     }
 
     showDialog<Pair?>(
