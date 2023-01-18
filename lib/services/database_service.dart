@@ -230,6 +230,64 @@ class DatabaseService {
     );
   }
 
+  Stream<List<WastageDataPoint>> streamWastageDataForYear(
+    String groupId,
+    String subGroupId, {
+    required int year,
+  }) {
+    final yearBegin = DateTime(year);
+    final yearEnd = yearBegin.add(const Duration(days: 365));
+
+    final snapshotStream = _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .doc(subGroupId)
+        .collection("wastage")
+        .orderBy("timestamp")
+        .where(
+          "timestamp",
+          isGreaterThan: Timestamp.fromDate(yearBegin),
+          isLessThan: Timestamp.fromDate(yearEnd),
+        )
+        .snapshots();
+
+    return snapshotStream.map(
+      (snapshot) => snapshot.docs
+          .map((document) => WastageDataPoint.fromFirestore(document))
+          .toList(),
+    );
+  }
+
+  Stream<List<HealthDataPoint>> streamHealthDataForYear(
+    String groupId,
+    String subGroupId, {
+    required int year,
+  }) {
+    final yearBegin = DateTime(year);
+    final yearEnd = yearBegin.add(const Duration(days: 365));
+
+    final snapshotStream = _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .doc(subGroupId)
+        .collection("health")
+        .orderBy("timestamp")
+        .where(
+          "timestamp",
+          isGreaterThan: Timestamp.fromDate(yearBegin),
+          isLessThan: Timestamp.fromDate(yearEnd),
+        )
+        .snapshots();
+
+    return snapshotStream.map(
+      (snapshot) => snapshot.docs
+          .map((document) => HealthDataPoint.fromFirestore(document))
+          .toList(),
+    );
+  }
+
   Future<void> addSubGroupData({
     required String groupId,
     required String subGroupId,

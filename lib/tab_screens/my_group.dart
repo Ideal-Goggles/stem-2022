@@ -8,6 +8,7 @@ import 'package:stem_2022/services/database_service.dart';
 
 import 'package:stem_2022/chart_widgets/daily_health_chart.dart';
 import 'package:stem_2022/chart_widgets/daily_wastage_chart.dart';
+import 'package:stem_2022/chart_widgets/monthly_wastage_chart.dart';
 
 class MyGroupScreen extends StatelessWidget {
   const MyGroupScreen({super.key});
@@ -281,9 +282,9 @@ class TeacherView extends StatelessWidget {
           style: const TextStyle(fontSize: 20),
         ),
         Text("Total Points: ${subGroup.points} H", style: _bodyTextStyle),
-
-        // Wastage Report
         const SizedBox(height: 15),
+
+        // Daily Wastage Report
         Container(
           height: 280,
           padding: const EdgeInsets.only(
@@ -326,8 +327,9 @@ class TeacherView extends StatelessWidget {
           ),
         ),
 
-        // Health Report
         const SizedBox(height: 20),
+
+        // Daily Health Report
         Container(
           height: 280,
           padding: const EdgeInsets.only(
@@ -386,6 +388,61 @@ class TeacherView extends StatelessWidget {
             ),
           ),
         ],
+
+        const SizedBox(height: 20),
+        _divider,
+        Text(
+          "Monthly Report of ${subGroup.id}",
+          style: const TextStyle(fontSize: 20),
+        ),
+        const SizedBox(height: 15),
+
+        // Monthly Wastage Report
+        Container(
+          height: 280,
+          padding: const EdgeInsets.only(
+            left: 6,
+            bottom: 6,
+            right: 10,
+            top: 12,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: const Color.fromRGBO(17, 40, 106, 1),
+          ),
+          child: StreamBuilder(
+            stream: db.streamWastageDataForYear(
+              groupId,
+              subGroup.id,
+              year: DateTime.now().year,
+            ),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text(
+                    snapshot.error.toString(),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                      fontSize: 18,
+                    ),
+                  ),
+                );
+              }
+
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              return MonthlyWastageChart(data: snapshot.data!);
+            },
+          ),
+        ),
+        const Center(
+          child: Text(
+            "Wastage Report (Previous Year)",
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        ),
       ],
     );
   }
