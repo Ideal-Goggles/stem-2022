@@ -317,4 +317,22 @@ class DatabaseService {
         .then((_) => healthFuture)
         .then((_) => subGroupDocRef.update({"lastUpdated": now}));
   }
+
+  Stream<List<SubGroup>> streamSectionSubGroups(
+    String groupId,
+    String section,
+  ) {
+    final snapshotStream = _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .where("section", isEqualTo: section)
+        .snapshots();
+
+    return snapshotStream.map(
+      (snapshot) => snapshot.docs
+          .map((document) => SubGroup.fromFirestore(document))
+          .toList(),
+    );
+  }
 }
