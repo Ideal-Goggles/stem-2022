@@ -285,6 +285,23 @@ class TeacherView extends StatelessWidget {
         Text("Total Points: ${subGroup.points} H", style: _bodyTextStyle),
         const SizedBox(height: 15),
 
+        // Add Data Button
+        if (writeable) ...[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 50),
+            child: MaterialButton(
+              height: 42,
+              onPressed: () => showAddDataDialog(context),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              color: Theme.of(context).colorScheme.primary,
+              child: const Text("Add Data"),
+            ),
+          ),
+          const SizedBox(height: 20),
+        ],
+
         // Daily Wastage Report
         Container(
           height: 280,
@@ -372,23 +389,6 @@ class TeacherView extends StatelessWidget {
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ),
-
-        // Add Data Button
-        if (writeable) ...[
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 50),
-            child: MaterialButton(
-              height: 42,
-              onPressed: () => showAddDataDialog(context),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
-              ),
-              color: Theme.of(context).colorScheme.primary,
-              child: const Text("Add Data"),
-            ),
-          ),
-        ],
 
         const SizedBox(height: 20),
         _divider,
