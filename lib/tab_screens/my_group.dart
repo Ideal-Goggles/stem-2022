@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:stem_2022/chart_widgets/monthly_health_chart.dart';
 
 import 'package:stem_2022/misc.dart';
 import 'package:stem_2022/models/app_user.dart';
@@ -439,7 +440,56 @@ class TeacherView extends StatelessWidget {
         ),
         const Center(
           child: Text(
-            "Wastage Report (Previous Year)",
+            "Wastage Report (This Year)",
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        // Monthly Health Report
+        Container(
+          height: 280,
+          padding: const EdgeInsets.only(
+            left: 6,
+            bottom: 6,
+            right: 10,
+            top: 12,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: const Color.fromRGBO(17, 40, 106, 1),
+          ),
+          child: StreamBuilder(
+            stream: db.streamHealthDataForYear(
+              groupId,
+              subGroup.id,
+              year: DateTime.now().year,
+            ),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text(
+                    snapshot.error.toString(),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                      fontSize: 18,
+                    ),
+                  ),
+                );
+              }
+
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              return MonthlyHealthChart(data: snapshot.data!);
+            },
+          ),
+        ),
+        const Center(
+          child: Text(
+            "Health Report (This Year)",
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ),
