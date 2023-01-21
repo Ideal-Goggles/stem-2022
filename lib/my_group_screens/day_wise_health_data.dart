@@ -31,7 +31,8 @@ class DayWiseHealthDataScreen extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(title: Text("Day-wise Health Data for $subGroupId")),
           body: ListView.separated(
-            padding: const EdgeInsets.all(12),
+            padding:
+                const EdgeInsets.all(12).add(const EdgeInsets.only(bottom: 40)),
             separatorBuilder: (context, index) => const SizedBox(height: 10),
             itemCount: healthData.length,
             itemBuilder: (context, idx) => DataListTile(data: healthData[idx]),
