@@ -11,6 +11,8 @@ import 'package:stem_2022/chart_widgets/daily_health_chart.dart';
 import 'package:stem_2022/chart_widgets/daily_wastage_chart.dart';
 import 'package:stem_2022/chart_widgets/monthly_wastage_chart.dart';
 
+import 'package:stem_2022/my_group_screens/subgroup_data_list.dart';
+
 class MyGroupScreen extends StatelessWidget {
   const MyGroupScreen({super.key});
 
@@ -137,7 +139,7 @@ class _AddDataAlertDialogState extends State<AddDataAlertDialog> {
                   decimal: true,
                 ),
                 decoration: const InputDecoration(
-                  label: Text("Percentage of Healthy Students"),
+                  label: Text("% of Students with Healthy Food"),
                 ),
                 validator: (value) {
                   if (value != null && value.isNotEmpty) {
@@ -391,6 +393,29 @@ class TeacherView extends StatelessWidget {
         ),
 
         const SizedBox(height: 20),
+
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 50),
+          child: MaterialButton(
+            height: 42,
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SubGroupDataListScreen(
+                  groupId: groupId,
+                  subGroupId: subGroup.id,
+                ),
+              ),
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+            color: Theme.of(context).colorScheme.primary,
+            child: const Text("View Day Wise Data"),
+          ),
+        ),
+
+        const SizedBox(height: 20),
         _divider,
         Text(
           "Monthly Report of ${subGroup.id}",
@@ -493,6 +518,12 @@ class TeacherView extends StatelessWidget {
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ),
+        const SizedBox(height: 15),
+
+        _divider,
+
+        // Daywise Data
+        Column(children: []),
       ],
     );
   }
