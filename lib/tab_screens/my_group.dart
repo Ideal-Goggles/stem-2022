@@ -67,7 +67,10 @@ class MyGroupScreen extends StatelessWidget {
           }
 
           if (group.supervisors.containsKey(appUser.id)) {
-            return SupervisorView(section: group.supervisors[appUser.id]!);
+            return SupervisorView(
+              section: group.supervisors[appUser.id]!,
+              groupId: group.id,
+            );
           }
 
           if (appUser.subGroupId == null) {
@@ -523,20 +526,117 @@ class TeacherView extends StatelessWidget {
         _divider,
 
         // Daywise Data
-        Column(children: []),
+          mn(children: []),
       ],
     );
   }
 }
 
-class SupervisorView extends StatelessWidget {
+class SupervisorView extends StatefulWidget {
   final String section;
+  final String groupId;
 
-  const SupervisorView({super.key, required this.section});
+  const SupervisorView(
+      {super.key, required this.section, required this.groupId});
+
+  @override
+  State<SupervisorView> createState() => _SupervisorViewState();
+}
+
+class _SupervisorViewState extends State<SupervisorView> {
+  @override
+  void initState() async {
+    Map<int, double> gradeWastage = {};
+    Map<int, List<double>> gradeHealth = {};
+    final db = Provider.of<DatabaseService>(context, listen: false);
+
+    final subGroups =
+        await db.getSectionSubGroups(widget.groupId, widget.section);
+    for (final subGroup in subGroups) {
+      final subGroupGrade = subGroup.id;
+      final wastage =
+          await db.getTotalWastagePoints(widget.groupId, subGroupGrade);
+      // gradeWastage[subGroupGrade] = wastage;
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text("$section Supervisor View"));
+    final db = Provider.of<DatabaseService>(context, listen: false);
+
+    return ListView(
+      padding: const EdgeInsets.only(bottom: 75),
+      children: [
+        StreamBuilder(
+          stream: db.streamSectionSubGroups(widget.groupId, widget.section),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Text(
+                  snapshot.error.toString(),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                    fontSize: 18,
+                  ),
+                ),
+              );
+            }
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            final subGroups = snapshot.data!;
+            return ListView.builder(
+              shrinkWrap: true,
+              itemCount: subGroups.length,
+              itemBuilder: (context, index) {
+                return ListView(
+                  shrinkWrap: true,
+                  children: [
+                    FutureBuilder(
+                      future: db.getTotalWastagePoints(
+                        widget.groupId,
+                        subGroups[index].id,
+                      ),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+
+                        final data = snapshot.data;
+                        return Text("$data");
+                      },
+                    ),
+                    // Text(subGroup!.id!),
+                    SizedBox(
+                      height: 250,
+                      child: StreamBuilder(
+                        stream: db.streamWastageData(
+                          widget.groupId,
+                          subGroups[index].id,
+                        ),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+
+                          // final data = snapshot.data!;
+                          return const SizedBox();
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        )
+      ],
+    );
   }
 }
 

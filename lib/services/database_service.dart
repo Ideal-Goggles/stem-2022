@@ -208,6 +208,26 @@ class DatabaseService {
     );
   }
 
+  Future<List<WastageDataPoint>> getTotalWastagePoints(
+    String groupId,
+    String subGroupId, {
+    int limit = 5,
+  }) async {
+    final snapshotStream = await _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .doc(subGroupId)
+        .collection("wastage")
+        .orderBy("timestamp")
+        .limit(limit)
+        .get();
+
+    return snapshotStream.docs
+        .map((document) => WastageDataPoint.fromFirestore(document))
+        .toList();
+  }
+
   Stream<List<HealthDataPoint>> streamHealthData(
     String groupId,
     String subGroupId, {
@@ -334,5 +354,21 @@ class DatabaseService {
           .map((document) => SubGroup.fromFirestore(document))
           .toList(),
     );
+  }
+
+  Future<List<SubGroup>> getSectionSubGroups(
+    String groupId,
+    String section,
+  ) async {
+    final snapshot = await _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .where("section", isEqualTo: section)
+        .get();
+
+    return snapshot.docs
+        .map((document) => SubGroup.fromFirestore(document))
+        .toList();
   }
 }
