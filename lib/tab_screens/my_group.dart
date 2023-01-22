@@ -11,7 +11,7 @@ import 'package:stem_2022/chart_widgets/daily_health_chart.dart';
 import 'package:stem_2022/chart_widgets/daily_wastage_chart.dart';
 import 'package:stem_2022/chart_widgets/monthly_wastage_chart.dart';
 
-import 'package:stem_2022/my_group_screens/subgroup_data_list.dart';
+import 'package:stem_2022/my_group_screens/day_wise_health_data.dart';
 
 class MyGroupScreen extends StatelessWidget {
   const MyGroupScreen({super.key});
@@ -404,7 +404,7 @@ class TeacherView extends StatelessWidget {
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => SubGroupDataListScreen(
+                builder: (context) => DayWiseHealthDataScreen(
                   groupId: groupId,
                   subGroupId: subGroup.id,
                 ),
@@ -414,7 +414,7 @@ class TeacherView extends StatelessWidget {
               borderRadius: BorderRadius.circular(14),
             ),
             color: Theme.of(context).colorScheme.primary,
-            child: const Text("View Day Wise Data"),
+            child: const Text("View Day-wise Health Data"),
           ),
         ),
 
