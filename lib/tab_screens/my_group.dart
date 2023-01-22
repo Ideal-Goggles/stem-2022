@@ -544,8 +544,8 @@ class SupervisorView extends StatefulWidget {
 }
 
 class _SupervisorViewState extends State<SupervisorView> {
-  Map<String, double> _gradeWastage = {};
-  Map<String, List<double>> _gradeHealth = {};
+  late final Map<String, double> _gradeWastage;
+  late final Map<String, List<double>> _gradeHealth;
   bool _loading = true;
 
   TextStyle get _bodyTextStyle => TextStyle(
