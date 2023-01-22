@@ -609,6 +609,9 @@ class _SupervisorViewState extends State<SupervisorView> {
       return const Center(child: CircularProgressIndicator());
     }
 
+    double totalSectionWastage = 0;
+    _gradeWastage.forEach((grade, wastage) => totalSectionWastage += wastage);
+
     return ListView(
       padding: const EdgeInsets.only(bottom: 75),
       children: [
@@ -617,6 +620,13 @@ class _SupervisorViewState extends State<SupervisorView> {
           "Monthly ${widget.section} Section Report",
           style: const TextStyle(fontSize: 20),
         ),
+        Text(
+          "Total ${widget.section} Section Wastage: $totalSectionWastage grams",
+          style: _bodyTextStyle,
+        ),
+        const SizedBox(height: 15),
+
+        // TODO: Add fancy charts and stuff
       ],
     );
   }
