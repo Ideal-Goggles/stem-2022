@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:stem_2022/chart_widgets/monthly_health_chart.dart';
 
 import 'package:stem_2022/misc.dart';
 import 'package:stem_2022/models/app_user.dart';
 import 'package:stem_2022/models/group.dart';
 import 'package:stem_2022/services/database_service.dart';
 
-import 'package:stem_2022/chart_widgets/daily_health_chart.dart';
-import 'package:stem_2022/chart_widgets/daily_wastage_chart.dart';
-import 'package:stem_2022/chart_widgets/monthly_wastage_chart.dart';
+import 'package:stem_2022/chart_widgets/teacher_charts/daily_health_chart.dart';
+import 'package:stem_2022/chart_widgets/teacher_charts/daily_wastage_chart.dart';
+import 'package:stem_2022/chart_widgets/teacher_charts/monthly_wastage_chart.dart';
+import 'package:stem_2022/chart_widgets/teacher_charts/monthly_health_chart.dart';
 
 import 'package:stem_2022/my_group_screens/day_wise_health_data.dart';
 
@@ -524,9 +524,6 @@ class TeacherView extends StatelessWidget {
         const SizedBox(height: 15),
 
         _divider,
-
-        // Daywise Data
-          mn(children: []),
       ],
     );
   }
@@ -536,105 +533,90 @@ class SupervisorView extends StatefulWidget {
   final String section;
   final String groupId;
 
-  const SupervisorView(
-      {super.key, required this.section, required this.groupId});
+  const SupervisorView({
+    super.key,
+    required this.section,
+    required this.groupId,
+  });
 
   @override
   State<SupervisorView> createState() => _SupervisorViewState();
 }
 
 class _SupervisorViewState extends State<SupervisorView> {
+  Map<String, double> _gradeWastage = {};
+  Map<String, List<double>> _gradeHealth = {};
+  bool _loading = true;
+
+  TextStyle get _bodyTextStyle => TextStyle(
+        color: Colors.grey.shade300,
+        fontSize: 15,
+      );
+  Divider get _divider => const Divider(thickness: 1, color: Colors.white38);
+
   @override
-  void initState() async {
-    Map<int, double> gradeWastage = {};
-    Map<int, List<double>> gradeHealth = {};
+  void initState() {
     final db = Provider.of<DatabaseService>(context, listen: false);
 
-    final subGroups =
-        await db.getSectionSubGroups(widget.groupId, widget.section);
-    for (final subGroup in subGroups) {
-      final subGroupGrade = subGroup.id;
-      final wastage =
-          await db.getTotalWastagePoints(widget.groupId, subGroupGrade);
-      // gradeWastage[subGroupGrade] = wastage;
-    }
+    db.getSectionSubGroups(widget.groupId, widget.section).then(
+      (subGroups) async {
+        Map<String, double> gradeWastage = {};
+        Map<String, List<double>> gradeHealth = {};
+
+        for (final subGroup in subGroups) {
+          final subGroupGrade =
+              subGroup.id.substring(0, subGroup.id.length - 2);
+
+          // Add and empty list if it doesn't exist for the current grade
+          if (!gradeHealth.containsKey(subGroupGrade)) {
+            gradeHealth[subGroupGrade] = [];
+          }
+
+          // Fetch data
+          final wastageFuture = db.getWastageData(widget.groupId, subGroup.id);
+          final healthFuture = db.getHealthData(widget.groupId, subGroup.id);
+
+          // Process wastage data
+          for (final wastage in await wastageFuture) {
+            gradeWastage.update(
+              subGroupGrade,
+              (w) => w + wastage.totalWastage,
+              ifAbsent: () => wastage.totalWastage,
+            );
+          }
+
+          // Process health data
+          for (final health in await healthFuture) {
+            gradeHealth[subGroupGrade]!.add(health.healthyPercent);
+          }
+        }
+
+        // Update state after all data has been processed
+        setState(() {
+          _gradeWastage = gradeWastage;
+          _gradeHealth = gradeHealth;
+          _loading = false;
+        });
+      },
+    );
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<DatabaseService>(context, listen: false);
+    if (_loading) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
     return ListView(
       padding: const EdgeInsets.only(bottom: 75),
       children: [
-        StreamBuilder(
-          stream: db.streamSectionSubGroups(widget.groupId, widget.section),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Text(
-                  snapshot.error.toString(),
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.error,
-                    fontSize: 18,
-                  ),
-                ),
-              );
-            }
-
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            final subGroups = snapshot.data!;
-            return ListView.builder(
-              shrinkWrap: true,
-              itemCount: subGroups.length,
-              itemBuilder: (context, index) {
-                return ListView(
-                  shrinkWrap: true,
-                  children: [
-                    FutureBuilder(
-                      future: db.getTotalWastagePoints(
-                        widget.groupId,
-                        subGroups[index].id,
-                      ),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
-
-                        final data = snapshot.data;
-                        return Text("$data");
-                      },
-                    ),
-                    // Text(subGroup!.id!),
-                    SizedBox(
-                      height: 250,
-                      child: StreamBuilder(
-                        stream: db.streamWastageData(
-                          widget.groupId,
-                          subGroups[index].id,
-                        ),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          }
-
-                          // final data = snapshot.data!;
-                          return const SizedBox();
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              },
-            );
-          },
-        )
+        _divider,
+        Text(
+          "Monthly ${widget.section} Section Report",
+          style: const TextStyle(fontSize: 20),
+        ),
       ],
     );
   }

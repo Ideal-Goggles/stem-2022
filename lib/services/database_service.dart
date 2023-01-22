@@ -208,12 +208,12 @@ class DatabaseService {
     );
   }
 
-  Future<List<WastageDataPoint>> getTotalWastagePoints(
+  Future<List<WastageDataPoint>> getWastageData(
     String groupId,
     String subGroupId, {
     int limit = 5,
   }) async {
-    final snapshotStream = await _db
+    final snapshot = await _db
         .collection("groups")
         .doc(groupId)
         .collection("subgroups")
@@ -223,7 +223,7 @@ class DatabaseService {
         .limit(limit)
         .get();
 
-    return snapshotStream.docs
+    return snapshot.docs
         .map((document) => WastageDataPoint.fromFirestore(document))
         .toList();
   }
@@ -248,6 +248,26 @@ class DatabaseService {
           .map((document) => HealthDataPoint.fromFirestore(document))
           .toList(),
     );
+  }
+
+  Future<List<HealthDataPoint>> getHealthData(
+    String groupId,
+    String subGroupId, {
+    int limit = 5,
+  }) async {
+    final snapshot = await _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .doc(subGroupId)
+        .collection("health")
+        .orderBy("timestamp")
+        .limit(limit)
+        .get();
+
+    return snapshot.docs
+        .map((document) => HealthDataPoint.fromFirestore(document))
+        .toList();
   }
 
   Stream<List<WastageDataPoint>> streamWastageDataForYear(
