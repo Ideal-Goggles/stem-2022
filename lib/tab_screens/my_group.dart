@@ -8,6 +8,7 @@ import 'package:stem_2022/services/database_service.dart';
 
 import 'package:stem_2022/chart_widgets/teacher_charts/daily_health_chart.dart';
 import 'package:stem_2022/chart_widgets/teacher_charts/daily_wastage_chart.dart';
+import 'package:stem_2022/chart_widgets/supervisor_admin_charts/daily_wastage_chart.dart';
 import 'package:stem_2022/chart_widgets/teacher_charts/monthly_wastage_chart.dart';
 import 'package:stem_2022/chart_widgets/teacher_charts/monthly_health_chart.dart';
 
@@ -63,7 +64,9 @@ class MyGroupScreen extends StatelessWidget {
           }
 
           if (group.admin == appUser.id) {
-            return const PrincipalView();
+            return PrincipalView(
+              groupId: group.id,
+            );
           }
 
           if (group.supervisors.containsKey(appUser.id)) {
@@ -546,6 +549,8 @@ class SupervisorView extends StatefulWidget {
 class _SupervisorViewState extends State<SupervisorView> {
   late final Map<String, double> _gradeWastage;
   late final Map<String, List<double>> _gradeHealth;
+  late final Map<String, double> _subGroupWastage;
+  late final Map<String, List<double>> _subGroupHealth;
   bool _loading = true;
 
   TextStyle get _bodyTextStyle => TextStyle(
@@ -562,10 +567,13 @@ class _SupervisorViewState extends State<SupervisorView> {
       (subGroups) async {
         Map<String, double> gradeWastage = {};
         Map<String, List<double>> gradeHealth = {};
+        Map<String, double> subGroupWastage = {};
+        Map<String, List<double>> subGroupHealth = {};
 
         for (final subGroup in subGroups) {
           final subGroupGrade =
               subGroup.id.substring(0, subGroup.id.length - 2);
+          final subGroupSections = subGroup.id;
 
           // Add and empty list if it doesn't exist for the current grade
           if (!gradeHealth.containsKey(subGroupGrade)) {
@@ -583,6 +591,11 @@ class _SupervisorViewState extends State<SupervisorView> {
               (w) => w + wastage.totalWastage,
               ifAbsent: () => wastage.totalWastage,
             );
+            subGroupWastage.update(
+              subGroup.id,
+              (w) => wastage.totalWastage,
+              ifAbsent: () => wastage.totalWastage,
+            );
           }
 
           // Process health data
@@ -595,8 +608,10 @@ class _SupervisorViewState extends State<SupervisorView> {
         setState(() {
           _gradeWastage = gradeWastage;
           _gradeHealth = gradeHealth;
+          _subGroupWastage = subGroupWastage;
           _loading = false;
         });
+        print(_subGroupWastage);
       },
     );
 
@@ -610,7 +625,20 @@ class _SupervisorViewState extends State<SupervisorView> {
     }
 
     double totalSectionWastage = 0;
+    double totalSectionHealth = 0;
+    int totalSectionHealthEntries = 0;
+
     _gradeWastage.forEach((grade, wastage) => totalSectionWastage += wastage);
+    _gradeHealth.forEach(
+      (grade, health) {
+        // ignore: avoid_function_literals_in_foreach_calls
+        health.forEach((h) => totalSectionHealth += h);
+        totalSectionHealthEntries += health.length;
+      },
+    );
+
+    double avgSectionHealth =
+        (totalSectionHealth * 100 / totalSectionHealthEntries).roundToDouble();
 
     return ListView(
       padding: const EdgeInsets.only(bottom: 75),
@@ -624,19 +652,34 @@ class _SupervisorViewState extends State<SupervisorView> {
           "Total ${widget.section} Section Wastage: $totalSectionWastage grams",
           style: _bodyTextStyle,
         ),
+        Text(
+          "Average ${widget.section} Section Health: $avgSectionHealth %",
+          style: _bodyTextStyle,
+        ),
         const SizedBox(height: 15),
 
         // TODO: Add fancy charts and stuff
+        // DailyWastageChart(data: _gradeWastage),
       ],
     );
   }
 }
 
-class PrincipalView extends StatelessWidget {
-  const PrincipalView({super.key});
+class PrincipalView extends StatefulWidget {
+  final String groupId;
+
+  const PrincipalView({
+    super.key,
+    required this.groupId,
+  });
 
   @override
+  State<PrincipalView> createState() => _PrincipalViewState();
+}
+
+class _PrincipalViewState extends State<PrincipalView> {
+  @override
   Widget build(BuildContext context) {
-    return const Center(child: Text("Principal View"));
+    return const DailyWastageChartSection();
   }
 }
