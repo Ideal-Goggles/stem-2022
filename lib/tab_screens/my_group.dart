@@ -8,7 +8,7 @@ import 'package:stem_2022/services/database_service.dart';
 
 import 'package:stem_2022/chart_widgets/teacher_charts/daily_health_chart.dart';
 import 'package:stem_2022/chart_widgets/teacher_charts/daily_wastage_chart.dart';
-import 'package:stem_2022/chart_widgets/supervisor_admin_charts/daily_wastage_chart.dart';
+import 'package:stem_2022/chart_widgets/supervisor_charts/grade_wastage_comparison_chart.dart';
 import 'package:stem_2022/chart_widgets/teacher_charts/monthly_wastage_chart.dart';
 import 'package:stem_2022/chart_widgets/teacher_charts/monthly_health_chart.dart';
 
