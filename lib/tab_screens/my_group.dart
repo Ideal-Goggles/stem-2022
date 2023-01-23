@@ -64,9 +64,7 @@ class MyGroupScreen extends StatelessWidget {
           }
 
           if (group.admin == appUser.id) {
-            return PrincipalView(
-              groupId: group.id,
-            );
+            return const PrincipalView();
           }
 
           if (group.supervisors.containsKey(appUser.id)) {
@@ -659,27 +657,16 @@ class _SupervisorViewState extends State<SupervisorView> {
         const SizedBox(height: 15),
 
         // TODO: Add fancy charts and stuff
-        // DailyWastageChart(data: _gradeWastage),
       ],
     );
   }
 }
 
-class PrincipalView extends StatefulWidget {
-  final String groupId;
+class PrincipalView extends StatelessWidget {
+  const PrincipalView({super.key});
 
-  const PrincipalView({
-    super.key,
-    required this.groupId,
-  });
-
-  @override
-  State<PrincipalView> createState() => _PrincipalViewState();
-}
-
-class _PrincipalViewState extends State<PrincipalView> {
   @override
   Widget build(BuildContext context) {
-    return const DailyWastageChartSection();
+    return const Center(child: Text("Principal View"));
   }
 }
