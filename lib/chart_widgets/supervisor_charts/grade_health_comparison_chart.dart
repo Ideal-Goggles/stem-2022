@@ -90,7 +90,11 @@ class GradeHealthComparisonChart extends StatelessWidget {
                 idx,
                 BarChartGroupData(x: idx, barRods: [
                   BarChartRodData(
-                    color: Colors.greenAccent,
+                    gradient: const LinearGradient(
+                      colors: [Colors.green, Colors.greenAccent],
+                      begin: Alignment.bottomLeft,
+                      end: Alignment.topRight,
+                    ),
                     toY: avgGradeHealth,
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(5),
