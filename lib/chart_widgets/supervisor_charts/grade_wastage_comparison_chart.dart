@@ -31,7 +31,7 @@ class GradeWastageComparisonChart extends StatelessWidget {
             drawBehindEverything: true,
             sideTitles: SideTitles(
               showTitles: true,
-              reservedSize: 40,
+              reservedSize: 50,
               interval: 100,
               getTitlesWidget: (value, meta) {
                 final v = value >= 1000

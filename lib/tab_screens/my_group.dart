@@ -549,8 +549,17 @@ class SupervisorView extends StatefulWidget {
 class _SupervisorViewState extends State<SupervisorView> {
   late final Map<String, double> _gradeWastage;
   late final Map<String, List<double>> _gradeHealth;
+  // ignore: unused_field
   late final Map<String, double> _subGroupWastage;
+  // ignore: unused_field
   late final Map<String, List<double>> _subGroupHealth;
+
+  late final Map<String, double> _gradeWastageForYear;
+  late final Map<String, List<double>> _gradeHealthForYear;
+  // ignore: unused_field
+  late final Map<String, double> _subGroupWastageForYear;
+  // ignore: unused_field
+  late final Map<String, List<double>> _subGroupHealthForYear;
   bool _loading = true;
 
   TextStyle get _bodyTextStyle => TextStyle(
@@ -570,13 +579,29 @@ class _SupervisorViewState extends State<SupervisorView> {
         Map<String, double> subGroupWastage = {};
         Map<String, List<double>> subGroupHealth = {};
 
+        Map<String, double> gradeWastageForYear = {};
+        Map<String, List<double>> gradeHealthForYear = {};
+        Map<String, double> subGroupWastageForYear = {};
+        Map<String, List<double>> subGroupHealthForYear = {};
+
         for (final subGroup in subGroups) {
           final subGroupGrade =
               subGroup.id.substring(0, subGroup.id.length - 2);
 
           // Fetch data
           final wastageFuture = db.getWastageData(widget.groupId, subGroup.id);
+          final wastageForYearFuture = db.getWastageDataForYear(
+            widget.groupId,
+            subGroup.id,
+            year: DateTime.now().year,
+          );
+
           final healthFuture = db.getHealthData(widget.groupId, subGroup.id);
+          final healthForYearFuture = db.getHealthDataForYear(
+            widget.groupId,
+            subGroup.id,
+            year: DateTime.now().year,
+          );
 
           // Process wastage data
           final wastageData = await wastageFuture;
@@ -588,6 +613,22 @@ class _SupervisorViewState extends State<SupervisorView> {
               ifAbsent: () => wastage.totalWastage,
             );
             subGroupWastage.update(
+              subGroup.id,
+              (w) => w + wastage.totalWastage,
+              ifAbsent: () => wastage.totalWastage,
+            );
+          }
+
+          // Process wastage for year data
+          final wastageForYearData = await wastageForYearFuture;
+
+          for (final wastage in wastageForYearData) {
+            gradeWastageForYear.update(
+              subGroupGrade,
+              (w) => w + wastage.totalWastage,
+              ifAbsent: () => wastage.totalWastage,
+            );
+            subGroupWastageForYear.update(
               subGroup.id,
               (w) => w + wastage.totalWastage,
               ifAbsent: () => wastage.totalWastage,
@@ -607,7 +648,21 @@ class _SupervisorViewState extends State<SupervisorView> {
               ifAbsent: () => [health.healthyPercent],
             );
           }
+          for (final health in await healthForYearFuture) {
+            gradeHealthForYear.update(
+              subGroupGrade,
+              (h) => [...h, health.healthyPercent],
+              ifAbsent: () => [health.healthyPercent],
+            );
+            subGroupHealthForYear.update(
+              subGroup.id,
+              (h) => [...h, health.healthyPercent],
+              ifAbsent: () => [health.healthyPercent],
+            );
+          }
         }
+
+        // Process health for year data
 
         // Update state after all data has been processed
         setState(() {
@@ -615,6 +670,10 @@ class _SupervisorViewState extends State<SupervisorView> {
           _gradeHealth = gradeHealth;
           _subGroupWastage = subGroupWastage;
           _subGroupHealth = subGroupHealth;
+
+          _gradeWastageForYear = gradeWastageForYear;
+          _gradeHealthForYear = gradeHealthForYear;
+
           _loading = false;
         });
       },
@@ -629,11 +688,17 @@ class _SupervisorViewState extends State<SupervisorView> {
       return const Center(child: CircularProgressIndicator());
     }
 
+    //Wastage
     final double totalSectionWastage =
         _gradeWastage.values.reduce((a, b) => a + b);
+    final double totalSectionWastageForYear =
+        _gradeWastageForYear.values.reduce((a, b) => a + b);
 
+    //Health
     double totalSectionHealth = 0;
     int totalSectionHealthEntries = 0;
+    double totalSectionHealthForYear = 0;
+    int totalSectionHealthEntriesForYear = 0;
 
     _gradeHealth.forEach(
       (grade, health) {
@@ -643,8 +708,19 @@ class _SupervisorViewState extends State<SupervisorView> {
       },
     );
 
+    _gradeHealthForYear.forEach(
+      (grade, health) {
+        // ignore: avoid_function_literals_in_foreach_calls
+        health.forEach((h) => totalSectionHealthForYear += h);
+        totalSectionHealthEntriesForYear += health.length;
+      },
+    );
+
     double avgSectionHealth =
         (totalSectionHealth * 100 / totalSectionHealthEntries).roundToDouble();
+    double avgSectionHealthForYear =
+        (totalSectionHealthForYear * 100 / totalSectionHealthEntriesForYear)
+            .roundToDouble();
 
     return ListView(
       padding: const EdgeInsets.only(bottom: 75),
@@ -665,8 +741,11 @@ class _SupervisorViewState extends State<SupervisorView> {
         const SizedBox(height: 15),
         Container(
           height: 500,
-          padding:
-              const EdgeInsets.only(top: 30, right: 10, bottom: 10, left: 10),
+          padding: const EdgeInsets.only(
+            top: 30,
+            right: 10,
+            bottom: 10,
+          ),
           decoration: BoxDecoration(
               color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
           child: GradeWastageComparisonChart(gradeWiseData: _gradeWastage),
@@ -681,8 +760,11 @@ class _SupervisorViewState extends State<SupervisorView> {
         const SizedBox(height: 15),
         Container(
           height: 500,
-          padding:
-              const EdgeInsets.only(top: 30, right: 10, bottom: 10, left: 10),
+          padding: const EdgeInsets.only(
+            top: 30,
+            right: 10,
+            bottom: 10,
+          ),
           decoration: BoxDecoration(
               color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
           child: GradeHealthComparisonChart(gradeWiseData: _gradeHealth),
@@ -695,6 +777,57 @@ class _SupervisorViewState extends State<SupervisorView> {
           ),
         ),
         _divider,
+        Text(
+          "Yearly ${widget.section} Section Report",
+          style: const TextStyle(fontSize: 20),
+        ),
+        Text(
+          "Total ${widget.section} Section Wastage (for year): $totalSectionWastageForYear grams",
+          style: _bodyTextStyle,
+        ),
+        Text(
+          "Average ${widget.section} Section Health (for year): $avgSectionHealthForYear %",
+          style: _bodyTextStyle,
+        ),
+        const SizedBox(height: 15),
+        Container(
+          height: 500,
+          padding: const EdgeInsets.only(
+            top: 30,
+            right: 10,
+            bottom: 10,
+          ),
+          decoration: BoxDecoration(
+              color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
+          child:
+              GradeWastageComparisonChart(gradeWiseData: _gradeWastageForYear),
+        ),
+        const SizedBox(height: 5),
+        const Center(
+          child: Text(
+            "Grade-wise Wastage Report (Past Year)",
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        ),
+        const SizedBox(height: 15),
+        Container(
+          height: 500,
+          padding: const EdgeInsets.only(
+            top: 30,
+            right: 10,
+            bottom: 10,
+          ),
+          decoration: BoxDecoration(
+              color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
+          child: GradeHealthComparisonChart(gradeWiseData: _gradeHealthForYear),
+        ),
+        const SizedBox(height: 5),
+        const Center(
+          child: Text(
+            "Grade-wise Health Report (Past Year)",
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        ),
       ],
     );
   }
