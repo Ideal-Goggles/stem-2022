@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:stem_2022/services/database_service.dart';
 import 'package:stem_2022/models/group.dart';
-import 'package:stem_2022/tab_screens/my_group.dart';
+import 'package:stem_2022/my_group_screens/teacher_view.dart';
 
 class SectionSubGroupListScreen extends StatelessWidget {
   final String groupId;
