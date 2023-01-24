@@ -90,6 +90,7 @@ class DailyWastageChart extends StatelessWidget {
         lineBarsData: [
           LineChartBarData(
             isCurved: true,
+            color: Colors.redAccent,
             spots: data
                 .asMap()
                 .map(

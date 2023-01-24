@@ -107,8 +107,12 @@ class MonthlyHealthChart extends StatelessWidget {
                 idx,
                 BarChartGroupData(x: idx, barRods: [
                   BarChartRodData(
+                    color: Colors.greenAccent,
                     toY: (healthyPercent / monthDataPointCount[idx]) * 100,
-                    borderRadius: BorderRadius.zero,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(2),
+                      topRight: Radius.circular(2),
+                    ),
                     width: 14,
                   )
                 ]),

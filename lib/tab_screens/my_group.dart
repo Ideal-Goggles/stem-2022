@@ -284,6 +284,7 @@ class TeacherView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final db = Provider.of<DatabaseService>(context);
+    final appUser = Provider.of<AppUser?>(context);
 
     return ListView(
       padding: const EdgeInsets.only(bottom: 75),
@@ -293,6 +294,7 @@ class TeacherView extends StatelessWidget {
           "Daily Report of ${subGroup.id}",
           style: const TextStyle(fontSize: 20),
         ),
+        Text("Class Teacher: ${appUser!.displayName}", style: _bodyTextStyle),
         Text("Total Points: ${subGroup.points} H", style: _bodyTextStyle),
         const SizedBox(height: 15),
 
@@ -315,16 +317,15 @@ class TeacherView extends StatelessWidget {
 
         // Daily Wastage Report
         Container(
-          height: 280,
+          height: 500,
           padding: const EdgeInsets.only(
-            left: 6,
-            bottom: 6,
+            top: 30,
             right: 10,
-            top: 12,
+            bottom: 10,
           ),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: const Color.fromRGBO(17, 40, 106, 1),
+            color: Colors.grey[900],
+            borderRadius: BorderRadius.circular(30),
           ),
           child: StreamBuilder(
             stream: db.streamWastageData(groupId, subGroup.id),
@@ -360,16 +361,15 @@ class TeacherView extends StatelessWidget {
 
         // Daily Health Report
         Container(
-          height: 280,
+          height: 500,
           padding: const EdgeInsets.only(
-            left: 6,
-            bottom: 6,
+            top: 30,
             right: 10,
-            top: 12,
+            bottom: 10,
           ),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: const Color.fromRGBO(17, 40, 106, 1),
+            color: Colors.grey[900],
+            borderRadius: BorderRadius.circular(30),
           ),
           child: StreamBuilder(
             stream: db.streamHealthData(groupId, subGroup.id),
@@ -434,16 +434,15 @@ class TeacherView extends StatelessWidget {
 
         // Monthly Wastage Report
         Container(
-          height: 280,
+          height: 500,
           padding: const EdgeInsets.only(
-            left: 6,
-            bottom: 6,
+            top: 30,
             right: 10,
-            top: 12,
+            bottom: 10,
           ),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: const Color.fromRGBO(17, 40, 106, 1),
+            color: Colors.grey[900],
+            borderRadius: BorderRadius.circular(30),
           ),
           child: StreamBuilder(
             stream: db.streamWastageDataForYear(
@@ -483,16 +482,15 @@ class TeacherView extends StatelessWidget {
 
         // Monthly Health Report
         Container(
-          height: 280,
+          height: 500,
           padding: const EdgeInsets.only(
-            left: 6,
-            bottom: 6,
+            top: 30,
             right: 10,
-            top: 12,
+            bottom: 10,
           ),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: const Color.fromRGBO(17, 40, 106, 1),
+            color: Colors.grey[900],
+            borderRadius: BorderRadius.circular(30),
           ),
           child: StreamBuilder(
             stream: db.streamHealthDataForYear(
@@ -669,6 +667,8 @@ class _SupervisorViewState extends State<SupervisorView> {
 
           _gradeWastageForYear = gradeWastageForYear;
           _gradeHealthForYear = gradeHealthForYear;
+          _subGroupWastageForYear = subGroupWastageForYear;
+          _subGroupHealthForYear = subGroupHealthForYear;
 
           _loading = false;
         });
@@ -796,8 +796,50 @@ class _SupervisorViewState extends State<SupervisorView> {
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ),
+
+        const SizedBox(height: 25),
+
+        Container(
+          height: 500,
+          padding: const EdgeInsets.only(
+            top: 30,
+            right: 10,
+            bottom: 10,
+          ),
+          decoration: BoxDecoration(
+              color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
+          child: GradeWastageComparisonChart(gradeWiseData: _subGroupWastage),
+        ),
+        const SizedBox(height: 5),
+        const Center(
+          child: Text(
+            "Class-wise Wastage Report (Previous Week)",
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        ),
+        const SizedBox(height: 15),
+        Container(
+          height: 500,
+          padding: const EdgeInsets.only(
+            top: 30,
+            right: 10,
+            bottom: 10,
+          ),
+          decoration: BoxDecoration(
+              color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
+          child: GradeHealthComparisonChart(gradeWiseData: _subGroupHealth),
+        ),
+        const SizedBox(height: 5),
+        const Center(
+          child: Text(
+            "Class-wise Health Report (Previous Week)",
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        ),
+
         const SizedBox(height: 10),
         _divider,
+
         Text(
           "Yearly ${widget.section} Section Report",
           style: const TextStyle(fontSize: 20),
@@ -819,7 +861,9 @@ class _SupervisorViewState extends State<SupervisorView> {
             bottom: 10,
           ),
           decoration: BoxDecoration(
-              color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
+            color: Colors.grey[900],
+            borderRadius: BorderRadius.circular(30),
+          ),
           child:
               GradeWastageComparisonChart(gradeWiseData: _gradeWastageForYear),
         ),
@@ -839,13 +883,57 @@ class _SupervisorViewState extends State<SupervisorView> {
             bottom: 10,
           ),
           decoration: BoxDecoration(
-              color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
+            color: Colors.grey[900],
+            borderRadius: BorderRadius.circular(30),
+          ),
           child: GradeHealthComparisonChart(gradeWiseData: _gradeHealthForYear),
         ),
         const SizedBox(height: 5),
         const Center(
           child: Text(
             "Grade-wise Health Report (Past Year)",
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        ),
+
+        const SizedBox(height: 25),
+
+        Container(
+          height: 500,
+          padding: const EdgeInsets.only(
+            top: 30,
+            right: 10,
+            bottom: 10,
+          ),
+          decoration: BoxDecoration(
+              color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
+          child: GradeWastageComparisonChart(
+              gradeWiseData: _subGroupWastageForYear),
+        ),
+        const SizedBox(height: 5),
+        const Center(
+          child: Text(
+            "Class-wise Wastage Report (Previous Year)",
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        ),
+        const SizedBox(height: 15),
+        Container(
+          height: 500,
+          padding: const EdgeInsets.only(
+            top: 30,
+            right: 10,
+            bottom: 10,
+          ),
+          decoration: BoxDecoration(
+              color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
+          child:
+              GradeHealthComparisonChart(gradeWiseData: _subGroupHealthForYear),
+        ),
+        const SizedBox(height: 5),
+        const Center(
+          child: Text(
+            "Class-wise Health Report (Previous Year)",
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ),

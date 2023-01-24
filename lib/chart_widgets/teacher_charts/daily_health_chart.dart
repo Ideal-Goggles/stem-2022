@@ -87,6 +87,7 @@ class DailyHealthChart extends StatelessWidget {
         lineBarsData: [
           LineChartBarData(
             isCurved: true,
+            color: Colors.greenAccent,
             spots: data
                 .asMap()
                 .map(

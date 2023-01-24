@@ -63,7 +63,7 @@ class MonthlyWastageChart extends StatelessWidget {
             drawBehindEverything: true,
             sideTitles: SideTitles(
               showTitles: true,
-              reservedSize: 40,
+              reservedSize: 45,
               getTitlesWidget: (value, meta) {
                 final v = value >= 1000
                     ? "${value ~/ 1000} K"
@@ -107,8 +107,12 @@ class MonthlyWastageChart extends StatelessWidget {
                 idx,
                 BarChartGroupData(x: idx, barRods: [
                   BarChartRodData(
+                    color: Colors.redAccent,
                     toY: wastage,
-                    borderRadius: BorderRadius.zero,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(2),
+                      topRight: Radius.circular(2),
+                    ),
                     width: 14,
                   )
                 ]),
