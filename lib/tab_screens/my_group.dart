@@ -284,6 +284,7 @@ class TeacherView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final db = Provider.of<DatabaseService>(context);
+    final appUser = Provider.of<AppUser?>(context);
 
     return ListView(
       padding: const EdgeInsets.only(bottom: 75),
@@ -293,6 +294,7 @@ class TeacherView extends StatelessWidget {
           "Daily Report of ${subGroup.id}",
           style: const TextStyle(fontSize: 20),
         ),
+        Text("Class Teacher: ${appUser!.displayName}", style: _bodyTextStyle),
         Text("Total Points: ${subGroup.points} H", style: _bodyTextStyle),
         const SizedBox(height: 15),
 
