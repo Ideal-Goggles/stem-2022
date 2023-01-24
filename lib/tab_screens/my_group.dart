@@ -313,16 +313,15 @@ class TeacherView extends StatelessWidget {
 
         // Daily Wastage Report
         Container(
-          height: 280,
+          height: 500,
           padding: const EdgeInsets.only(
-            left: 6,
-            bottom: 6,
+            top: 30,
             right: 10,
-            top: 12,
+            bottom: 10,
           ),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: const Color.fromRGBO(17, 40, 106, 1),
+            color: Colors.grey[900],
+            borderRadius: BorderRadius.circular(30),
           ),
           child: StreamBuilder(
             stream: db.streamWastageData(groupId, subGroup.id),
@@ -358,16 +357,15 @@ class TeacherView extends StatelessWidget {
 
         // Daily Health Report
         Container(
-          height: 280,
+          height: 500,
           padding: const EdgeInsets.only(
-            left: 6,
-            bottom: 6,
+            top: 30,
             right: 10,
-            top: 12,
+            bottom: 10,
           ),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: const Color.fromRGBO(17, 40, 106, 1),
+            color: Colors.grey[900],
+            borderRadius: BorderRadius.circular(30),
           ),
           child: StreamBuilder(
             stream: db.streamHealthData(groupId, subGroup.id),
@@ -432,16 +430,15 @@ class TeacherView extends StatelessWidget {
 
         // Monthly Wastage Report
         Container(
-          height: 280,
+          height: 500,
           padding: const EdgeInsets.only(
-            left: 6,
-            bottom: 6,
+            top: 30,
             right: 10,
-            top: 12,
+            bottom: 10,
           ),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: const Color.fromRGBO(17, 40, 106, 1),
+            color: Colors.grey[900],
+            borderRadius: BorderRadius.circular(30),
           ),
           child: StreamBuilder(
             stream: db.streamWastageDataForYear(
@@ -481,16 +478,15 @@ class TeacherView extends StatelessWidget {
 
         // Monthly Health Report
         Container(
-          height: 280,
+          height: 500,
           padding: const EdgeInsets.only(
-            left: 6,
-            bottom: 6,
+            top: 30,
             right: 10,
-            top: 12,
+            bottom: 10,
           ),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: const Color.fromRGBO(17, 40, 106, 1),
+            color: Colors.grey[900],
+            borderRadius: BorderRadius.circular(30),
           ),
           child: StreamBuilder(
             stream: db.streamHealthDataForYear(
@@ -817,7 +813,9 @@ class _SupervisorViewState extends State<SupervisorView> {
             bottom: 10,
           ),
           decoration: BoxDecoration(
-              color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
+            color: Colors.grey[900],
+            borderRadius: BorderRadius.circular(30),
+          ),
           child:
               GradeWastageComparisonChart(gradeWiseData: _gradeWastageForYear),
         ),
@@ -837,7 +835,9 @@ class _SupervisorViewState extends State<SupervisorView> {
             bottom: 10,
           ),
           decoration: BoxDecoration(
-              color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
+            color: Colors.grey[900],
+            borderRadius: BorderRadius.circular(30),
+          ),
           child: GradeHealthComparisonChart(gradeWiseData: _gradeHealthForYear),
         ),
         const SizedBox(height: 5),
