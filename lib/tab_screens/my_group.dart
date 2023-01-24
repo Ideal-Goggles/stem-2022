@@ -713,7 +713,7 @@ class _SupervisorViewState extends State<SupervisorView> {
               borderRadius: BorderRadius.circular(14),
             ),
             color: Theme.of(context).colorScheme.primary,
-            child: const Text("View Day-wise Health Data"),
+            child: const Text("View Class-wise Data"),
           ),
         ),
         const SizedBox(height: 10),
