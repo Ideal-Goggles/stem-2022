@@ -32,6 +32,7 @@ class GradeWastageComparisonChart extends StatelessWidget {
             sideTitles: SideTitles(
               showTitles: true,
               reservedSize: 40,
+              interval: 100,
               getTitlesWidget: (value, meta) {
                 final v = value >= 1000
                     ? "${value ~/ 1000} K"
@@ -75,9 +76,13 @@ class GradeWastageComparisonChart extends StatelessWidget {
                 idx,
                 BarChartGroupData(x: idx, barRods: [
                   BarChartRodData(
+                    color: Colors.redAccent,
                     toY: gradeWiseData[grade] ?? 0,
-                    borderRadius: BorderRadius.zero,
-                    width: 14,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(5),
+                      topRight: Radius.circular(5),
+                    ),
+                    width: 30,
                   )
                 ]),
               ),

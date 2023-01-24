@@ -32,6 +32,7 @@ class GradeHealthComparisonChart extends StatelessWidget {
             sideTitles: SideTitles(
               showTitles: true,
               reservedSize: 45,
+              interval: 10,
               getTitlesWidget: (value, meta) {
                 return Padding(
                   padding: const EdgeInsets.only(right: 8),
@@ -64,21 +65,38 @@ class GradeHealthComparisonChart extends StatelessWidget {
             ),
           ),
         ),
+        barTouchData: BarTouchData(
+          touchTooltipData: BarTouchTooltipData(
+            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+              return BarTooltipItem(
+                rod.toY.toStringAsPrecision(4),
+                const TextStyle(
+                  color: Colors.greenAccent,
+                  fontWeight: FontWeight.bold,
+                ),
+              );
+            },
+          ),
+        ),
         barGroups: indexedGrades
             .asMap()
             .map((idx, grade) {
               final totalGradeHealth =
                   gradeWiseData[grade]!.reduce((a, b) => a + b);
               final avgGradeHealth =
-                  totalGradeHealth / gradeWiseData[grade]!.length;
+                  totalGradeHealth * 100 / gradeWiseData[grade]!.length;
 
               return MapEntry(
                 idx,
                 BarChartGroupData(x: idx, barRods: [
                   BarChartRodData(
+                    color: Colors.greenAccent,
                     toY: avgGradeHealth,
-                    borderRadius: BorderRadius.zero,
-                    width: 14,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(5),
+                      topRight: Radius.circular(5),
+                    ),
+                    width: 30,
                   )
                 ]),
               );

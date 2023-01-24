@@ -8,9 +8,11 @@ import 'package:stem_2022/services/database_service.dart';
 
 import 'package:stem_2022/chart_widgets/teacher_charts/daily_health_chart.dart';
 import 'package:stem_2022/chart_widgets/teacher_charts/daily_wastage_chart.dart';
-import 'package:stem_2022/chart_widgets/supervisor_charts/grade_wastage_comparison_chart.dart';
 import 'package:stem_2022/chart_widgets/teacher_charts/monthly_wastage_chart.dart';
 import 'package:stem_2022/chart_widgets/teacher_charts/monthly_health_chart.dart';
+
+import 'package:stem_2022/chart_widgets/supervisor_charts/grade_wastage_comparison_chart.dart';
+import 'package:stem_2022/chart_widgets/supervisor_charts/grade_health_comparison_chart.dart';
 
 import 'package:stem_2022/my_group_screens/day_wise_health_data.dart';
 
@@ -571,19 +573,15 @@ class _SupervisorViewState extends State<SupervisorView> {
         for (final subGroup in subGroups) {
           final subGroupGrade =
               subGroup.id.substring(0, subGroup.id.length - 2);
-          final subGroupSections = subGroup.id;
-
-          // Add and empty list if it doesn't exist for the current grade
-          if (!gradeHealth.containsKey(subGroupGrade)) {
-            gradeHealth[subGroupGrade] = [];
-          }
 
           // Fetch data
           final wastageFuture = db.getWastageData(widget.groupId, subGroup.id);
           final healthFuture = db.getHealthData(widget.groupId, subGroup.id);
 
           // Process wastage data
-          for (final wastage in await wastageFuture) {
+          final wastageData = await wastageFuture;
+
+          for (final wastage in wastageData) {
             gradeWastage.update(
               subGroupGrade,
               (w) => w + wastage.totalWastage,
@@ -591,14 +589,23 @@ class _SupervisorViewState extends State<SupervisorView> {
             );
             subGroupWastage.update(
               subGroup.id,
-              (w) => wastage.totalWastage,
+              (w) => w + wastage.totalWastage,
               ifAbsent: () => wastage.totalWastage,
             );
           }
 
           // Process health data
           for (final health in await healthFuture) {
-            gradeHealth[subGroupGrade]!.add(health.healthyPercent);
+            gradeHealth.update(
+              subGroupGrade,
+              (h) => [...h, health.healthyPercent],
+              ifAbsent: () => [health.healthyPercent],
+            );
+            subGroupHealth.update(
+              subGroup.id,
+              (h) => [...h, health.healthyPercent],
+              ifAbsent: () => [health.healthyPercent],
+            );
           }
         }
 
@@ -607,9 +614,9 @@ class _SupervisorViewState extends State<SupervisorView> {
           _gradeWastage = gradeWastage;
           _gradeHealth = gradeHealth;
           _subGroupWastage = subGroupWastage;
+          _subGroupHealth = subGroupHealth;
           _loading = false;
         });
-        print(_subGroupWastage);
       },
     );
 
@@ -622,11 +629,12 @@ class _SupervisorViewState extends State<SupervisorView> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    double totalSectionWastage = 0;
+    final double totalSectionWastage =
+        _gradeWastage.values.reduce((a, b) => a + b);
+
     double totalSectionHealth = 0;
     int totalSectionHealthEntries = 0;
 
-    _gradeWastage.forEach((grade, wastage) => totalSectionWastage += wastage);
     _gradeHealth.forEach(
       (grade, health) {
         // ignore: avoid_function_literals_in_foreach_calls
@@ -655,8 +663,38 @@ class _SupervisorViewState extends State<SupervisorView> {
           style: _bodyTextStyle,
         ),
         const SizedBox(height: 15),
-
-        // TODO: Add fancy charts and stuff
+        Container(
+          height: 400,
+          padding:
+              const EdgeInsets.only(top: 20, right: 10, bottom: 10, left: 10),
+          decoration: BoxDecoration(
+              color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
+          child: GradeWastageComparisonChart(gradeWiseData: _gradeWastage),
+        ),
+        const SizedBox(height: 5),
+        const Center(
+          child: Text(
+            "Grade-wise Wastage Report (Previous Week)",
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        ),
+        const SizedBox(height: 15),
+        Container(
+          height: 400,
+          padding:
+              const EdgeInsets.only(top: 20, right: 10, bottom: 10, left: 10),
+          decoration: BoxDecoration(
+              color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
+          child: GradeHealthComparisonChart(gradeWiseData: _gradeHealth),
+        ),
+        const SizedBox(height: 5),
+        const Center(
+          child: Text(
+            "Grade-wise Health Report (Previous Week)",
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        ),
+        _divider,
       ],
     );
   }
