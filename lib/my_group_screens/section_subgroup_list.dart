@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:stem_2022/services/database_service.dart';
 import 'package:stem_2022/models/group.dart';
+import 'package:stem_2022/tab_screens/my_group.dart';
 
 class SectionSubGroupListScreen extends StatelessWidget {
   final String groupId;
@@ -49,7 +50,10 @@ class SectionSubGroupListScreen extends StatelessWidget {
             separatorBuilder: (context, index) => const SizedBox(height: 10),
             itemCount: subGroups.length,
             itemBuilder: (context, index) {
-              return SubGroupListTile(subGroup: subGroups[index]);
+              return SubGroupListTile(
+                groupId: groupId,
+                subGroup: subGroups[index],
+              );
             },
           );
         },
@@ -59,14 +63,38 @@ class SectionSubGroupListScreen extends StatelessWidget {
 }
 
 class SubGroupListTile extends StatelessWidget {
+  final String groupId;
   final SubGroup subGroup;
 
-  const SubGroupListTile({super.key, required this.subGroup});
+  const SubGroupListTile(
+      {super.key, required this.groupId, required this.subGroup});
+
+  void _navigateToTeacherView(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        maintainState: true,
+        builder: (context) {
+          return Scaffold(
+            appBar: AppBar(title: Text("Details for ${subGroup.id}")),
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: TeacherView(
+                groupId: groupId,
+                subGroup: subGroup,
+                writeable: false,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-      onPressed: () {},
+      onPressed: () => _navigateToTeacherView(context),
       padding: const EdgeInsets.all(15),
       color: Colors.grey[900],
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),

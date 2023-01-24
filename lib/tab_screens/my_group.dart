@@ -664,6 +664,30 @@ class _SupervisorViewState extends State<SupervisorView> {
           style: _bodyTextStyle,
         ),
         const SizedBox(height: 15),
+
+        // Class-wise data button
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 50),
+          child: MaterialButton(
+            height: 42,
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SectionSubGroupListScreen(
+                  groupId: widget.groupId,
+                  section: widget.section,
+                ),
+              ),
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+            color: Theme.of(context).colorScheme.primary,
+            child: const Text("View Class-wise Data"),
+          ),
+        ),
+
+        const SizedBox(height: 15),
         Container(
           height: 500,
           padding:
@@ -693,27 +717,6 @@ class _SupervisorViewState extends State<SupervisorView> {
           child: Text(
             "Grade-wise Health Report (Previous Week)",
             style: TextStyle(fontSize: 12, color: Colors.grey),
-          ),
-        ),
-        const SizedBox(height: 20),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 50),
-          child: MaterialButton(
-            height: 42,
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SectionSubGroupListScreen(
-                  groupId: widget.groupId,
-                  section: widget.section,
-                ),
-              ),
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
-            ),
-            color: Theme.of(context).colorScheme.primary,
-            child: const Text("View Class-wise Data"),
           ),
         ),
         const SizedBox(height: 10),
