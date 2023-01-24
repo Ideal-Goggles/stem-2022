@@ -723,7 +723,7 @@ class _SupervisorViewState extends State<SupervisorView> {
       children: [
         _divider,
         Text(
-          "Monthly ${widget.section} Section Report",
+          "Weekly ${widget.section} Section Report",
           style: const TextStyle(fontSize: 20),
         ),
         Text(
@@ -759,6 +759,8 @@ class _SupervisorViewState extends State<SupervisorView> {
         ),
 
         const SizedBox(height: 15),
+
+        // Grade Reports
         Container(
           height: 500,
           padding: const EdgeInsets.only(
@@ -799,6 +801,7 @@ class _SupervisorViewState extends State<SupervisorView> {
 
         const SizedBox(height: 25),
 
+        // Class Reports
         Container(
           height: 500,
           padding: const EdgeInsets.only(
@@ -837,11 +840,11 @@ class _SupervisorViewState extends State<SupervisorView> {
           ),
         ),
 
-        const SizedBox(height: 10),
+        const SizedBox(height: 20),
         _divider,
 
         Text(
-          "Yearly ${widget.section} Section Report",
+          "Monthly ${widget.section} Section Report",
           style: const TextStyle(fontSize: 20),
         ),
         Text(
@@ -853,6 +856,8 @@ class _SupervisorViewState extends State<SupervisorView> {
           style: _bodyTextStyle,
         ),
         const SizedBox(height: 15),
+
+        // Grade Reports
         Container(
           height: 500,
           padding: const EdgeInsets.only(
@@ -898,6 +903,7 @@ class _SupervisorViewState extends State<SupervisorView> {
 
         const SizedBox(height: 25),
 
+        // Weekly  Reports
         Container(
           height: 500,
           padding: const EdgeInsets.only(
