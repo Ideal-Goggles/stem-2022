@@ -67,7 +67,9 @@ class MyGroupScreen extends StatelessWidget {
           }
 
           if (group.admin == appUser.id) {
-            return const PrincipalView();
+            return const PrincipalView(
+              groupId: group.id,
+            );
           }
 
           if (group.supervisors.containsKey(appUser.id)) {
@@ -852,9 +854,15 @@ class _SupervisorViewState extends State<SupervisorView> {
   }
 }
 
-class PrincipalView extends StatelessWidget {
-  const PrincipalView({super.key});
+class PrincipalView extends StatefulWidget {
+  final String groupId;
+  const PrincipalView({super.key, required this.groupId});
 
+  @override
+  State<PrincipalView> createState() => _PrincipalViewState();
+}
+
+class _PrincipalViewState extends State<PrincipalView> {
   @override
   Widget build(BuildContext context) {
     return const Center(child: Text("Principal View"));
