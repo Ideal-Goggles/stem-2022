@@ -76,7 +76,11 @@ class GradeWastageComparisonChart extends StatelessWidget {
                 idx,
                 BarChartGroupData(x: idx, barRods: [
                   BarChartRodData(
-                    color: Colors.redAccent,
+                    gradient: const LinearGradient(
+                      colors: [Colors.red, Colors.redAccent],
+                      begin: Alignment.bottomLeft,
+                      end: Alignment.topRight,
+                    ),
                     toY: gradeWiseData[grade] ?? 0,
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(5),

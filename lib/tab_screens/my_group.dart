@@ -665,9 +665,9 @@ class _SupervisorViewState extends State<SupervisorView> {
         ),
         const SizedBox(height: 15),
         Container(
-          height: 400,
+          height: 500,
           padding:
-              const EdgeInsets.only(top: 20, right: 10, bottom: 10, left: 10),
+              const EdgeInsets.only(top: 30, right: 10, bottom: 10, left: 10),
           decoration: BoxDecoration(
               color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
           child: GradeWastageComparisonChart(gradeWiseData: _gradeWastage),
@@ -681,9 +681,9 @@ class _SupervisorViewState extends State<SupervisorView> {
         ),
         const SizedBox(height: 15),
         Container(
-          height: 400,
+          height: 500,
           padding:
-              const EdgeInsets.only(top: 20, right: 10, bottom: 10, left: 10),
+              const EdgeInsets.only(top: 30, right: 10, bottom: 10, left: 10),
           decoration: BoxDecoration(
               color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
           child: GradeHealthComparisonChart(gradeWiseData: _gradeHealth),
