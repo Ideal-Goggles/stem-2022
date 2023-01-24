@@ -116,3 +116,40 @@ class WastageDataPoint {
     };
   }
 }
+
+class GroupAnnouncement {
+  final String id;
+  final String authorId;
+  final String content;
+  final Timestamp dateAdded;
+  final String? targetSection;
+
+  const GroupAnnouncement({
+    required this.id,
+    required this.authorId,
+    required this.content,
+    required this.dateAdded,
+    this.targetSection,
+  });
+
+  factory GroupAnnouncement.fromFirestore(DocumentSnapshot snapshot) {
+    final data = snapshot.data() as Map<String, dynamic>;
+
+    return GroupAnnouncement(
+      id: snapshot.id,
+      authorId: data["authorId"],
+      content: data["content"],
+      dateAdded: data["dateAdded"],
+      targetSection: data["targetSection"],
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "authorId": authorId,
+      "content": content,
+      "dateAdded": dateAdded,
+      "targetSection": targetSection,
+    };
+  }
+}

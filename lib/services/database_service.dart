@@ -445,4 +445,22 @@ class DatabaseService {
         .map((document) => SubGroup.fromFirestore(document))
         .toList();
   }
+
+  Future<void> createGroupAnnouncement({
+    required String content,
+    required String authorId,
+    required String groupId,
+    String? targetSection,
+  }) async {
+    final announcement = GroupAnnouncement(
+      id: "",
+      authorId: authorId,
+      content: content,
+      dateAdded: Timestamp.now(),
+    );
+
+    final docRef =
+        _db.collection("groups").doc(groupId).collection("announcements").doc();
+    await docRef.set(announcement.toMap());
+  }
 }
