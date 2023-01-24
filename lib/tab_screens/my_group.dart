@@ -15,6 +15,7 @@ import 'package:stem_2022/chart_widgets/supervisor_charts/grade_wastage_comparis
 import 'package:stem_2022/chart_widgets/supervisor_charts/grade_health_comparison_chart.dart';
 
 import 'package:stem_2022/my_group_screens/day_wise_health_data.dart';
+import 'package:stem_2022/my_group_screens/section_subgroup_list.dart';
 
 class MyGroupScreen extends StatelessWidget {
   const MyGroupScreen({super.key});
@@ -694,6 +695,28 @@ class _SupervisorViewState extends State<SupervisorView> {
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ),
+        const SizedBox(height: 20),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 50),
+          child: MaterialButton(
+            height: 42,
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SectionSubGroupListScreen(
+                  groupId: widget.groupId,
+                  section: widget.section,
+                ),
+              ),
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+            color: Theme.of(context).colorScheme.primary,
+            child: const Text("View Day-wise Health Data"),
+          ),
+        ),
+        const SizedBox(height: 10),
         _divider,
       ],
     );
