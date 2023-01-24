@@ -69,6 +69,7 @@ class MyGroupScreen extends StatelessWidget {
           if (group.admin == appUser.id) {
             return PrincipalView(
               groupId: group.id,
+              sections: group.sections,
             );
           }
 
@@ -944,8 +945,9 @@ class _SupervisorViewState extends State<SupervisorView> {
 
 class PrincipalView extends StatefulWidget {
   final String groupId;
-  List sections = ["Junior", "Secondary", "Senior"];
-  PrincipalView({super.key, required this.groupId});
+  final List sections;
+  const PrincipalView(
+      {super.key, required this.groupId, required this.sections});
 
   @override
   State<PrincipalView> createState() => _PrincipalViewState();
@@ -962,8 +964,7 @@ class _PrincipalViewState extends State<PrincipalView> {
   late final Map<String, double> _subGroupWastageForYear;
   late final Map<String, List<double>> _subGroupHealthForYear;
 
-  late final Map<String, List<Map<String, Object>>> sectionData;
-  late final Map<String, List<Map<String, Object>>> sectionDataForYear;
+  late final Map<String, Map<String, List<double>>> sectionsData;
 
   bool _loading = true;
 
@@ -977,98 +978,96 @@ class _PrincipalViewState extends State<PrincipalView> {
   void initState() {
     final db = Provider.of<DatabaseService>(context, listen: false);
 
-    for (final section in widget.sections) {
-      db.getSectionSubGroups(widget.groupId, section).then(
-        (subGroups) async {
-          Map<String, double> gradeWastage = {};
-          Map<String, List<double>> gradeHealth = {};
-          Map<String, double> subGroupWastage = {};
-          Map<String, List<double>> subGroupHealth = {};
+    db.getSectionSubGroups(widget.groupId, "Senior").then(
+      (subGroups) async {
+        Map<String, double> gradeWastage = {};
+        Map<String, List<double>> gradeHealth = {};
+        Map<String, double> subGroupWastage = {};
+        Map<String, List<double>> subGroupHealth = {};
 
-          Map<String, double> gradeWastageForYear = {};
-          Map<String, List<double>> gradeHealthForYear = {};
-          Map<String, double> subGroupWastageForYear = {};
-          Map<String, List<double>> subGroupHealthForYear = {};
+        Map<String, double> gradeWastageForYear = {};
+        Map<String, List<double>> gradeHealthForYear = {};
+        Map<String, double> subGroupWastageForYear = {};
+        Map<String, List<double>> subGroupHealthForYear = {};
 
-          for (final subGroup in subGroups) {
-            final subGroupGrade =
-                subGroup.id.substring(0, subGroup.id.length - 2);
+        for (final subGroup in subGroups) {
+          final subGroupGrade = subGroup.id;
 
-            // Fetch data
-            final wastageFuture =
-                db.getWastageData(widget.groupId, subGroup.id);
-            final wastageForYearFuture = db.getWastageDataForYear(
-              widget.groupId,
-              subGroup.id,
-              year: DateTime.now().year,
+          // Fetch data
+          final wastageFuture = db.getWastageData(widget.groupId, subGroup.id);
+          final wastageForYearFuture = db.getWastageDataForYear(
+            widget.groupId,
+            subGroup.id,
+            year: DateTime.now().year,
+          );
+
+          final healthFuture = db.getHealthData(widget.groupId, subGroup.id);
+          final healthForYearFuture = db.getHealthDataForYear(
+            widget.groupId,
+            subGroup.id,
+            year: DateTime.now().year,
+          );
+
+          // Process wastage data
+          for (final wastage in await wastageFuture) {
+            gradeWastage.update(
+              subGroupGrade,
+              (w) => w + wastage.totalWastage,
+              ifAbsent: () => wastage.totalWastage,
             );
-
-            final healthFuture = db.getHealthData(widget.groupId, subGroup.id);
-            final healthForYearFuture = db.getHealthDataForYear(
-              widget.groupId,
+            subGroupWastage.update(
               subGroup.id,
-              year: DateTime.now().year,
+              (w) => w + wastage.totalWastage,
+              ifAbsent: () => wastage.totalWastage,
             );
-
-            // Process wastage data
-            for (final wastage in await wastageFuture) {
-              gradeWastage.update(
-                subGroupGrade,
-                (w) => w + wastage.totalWastage,
-                ifAbsent: () => wastage.totalWastage,
-              );
-              subGroupWastage.update(
-                subGroup.id,
-                (w) => w + wastage.totalWastage,
-                ifAbsent: () => wastage.totalWastage,
-              );
-            }
-
-            // Process wastage for year data
-            for (final wastage in await wastageForYearFuture) {
-              gradeWastageForYear.update(
-                subGroupGrade,
-                (w) => w + wastage.totalWastage,
-                ifAbsent: () => wastage.totalWastage,
-              );
-              subGroupWastageForYear.update(
-                subGroup.id,
-                (w) => w + wastage.totalWastage,
-                ifAbsent: () => wastage.totalWastage,
-              );
-            }
-
-            // Process health data
-            for (final health in await healthFuture) {
-              gradeHealth.update(
-                subGroupGrade,
-                (h) => [...h, health.healthyPercent],
-                ifAbsent: () => [health.healthyPercent],
-              );
-              subGroupHealth.update(
-                subGroup.id,
-                (h) => [...h, health.healthyPercent],
-                ifAbsent: () => [health.healthyPercent],
-              );
-            }
-            for (final health in await healthForYearFuture) {
-              gradeHealthForYear.update(
-                subGroupGrade,
-                (h) => [...h, health.healthyPercent],
-                ifAbsent: () => [health.healthyPercent],
-              );
-              subGroupHealthForYear.update(
-                subGroup.id,
-                (h) => [...h, health.healthyPercent],
-                ifAbsent: () => [health.healthyPercent],
-              );
-            }
           }
 
-          // Process health for year data
+          // Process wastage for year data
+          for (final wastage in await wastageForYearFuture) {
+            gradeWastageForYear.update(
+              subGroupGrade,
+              (w) => w + wastage.totalWastage,
+              ifAbsent: () => wastage.totalWastage,
+            );
+            subGroupWastageForYear.update(
+              subGroup.id,
+              (w) => w + wastage.totalWastage,
+              ifAbsent: () => wastage.totalWastage,
+            );
+          }
 
-          // Update state after all data has been processed
-          setState(() {
+          // Process health data
+          for (final health in await healthFuture) {
+            gradeHealth.update(
+              subGroupGrade,
+              (h) => [...h, health.healthyPercent],
+              ifAbsent: () => [health.healthyPercent],
+            );
+            subGroupHealth.update(
+              subGroup.id,
+              (h) => [...h, health.healthyPercent],
+              ifAbsent: () => [health.healthyPercent],
+            );
+          }
+          for (final health in await healthForYearFuture) {
+            gradeHealthForYear.update(
+              subGroupGrade,
+              (h) => [...h, health.healthyPercent],
+              ifAbsent: () => [health.healthyPercent],
+            );
+            subGroupHealthForYear.update(
+              subGroup.id,
+              (h) => [...h, health.healthyPercent],
+              ifAbsent: () => [health.healthyPercent],
+            );
+          }
+        }
+
+        // Process health for year data
+
+        // Update state after all data has been processed
+        setState(
+          () {
             _gradeWastage = gradeWastage;
             _gradeHealth = gradeHealth;
             _subGroupWastage = subGroupWastage;
@@ -1078,12 +1077,11 @@ class _PrincipalViewState extends State<PrincipalView> {
             _gradeHealthForYear = gradeHealthForYear;
 
             _loading = false;
-          });
-
-          sectionData[section] = [gradeWastage, gradeHealth];
-        },
-      );
-    }
+          },
+        );
+        print(gradeHealth);
+      },
+    );
 
     super.initState();
   }
