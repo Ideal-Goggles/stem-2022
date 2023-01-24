@@ -67,7 +67,7 @@ class MyGroupScreen extends StatelessWidget {
           }
 
           if (group.admin == appUser.id) {
-            return const PrincipalView(
+            return PrincipalView(
               groupId: group.id,
             );
           }
@@ -665,6 +665,8 @@ class _SupervisorViewState extends State<SupervisorView> {
 
           _gradeWastageForYear = gradeWastageForYear;
           _gradeHealthForYear = gradeHealthForYear;
+          _subGroupWastageForYear = subGroupWastageForYear;
+          _subGroupHealthForYear = subGroupHealthForYear;
 
           _loading = false;
         });
@@ -792,8 +794,50 @@ class _SupervisorViewState extends State<SupervisorView> {
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ),
+
+        const SizedBox(height: 25),
+
+        Container(
+          height: 500,
+          padding: const EdgeInsets.only(
+            top: 30,
+            right: 10,
+            bottom: 10,
+          ),
+          decoration: BoxDecoration(
+              color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
+          child: GradeWastageComparisonChart(gradeWiseData: _subGroupWastage),
+        ),
+        const SizedBox(height: 5),
+        const Center(
+          child: Text(
+            "Class-wise Wastage Report (Previous Week)",
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        ),
+        const SizedBox(height: 15),
+        Container(
+          height: 500,
+          padding: const EdgeInsets.only(
+            top: 30,
+            right: 10,
+            bottom: 10,
+          ),
+          decoration: BoxDecoration(
+              color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
+          child: GradeHealthComparisonChart(gradeWiseData: _subGroupHealth),
+        ),
+        const SizedBox(height: 5),
+        const Center(
+          child: Text(
+            "Class-wise Health Report (Previous Week)",
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        ),
+
         const SizedBox(height: 10),
         _divider,
+
         Text(
           "Yearly ${widget.section} Section Report",
           style: const TextStyle(fontSize: 20),
@@ -846,6 +890,48 @@ class _SupervisorViewState extends State<SupervisorView> {
         const Center(
           child: Text(
             "Grade-wise Health Report (Past Year)",
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        ),
+
+        const SizedBox(height: 25),
+
+        Container(
+          height: 500,
+          padding: const EdgeInsets.only(
+            top: 30,
+            right: 10,
+            bottom: 10,
+          ),
+          decoration: BoxDecoration(
+              color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
+          child: GradeWastageComparisonChart(
+              gradeWiseData: _subGroupWastageForYear),
+        ),
+        const SizedBox(height: 5),
+        const Center(
+          child: Text(
+            "Class-wise Wastage Report (Previous Year)",
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        ),
+        const SizedBox(height: 15),
+        Container(
+          height: 500,
+          padding: const EdgeInsets.only(
+            top: 30,
+            right: 10,
+            bottom: 10,
+          ),
+          decoration: BoxDecoration(
+              color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
+          child:
+              GradeHealthComparisonChart(gradeWiseData: _subGroupHealthForYear),
+        ),
+        const SizedBox(height: 5),
+        const Center(
+          child: Text(
+            "Class-wise Health Report (Previous Year)",
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ),
