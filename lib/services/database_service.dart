@@ -228,6 +228,33 @@ class DatabaseService {
         .toList();
   }
 
+  Future<List<WastageDataPoint>> getWastageDataForYear(
+    String groupId,
+    String subGroupId, {
+    required int year,
+  }) async {
+    final yearBegin = DateTime(year);
+    final yearEnd = yearBegin.add(const Duration(days: 365));
+
+    final snapshot = await _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .doc(subGroupId)
+        .collection("wastage")
+        .orderBy("timestamp")
+        .where(
+          "timestamp",
+          isGreaterThan: Timestamp.fromDate(yearBegin),
+          isLessThan: Timestamp.fromDate(yearEnd),
+        )
+        .get();
+
+    return snapshot.docs
+        .map((document) => WastageDataPoint.fromFirestore(document))
+        .toList();
+  }
+
   Stream<List<HealthDataPoint>> streamHealthData(
     String groupId,
     String subGroupId, {
@@ -263,6 +290,33 @@ class DatabaseService {
         .collection("health")
         .orderBy("timestamp")
         .limit(limit)
+        .get();
+
+    return snapshot.docs
+        .map((document) => HealthDataPoint.fromFirestore(document))
+        .toList();
+  }
+
+  Future<List<HealthDataPoint>> getHealthDataForYear(
+    String groupId,
+    String subGroupId, {
+    required int year,
+  }) async {
+    final yearBegin = DateTime(year);
+    final yearEnd = yearBegin.add(const Duration(days: 365));
+
+    final snapshot = await _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .doc(subGroupId)
+        .collection("health")
+        .orderBy("timestamp")
+        .where(
+          "timestamp",
+          isGreaterThan: Timestamp.fromDate(yearBegin),
+          isLessThan: Timestamp.fromDate(yearEnd),
+        )
         .get();
 
     return snapshot.docs
