@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:stem_2022/my_group_screens/supervisor_view.dart';
+
+import 'package:stem_2022/models/group.dart';
 import 'package:stem_2022/services/database_service.dart';
-import 'package:stem_2022/chart_widgets/supervisor_charts/grade_wastage_comparison_chart.dart';
+
+import 'package:stem_2022/my_group_screens/supervisor_view.dart';
 
 class PrincipalView extends StatefulWidget {
-  final String groupId;
+  final Group group;
   final String name;
   final List<String> sections;
 
   const PrincipalView({
     super.key,
-    required this.groupId,
+    required this.group,
     required this.sections,
     required this.name,
   });
@@ -31,7 +33,7 @@ class _PrincipalViewState extends State<PrincipalView> {
   @override
   void initState() {
     final db = Provider.of<DatabaseService>(context, listen: false);
-    final groupId = widget.groupId;
+    final groupId = widget.group.id;
 
     for (final section in widget.sections) {
       Map<String, double> gradeWastage = {};
@@ -39,23 +41,22 @@ class _PrincipalViewState extends State<PrincipalView> {
       Map<String, double> gradeWastageForYear = {};
       Map<String, List<double>> gradeHealthForYear = {};
 
-      db.getSectionSubGroups(widget.groupId, section).then(
+      db.getSectionSubGroups(groupId, section).then(
         (subGroups) async {
           for (final subGroup in subGroups) {
             final subGroupGrade =
                 subGroup.id.substring(0, subGroup.id.length - 2);
 
-            final wastageFuture =
-                db.getWastageData(widget.groupId, subGroup.id);
+            final wastageFuture = db.getWastageData(groupId, subGroup.id);
             final wastageForYearFuture = db.getWastageDataForYear(
-              widget.groupId,
+              groupId,
               subGroup.id,
               year: DateTime.now().year,
             );
 
-            final healthFuture = db.getHealthData(widget.groupId, subGroup.id);
+            final healthFuture = db.getHealthData(groupId, subGroup.id);
             final healthForYearFuture = db.getHealthDataForYear(
-              widget.groupId,
+              groupId,
               subGroup.id,
               year: DateTime.now().year,
             );
@@ -208,7 +209,7 @@ class _PrincipalViewState extends State<PrincipalView> {
                       builder: (context) => Scaffold(
                         appBar: AppBar(title: Text("$section Section")),
                         body: SupervisorView(
-                          groupId: widget.groupId,
+                          group: widget.group,
                           section: section,
                         ),
                       ),

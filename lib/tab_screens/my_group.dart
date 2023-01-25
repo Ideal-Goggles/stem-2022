@@ -60,7 +60,7 @@ class MyGroupScreen extends StatelessWidget {
 
           if (group.admin == appUser.id) {
             return PrincipalView(
-              groupId: group.id,
+              group: group,
               sections: group.sections,
               name: group.name,
             );
