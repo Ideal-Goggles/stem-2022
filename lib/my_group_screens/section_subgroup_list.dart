@@ -6,12 +6,12 @@ import 'package:stem_2022/models/group.dart';
 import 'package:stem_2022/my_group_screens/teacher_view.dart';
 
 class SectionSubGroupListScreen extends StatelessWidget {
-  final String groupId;
+  final Group group;
   final String section;
 
   const SectionSubGroupListScreen({
     super.key,
-    required this.groupId,
+    required this.group,
     required this.section,
   });
 
@@ -22,7 +22,7 @@ class SectionSubGroupListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text("$section Section Classes")),
       body: StreamBuilder(
-        stream: db.streamSectionSubGroups(groupId, section),
+        stream: db.streamSectionSubGroups(group.id, section),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
@@ -51,7 +51,7 @@ class SectionSubGroupListScreen extends StatelessWidget {
             itemCount: subGroups.length,
             itemBuilder: (context, index) {
               return SubGroupListTile(
-                groupId: groupId,
+                group: group,
                 subGroup: subGroups[index],
               );
             },
@@ -63,11 +63,14 @@ class SectionSubGroupListScreen extends StatelessWidget {
 }
 
 class SubGroupListTile extends StatelessWidget {
-  final String groupId;
+  final Group group;
   final SubGroup subGroup;
 
-  const SubGroupListTile(
-      {super.key, required this.groupId, required this.subGroup});
+  const SubGroupListTile({
+    super.key,
+    required this.group,
+    required this.subGroup,
+  });
 
   void _navigateToTeacherView(BuildContext context) {
     Navigator.push(
@@ -80,7 +83,7 @@ class SubGroupListTile extends StatelessWidget {
             body: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: TeacherView(
-                groupId: groupId,
+                group: group,
                 subGroup: subGroup,
                 writeable: false,
               ),

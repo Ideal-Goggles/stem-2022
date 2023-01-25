@@ -77,7 +77,7 @@ class MyGroupScreen extends StatelessWidget {
           }
 
           return TeacherView(
-            groupId: group.id,
+            group: group,
             subGroup: subGroup!,
             writeable: subGroup.classTeacher == appUser.id,
           );

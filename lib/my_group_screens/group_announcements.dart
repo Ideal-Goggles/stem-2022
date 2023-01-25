@@ -61,13 +61,15 @@ class GroupAnnouncementsScreen extends StatelessWidget {
           overflow: TextOverflow.fade,
           style: const TextStyle(fontSize: 18),
         ),
-        actions: [
-          IconButton(
-            onPressed: () => _showAddAnnouncementDialog(context),
-            icon: const Icon(Icons.add_circle_outline_rounded),
-            color: Theme.of(context).colorScheme.primary,
-          ),
-        ],
+        actions: writeable
+            ? [
+                IconButton(
+                  onPressed: () => _showAddAnnouncementDialog(context),
+                  icon: const Icon(Icons.add_circle_outline_rounded),
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ]
+            : null,
       ),
       body: StreamBuilder(
         stream: db.streamGroupAnnouncements(group.id, section),

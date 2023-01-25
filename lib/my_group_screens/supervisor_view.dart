@@ -222,7 +222,7 @@ class _SupervisorViewState extends State<SupervisorView> {
               context,
               MaterialPageRoute(
                 builder: (context) => SectionSubGroupListScreen(
-                  groupId: widget.group.id,
+                  group: widget.group,
                   section: widget.section,
                 ),
               ),
