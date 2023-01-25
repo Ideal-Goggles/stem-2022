@@ -7,7 +7,7 @@ class Group {
   final int points;
   final Map<String, String> supervisors;
   final String admin;
-  final List sections;
+  final List<String> sections;
 
   Group({
     required this.id,
