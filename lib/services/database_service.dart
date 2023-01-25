@@ -457,10 +457,30 @@ class DatabaseService {
       authorId: authorId,
       content: content,
       dateAdded: Timestamp.now(),
+      targetSection: targetSection,
     );
 
     final docRef =
         _db.collection("groups").doc(groupId).collection("announcements").doc();
     await docRef.set(announcement.toMap());
+  }
+
+  Stream<List<GroupAnnouncement>> streamGroupAnnouncements(
+    String groupId,
+    String? section,
+  ) {
+    final snapshotStream = _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("announcements")
+        .where("targetSection", isEqualTo: section)
+        .orderBy("dateAdded", descending: true)
+        .snapshots();
+
+    return snapshotStream.map(
+      (snapshot) => snapshot.docs
+          .map((document) => GroupAnnouncement.fromFirestore(document))
+          .toList(),
+    );
   }
 }

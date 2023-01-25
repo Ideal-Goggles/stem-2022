@@ -5,17 +5,19 @@ import 'package:stem_2022/chart_widgets/supervisor_charts/grade_health_compariso
 import 'package:stem_2022/chart_widgets/supervisor_charts/grade_wastage_comparison_chart.dart';
 
 import 'package:stem_2022/my_group_screens/section_subgroup_list.dart';
+import 'package:stem_2022/my_group_screens/group_announcements.dart';
 
 import 'package:stem_2022/services/database_service.dart';
+import 'package:stem_2022/models/group.dart';
 
 class SupervisorView extends StatefulWidget {
   final String section;
-  final String groupId;
+  final Group group;
 
   const SupervisorView({
     super.key,
     required this.section,
-    required this.groupId,
+    required this.group,
   });
 
   @override
@@ -45,7 +47,7 @@ class _SupervisorViewState extends State<SupervisorView> {
   void initState() {
     final db = Provider.of<DatabaseService>(context, listen: false);
 
-    db.getSectionSubGroups(widget.groupId, widget.section).then(
+    db.getSectionSubGroups(widget.group.id, widget.section).then(
       (subGroups) async {
         Map<String, double> gradeWastage = {};
         Map<String, List<double>> gradeHealth = {};
@@ -62,16 +64,16 @@ class _SupervisorViewState extends State<SupervisorView> {
               subGroup.id.substring(0, subGroup.id.length - 2);
 
           // Fetch data
-          final wastageFuture = db.getWastageData(widget.groupId, subGroup.id);
+          final wastageFuture = db.getWastageData(widget.group.id, subGroup.id);
           final wastageForYearFuture = db.getWastageDataForYear(
-            widget.groupId,
+            widget.group.id,
             subGroup.id,
             year: DateTime.now().year,
           );
 
-          final healthFuture = db.getHealthData(widget.groupId, subGroup.id);
+          final healthFuture = db.getHealthData(widget.group.id, subGroup.id);
           final healthForYearFuture = db.getHealthDataForYear(
-            widget.groupId,
+            widget.group.id,
             subGroup.id,
             year: DateTime.now().year,
           );
@@ -220,7 +222,7 @@ class _SupervisorViewState extends State<SupervisorView> {
               context,
               MaterialPageRoute(
                 builder: (context) => SectionSubGroupListScreen(
-                  groupId: widget.groupId,
+                  group: widget.group,
                   section: widget.section,
                 ),
               ),
@@ -230,6 +232,31 @@ class _SupervisorViewState extends State<SupervisorView> {
             ),
             color: Theme.of(context).colorScheme.primary,
             child: const Text("View Class-wise Data"),
+          ),
+        ),
+
+        const SizedBox(height: 10),
+
+        // Section Announcements Button
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 50),
+          child: MaterialButton(
+            height: 42,
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => GroupAnnouncementsScreen(
+                  group: widget.group,
+                  section: widget.section,
+                  writeable: true,
+                ),
+              ),
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+            color: Theme.of(context).colorScheme.primary,
+            child: const Text("View Section Announcements"),
           ),
         ),
 

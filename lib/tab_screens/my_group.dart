@@ -69,7 +69,7 @@ class MyGroupScreen extends StatelessWidget {
           if (group.supervisors.containsKey(appUser.id)) {
             return SupervisorView(
               section: group.supervisors[appUser.id]!,
-              groupId: group.id,
+              group: group,
             );
           }
 
@@ -78,7 +78,7 @@ class MyGroupScreen extends StatelessWidget {
           }
 
           return TeacherView(
-            groupId: group.id,
+            group: group,
             subGroup: subGroup!,
             writeable: subGroup.classTeacher == appUser.id,
           );

@@ -8,10 +8,10 @@ import 'package:stem_2022/chart_widgets/teacher_charts/daily_wastage_chart.dart'
 import 'package:stem_2022/chart_widgets/teacher_charts/monthly_health_chart.dart';
 import 'package:stem_2022/chart_widgets/teacher_charts/monthly_wastage_chart.dart';
 
-import 'package:stem_2022/models/group.dart';
-import 'package:stem_2022/models/app_user.dart';
-
 import 'package:stem_2022/my_group_screens/day_wise_health_data.dart';
+import 'package:stem_2022/my_group_screens/group_announcements.dart';
+
+import 'package:stem_2022/models/group.dart';
 import 'package:stem_2022/services/database_service.dart';
 
 class AddDataAlertDialog extends StatefulWidget {
@@ -116,13 +116,13 @@ class _AddDataAlertDialogState extends State<AddDataAlertDialog> {
 }
 
 class TeacherView extends StatelessWidget {
-  final String groupId;
+  final Group group;
   final SubGroup subGroup;
   final bool writeable;
 
   const TeacherView({
     super.key,
-    required this.groupId,
+    required this.group,
     required this.subGroup,
     required this.writeable,
   });
@@ -178,7 +178,7 @@ class TeacherView extends StatelessWidget {
 
       return db
           .addSubGroupData(
-            groupId: groupId,
+            groupId: group.id,
             subGroupId: subGroup.id,
             totalWastage: dataPair.first,
             healthyPercent: dataPair.second,
@@ -239,8 +239,57 @@ class TeacherView extends StatelessWidget {
               child: const Text("Add Data"),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
         ],
+
+        // Day-wise data button
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 50),
+          child: MaterialButton(
+            height: 42,
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DayWiseHealthDataScreen(
+                  groupId: group.id,
+                  subGroupId: subGroup.id,
+                ),
+              ),
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+            color: Theme.of(context).colorScheme.primary,
+            child: const Text("View Day-wise Health Data"),
+          ),
+        ),
+
+        const SizedBox(height: 10),
+
+        // Section Announcements Button
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 50),
+          child: MaterialButton(
+            height: 42,
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => GroupAnnouncementsScreen(
+                  group: group,
+                  section: subGroup.section,
+                  writeable: false,
+                ),
+              ),
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+            color: Theme.of(context).colorScheme.primary,
+            child: const Text("View Section Announcements"),
+          ),
+        ),
+
+        const SizedBox(height: 15),
 
         // Daily Wastage Report
         Container(
@@ -255,7 +304,7 @@ class TeacherView extends StatelessWidget {
             borderRadius: BorderRadius.circular(30),
           ),
           child: StreamBuilder(
-            stream: db.streamWastageData(groupId, subGroup.id),
+            stream: db.streamWastageData(group.id, subGroup.id),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Center(
@@ -299,7 +348,7 @@ class TeacherView extends StatelessWidget {
             borderRadius: BorderRadius.circular(30),
           ),
           child: StreamBuilder(
-            stream: db.streamHealthData(groupId, subGroup.id),
+            stream: db.streamHealthData(group.id, subGroup.id),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Center(
@@ -329,29 +378,6 @@ class TeacherView extends StatelessWidget {
         ),
 
         const SizedBox(height: 20),
-
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 50),
-          child: MaterialButton(
-            height: 42,
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DayWiseHealthDataScreen(
-                  groupId: groupId,
-                  subGroupId: subGroup.id,
-                ),
-              ),
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
-            ),
-            color: Theme.of(context).colorScheme.primary,
-            child: const Text("View Day-wise Health Data"),
-          ),
-        ),
-
-        const SizedBox(height: 20),
         _divider,
         Text(
           "Monthly Report of ${subGroup.id}",
@@ -373,7 +399,7 @@ class TeacherView extends StatelessWidget {
           ),
           child: StreamBuilder(
             stream: db.streamWastageDataForYear(
-              groupId,
+              group.id,
               subGroup.id,
               year: DateTime.now().year,
             ),
@@ -421,7 +447,7 @@ class TeacherView extends StatelessWidget {
           ),
           child: StreamBuilder(
             stream: db.streamHealthDataForYear(
-              groupId,
+              group.id,
               subGroup.id,
               year: DateTime.now().year,
             ),
