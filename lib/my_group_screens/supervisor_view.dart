@@ -237,7 +237,7 @@ class _SupervisorViewState extends State<SupervisorView> {
 
         const SizedBox(height: 10),
 
-        // Class-wise data button
+        // Section Announcements Button
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 50),
           child: MaterialButton(
