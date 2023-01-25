@@ -245,15 +245,18 @@ class _SupervisorViewState extends State<SupervisorView> {
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    GroupAnnouncementsScreen(group: widget.group),
+                builder: (context) => GroupAnnouncementsScreen(
+                  group: widget.group,
+                  section: widget.section,
+                  writeable: true,
+                ),
               ),
             ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),
             ),
             color: Theme.of(context).colorScheme.primary,
-            child: const Text("View Announcements"),
+            child: const Text("View Section Announcements"),
           ),
         ),
 
