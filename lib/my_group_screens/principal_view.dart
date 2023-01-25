@@ -28,11 +28,32 @@ class PrincipalView extends StatelessWidget {
               width: double.infinity,
               margin: const EdgeInsets.only(top: 10, bottom: 10),
               child: MaterialButton(
-                height: 75,
+                height: 60,
                 color: Colors.grey[900],
-                shape: const StadiumBorder(),
-                onPressed: () {},
-                child: Text(section),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14)),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Scaffold(
+                        appBar: AppBar(title: Text("$section Section")),
+                        body: SupervisorView(
+                          groupId: groupId,
+                          section: section,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                child: Row(
+                    // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Expanded(
+                        child: Text(section),
+                      ),
+                      const Icon(Icons.chevron_right_rounded)
+                    ]),
               ),
             )
         ],
