@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stem_2022/my_group_screens/supervisor_view.dart';
 
 class PrincipalView extends StatelessWidget {
   final String groupId;
@@ -12,10 +13,30 @@ class PrincipalView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      builder: (context, snapshot) {
-        return const Center(child: Text("Principal"));
-      },
+    return Padding(
+      padding: const EdgeInsets.only(top: 15),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text("Sections",
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              )),
+          for (final section in sections)
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.only(top: 10, bottom: 10),
+              child: MaterialButton(
+                height: 75,
+                color: Colors.grey[900],
+                shape: const StadiumBorder(),
+                onPressed: () {},
+                child: Text(section),
+              ),
+            )
+        ],
+      ),
     );
   }
 }
