@@ -457,6 +457,7 @@ class DatabaseService {
       authorId: authorId,
       content: content,
       dateAdded: Timestamp.now(),
+      targetSection: targetSection,
     );
 
     final docRef =

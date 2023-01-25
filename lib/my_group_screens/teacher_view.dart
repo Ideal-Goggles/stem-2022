@@ -9,7 +9,6 @@ import 'package:stem_2022/chart_widgets/teacher_charts/monthly_health_chart.dart
 import 'package:stem_2022/chart_widgets/teacher_charts/monthly_wastage_chart.dart';
 
 import 'package:stem_2022/models/group.dart';
-import 'package:stem_2022/models/app_user.dart';
 
 import 'package:stem_2022/my_group_screens/day_wise_health_data.dart';
 import 'package:stem_2022/services/database_service.dart';

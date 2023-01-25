@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +18,36 @@ class GroupAnnouncementsScreen extends StatelessWidget {
   });
 
   void _showAddAnnouncementDialog(BuildContext context) {
-    // TODO
+    showDialog<String>(
+      context: context,
+      builder: (context) => const AddAnnouncementAlert(),
+    ).then((content) {
+      if (content == null) {
+        throw Exception("Announcement Cancelled");
+      }
+
+      final db = Provider.of<DatabaseService>(context, listen: false);
+      return db.createGroupAnnouncement(
+        content: content,
+        authorId: FirebaseAuth.instance.currentUser!.uid,
+        groupId: group.id,
+        targetSection: section,
+      );
+    }).then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text(
+          "Successfully created new announcement!",
+          textAlign: TextAlign.center,
+        ),
+      ));
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.toString(), textAlign: TextAlign.center),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+    });
   }
 
   @override
@@ -27,7 +57,7 @@ class GroupAnnouncementsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "$section Section Announcements",
+          "${section ?? "All"} Section Announcements",
           overflow: TextOverflow.fade,
           style: const TextStyle(fontSize: 18),
         ),
@@ -151,6 +181,62 @@ class AnnouncementCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class AddAnnouncementAlert extends StatefulWidget {
+  const AddAnnouncementAlert({super.key});
+
+  @override
+  State<AddAnnouncementAlert> createState() => _AddAnnouncementAlertState();
+}
+
+class _AddAnnouncementAlertState extends State<AddAnnouncementAlert> {
+  final _formKey = GlobalKey<FormState>();
+  String _content = "";
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      backgroundColor: Colors.grey[900],
+      title: const Text("Create an Announcement"),
+      content: SizedBox(
+        width: 300,
+        child: Form(
+          key: _formKey,
+          child: TextFormField(
+            onSaved: (newValue) => _content = newValue ?? "",
+            keyboardType: TextInputType.multiline,
+            decoration: const InputDecoration(
+              label: Text("Content"),
+              hintText: "Hello World!",
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Please enter some information";
+              }
+              return null;
+            },
+          ),
+        ),
+      ),
+      actions: [
+        MaterialButton(
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              _formKey.currentState!.save();
+              Navigator.pop(context, _content);
+            }
+          },
+          color: Theme.of(context).colorScheme.primary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: const Text("Create"),
+        ),
+      ],
     );
   }
 }
