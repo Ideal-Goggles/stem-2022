@@ -62,6 +62,7 @@ class MyGroupScreen extends StatelessWidget {
             return PrincipalView(
               groupId: group.id,
               sections: group.sections,
+              name: group.name,
             );
           }
 
