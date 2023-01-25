@@ -29,7 +29,7 @@ class Group {
       points: data["points"],
       supervisors: Map<String, String>.from(data["supervisors"]),
       admin: data["admin"],
-      sections: data["sections"],
+      sections: List<String>.from(data["sections"]),
     );
   }
 }
