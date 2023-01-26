@@ -165,7 +165,7 @@ class _PrincipalViewState extends State<PrincipalView> {
           const Text(
             "Sections",
             style: TextStyle(
-              fontSize: 22,
+              fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -196,9 +196,15 @@ class _PrincipalViewState extends State<PrincipalView> {
                   // mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Expanded(
-                      child: Text(section),
+                      child: Text(
+                        section,
+                        style: const TextStyle(fontSize: 18),
+                      ),
                     ),
-                    const Icon(Icons.chevron_right_rounded)
+                    const Icon(
+                      Icons.chevron_right_rounded,
+                      color: Colors.white38,
+                    )
                   ],
                 ),
               ),
