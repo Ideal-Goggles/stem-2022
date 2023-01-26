@@ -398,15 +398,8 @@ class _FoodPostCardState extends State<FoodPostCard>
                       },
                       padding: EdgeInsets.zero,
                       child: Container(
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.4),
-                              blurRadius: 16,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                          borderRadius: const BorderRadius.only(
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.only(
                               bottomLeft: Radius.circular(30),
                               bottomRight: Radius.circular(30)),
                         ),
@@ -552,18 +545,11 @@ class _FoodPostCardState extends State<FoodPostCard>
                 height: 5,
               ),
               Container(
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 37, 37, 37),
-                    borderRadius: const BorderRadius.only(
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 37, 37, 37),
+                    borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(8),
                         topRight: Radius.circular(8)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 16,
-                        offset: const Offset(0, 2),
-                      )
-                    ],
                   ),
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
