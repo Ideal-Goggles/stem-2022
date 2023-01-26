@@ -184,9 +184,12 @@ class _PrincipalViewState extends State<PrincipalView> {
                     MaterialPageRoute(
                       builder: (context) => Scaffold(
                         appBar: AppBar(title: Text("$section Section")),
-                        body: SupervisorView(
-                          group: widget.group,
-                          section: section,
+                        body: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: SupervisorView(
+                            group: widget.group,
+                            section: section,
+                          ),
                         ),
                       ),
                     ),
