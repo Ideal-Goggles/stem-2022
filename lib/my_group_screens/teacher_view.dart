@@ -36,7 +36,6 @@ class _AddDataAlertDialogState extends State<AddDataAlertDialog> {
       title: const Text("Add Class Data"),
       content: SizedBox(
         width: 300,
-        height: 180,
         child: Form(
           key: _formKey,
           child: Column(
