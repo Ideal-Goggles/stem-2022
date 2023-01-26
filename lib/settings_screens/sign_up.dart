@@ -123,7 +123,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                "Welcome to Hammit!",
+                "Welcome to HeLP@MPS!",
                 style: TextStyle(
                   fontSize: 20,
                 ),

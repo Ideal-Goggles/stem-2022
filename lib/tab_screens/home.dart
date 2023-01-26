@@ -73,9 +73,9 @@ class HomeScreenState extends State<HomeScreen> {
             borderRadius: BorderRadius.circular(30),
           ),
           backgroundColor: Colors.grey[900],
-          title: const Text("Welcome to Hammit!"),
+          title: const Text("Welcome to HeLP@MPS!"),
           content: const Text(
-            "Welcome to Hammit: The Food App! Would you like to take a quick tour?",
+            "Welcome to HeLP@MPS! Would you like to take a quick tour?",
             style: TextStyle(color: Colors.grey),
           ),
           actions: [

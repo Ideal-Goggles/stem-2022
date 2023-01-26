@@ -25,7 +25,7 @@ class SettingsScreen extends StatelessWidget {
     final loggedIn = user != null;
 
     final List<SettingsMenuEntry> entries = [
-      SettingsMenuEntry(Icons.help, "What is Hammit?", const WelcomeScreen()),
+      SettingsMenuEntry(Icons.help, "What is HeLP@MPS?", const WelcomeScreen()),
       if (!loggedIn) ...[
         SettingsMenuEntry(Icons.perm_contact_calendar, "Create an Account",
             const SignUpScreen()),
