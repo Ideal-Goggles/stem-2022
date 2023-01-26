@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>stem_2022</string>
+	<string>Hammit</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -29,7 +29,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.841360814435-j7qrrtm56qga659ib8jpsrf6pjltr21t</string>
+				<string>com.googleusercontent.apps.841360814435-i62i73p82knnld63bkh3qb9rrlutcui5</string>
 			</array>
 		</dict>
 	</array>

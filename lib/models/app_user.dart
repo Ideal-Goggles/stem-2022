@@ -8,6 +8,7 @@ class AppUser {
   final Timestamp dateCreated;
   final int streak;
   final String? groupId;
+  final String? subGroupId;
 
   AppUser({
     required this.id,
@@ -17,6 +18,7 @@ class AppUser {
     required this.dateCreated,
     required this.streak,
     this.groupId,
+    this.subGroupId,
   });
 
   static AppUser get previewUser => AppUser(
@@ -40,6 +42,7 @@ class AppUser {
       dateCreated: data["dateCreated"] ?? Timestamp.now(),
       streak: data["streak"] ?? 0,
       groupId: data["groupId"],
+      subGroupId: data["subGroupId"],
     );
   }
 
@@ -51,6 +54,7 @@ class AppUser {
       "dateCreated": dateCreated,
       "streak": streak,
       "groupId": groupId,
+      "subGroupId": subGroupId,
     };
   }
 }

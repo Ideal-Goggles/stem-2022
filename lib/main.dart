@@ -8,11 +8,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:stem_2022/firebase_options.dart';
+import 'package:stem_2022/models/app_user.dart';
 import 'package:stem_2022/services/storage_service.dart';
 import 'package:stem_2022/services/database_service.dart';
 
-import 'package:stem_2022/tab_screens/groups.dart';
 import 'package:stem_2022/tab_screens/home.dart';
+import 'package:stem_2022/tab_screens/groups.dart';
+import 'package:stem_2022/tab_screens/my_group.dart';
 import 'package:stem_2022/tab_screens/settings.dart';
 
 import 'package:stem_2022/misc_screens/create_post_screen.dart';
@@ -209,17 +211,11 @@ class MyAppHome extends State<AppHome> {
           onPageChanged: (index) {
             setState(() => _currentIndex = index);
           },
-          children: <Widget>[
-            const HomeScreen(),
-            const GroupsScreen(),
-            Container(
-              color: Colors.green,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [Text("Coming Soon!")],
-              ),
-            ),
-            const SettingsScreen(),
+          children: const <Widget>[
+            HomeScreen(),
+            GroupsScreen(),
+            MyGroupScreen(),
+            SettingsScreen(),
           ],
         ),
       ),
@@ -245,8 +241,9 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<User?>(context);
+    final appUser = Provider.of<AppUser?>(context);
 
-    if (currentUser == null) {
+    if (currentUser == null || appUser == null) {
       return AppBar(
         title: Row(
           children: [
@@ -272,7 +269,6 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
     }
 
     final storage = Provider.of<StorageService>(context);
-    final db = Provider.of<DatabaseService>(context);
 
     return AppBar(
       titleTextStyle: const TextStyle(
@@ -290,28 +286,17 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
             },
           ),
           const SizedBox(width: 10),
-          StreamBuilder(
-            stream: db.streamAppUser(currentUser.uid),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
-              final appUser = snapshot.data!;
-
-              return Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(child: Text(appUser.displayName)),
-                    Text(
-                      "${appUser.overallRating} H",
-                      style: const TextStyle(color: Colors.white54),
-                    ),
-                  ],
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(child: Text(appUser.displayName)),
+                Text(
+                  "${appUser.overallRating} H",
+                  style: const TextStyle(color: Colors.white54),
                 ),
-              );
-            },
+              ],
+            ),
           ),
         ],
       ),

@@ -131,6 +131,14 @@ class DatabaseService {
     return snapshot.exists;
   }
 
+  Stream<Group> streamGroup(String groupId) {
+    return _db
+        .collection("groups")
+        .doc(groupId)
+        .snapshots()
+        .map((document) => Group.fromFirestore(document));
+  }
+
   Future<List<Group>> getGroupsList() async {
     final snapshot = await _db
         .collection("groups")
@@ -165,6 +173,326 @@ class DatabaseService {
     return snapshotStream.map(
       (snapshot) => snapshot.docs
           .map((document) => AppUser.fromFirestore(document))
+          .toList(),
+    );
+  }
+
+  Stream<SubGroup> streamSubGroup(String groupId, String subGroupId) {
+    return _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .doc(subGroupId)
+        .snapshots()
+        .map((document) => SubGroup.fromFirestore(document));
+  }
+
+  Stream<List<WastageDataPoint>> streamWastageData(
+    String groupId,
+    String subGroupId, {
+    int limit = 5,
+  }) {
+    final snapshotStream = _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .doc(subGroupId)
+        .collection("wastage")
+        .orderBy("timestamp")
+        .limit(limit)
+        .snapshots();
+
+    return snapshotStream.map(
+      (snapshot) => snapshot.docs
+          .map((document) => WastageDataPoint.fromFirestore(document))
+          .toList(),
+    );
+  }
+
+  Future<List<WastageDataPoint>> getWastageData(
+    String groupId,
+    String subGroupId, {
+    int limit = 5,
+  }) async {
+    final snapshot = await _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .doc(subGroupId)
+        .collection("wastage")
+        .orderBy("timestamp")
+        .limit(limit)
+        .get();
+
+    return snapshot.docs
+        .map((document) => WastageDataPoint.fromFirestore(document))
+        .toList();
+  }
+
+  Future<List<WastageDataPoint>> getWastageDataForYear(
+    String groupId,
+    String subGroupId, {
+    required int year,
+  }) async {
+    final yearBegin = DateTime(year);
+    final yearEnd = yearBegin.add(const Duration(days: 365));
+
+    final snapshot = await _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .doc(subGroupId)
+        .collection("wastage")
+        .orderBy("timestamp")
+        .where(
+          "timestamp",
+          isGreaterThan: Timestamp.fromDate(yearBegin),
+          isLessThan: Timestamp.fromDate(yearEnd),
+        )
+        .get();
+
+    return snapshot.docs
+        .map((document) => WastageDataPoint.fromFirestore(document))
+        .toList();
+  }
+
+  Stream<List<HealthDataPoint>> streamHealthData(
+    String groupId,
+    String subGroupId, {
+    int limit = 5,
+  }) {
+    final snapshotStream = _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .doc(subGroupId)
+        .collection("health")
+        .orderBy("timestamp")
+        .limit(limit)
+        .snapshots();
+
+    return snapshotStream.map(
+      (snapshot) => snapshot.docs
+          .map((document) => HealthDataPoint.fromFirestore(document))
+          .toList(),
+    );
+  }
+
+  Future<List<HealthDataPoint>> getHealthData(
+    String groupId,
+    String subGroupId, {
+    int limit = 5,
+  }) async {
+    final snapshot = await _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .doc(subGroupId)
+        .collection("health")
+        .orderBy("timestamp")
+        .limit(limit)
+        .get();
+
+    return snapshot.docs
+        .map((document) => HealthDataPoint.fromFirestore(document))
+        .toList();
+  }
+
+  Future<List<HealthDataPoint>> getHealthDataForYear(
+    String groupId,
+    String subGroupId, {
+    required int year,
+  }) async {
+    final yearBegin = DateTime(year);
+    final yearEnd = yearBegin.add(const Duration(days: 365));
+
+    final snapshot = await _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .doc(subGroupId)
+        .collection("health")
+        .orderBy("timestamp")
+        .where(
+          "timestamp",
+          isGreaterThan: Timestamp.fromDate(yearBegin),
+          isLessThan: Timestamp.fromDate(yearEnd),
+        )
+        .get();
+
+    return snapshot.docs
+        .map((document) => HealthDataPoint.fromFirestore(document))
+        .toList();
+  }
+
+  Stream<List<WastageDataPoint>> streamWastageDataForYear(
+    String groupId,
+    String subGroupId, {
+    required int year,
+  }) {
+    final yearBegin = DateTime(year);
+    final yearEnd = yearBegin.add(const Duration(days: 365));
+
+    final snapshotStream = _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .doc(subGroupId)
+        .collection("wastage")
+        .orderBy("timestamp")
+        .where(
+          "timestamp",
+          isGreaterThan: Timestamp.fromDate(yearBegin),
+          isLessThan: Timestamp.fromDate(yearEnd),
+        )
+        .snapshots();
+
+    return snapshotStream.map(
+      (snapshot) => snapshot.docs
+          .map((document) => WastageDataPoint.fromFirestore(document))
+          .toList(),
+    );
+  }
+
+  Stream<List<HealthDataPoint>> streamHealthDataForYear(
+    String groupId,
+    String subGroupId, {
+    required int year,
+  }) {
+    final yearBegin = DateTime(year);
+    final yearEnd = yearBegin.add(const Duration(days: 365));
+
+    final snapshotStream = _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .doc(subGroupId)
+        .collection("health")
+        .orderBy("timestamp")
+        .where(
+          "timestamp",
+          isGreaterThan: Timestamp.fromDate(yearBegin),
+          isLessThan: Timestamp.fromDate(yearEnd),
+        )
+        .snapshots();
+
+    return snapshotStream.map(
+      (snapshot) => snapshot.docs
+          .map((document) => HealthDataPoint.fromFirestore(document))
+          .toList(),
+    );
+  }
+
+  Future<void> addSubGroupData({
+    required String groupId,
+    required String subGroupId,
+    required double totalWastage,
+    required double healthyPercent,
+  }) async {
+    final subGroupDocRef = _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .doc(subGroupId);
+
+    final wastageDocRef = subGroupDocRef.collection("wastage").doc();
+    final healthDocRef = subGroupDocRef.collection("health").doc();
+
+    final now = Timestamp.now();
+    final wastageData = WastageDataPoint(
+        id: wastageDocRef.id, totalWastage: totalWastage, timestamp: now);
+    final healthData = HealthDataPoint(
+        id: healthDocRef.id, healthyPercent: healthyPercent, timestamp: now);
+
+    final wastageFuture = wastageDocRef.set(wastageData.toMap());
+    final healthFuture = healthDocRef.set(healthData.toMap());
+
+    // Update subgroup after adding new datapoints
+    return wastageFuture
+        .then((_) => healthFuture)
+        .then((_) => subGroupDocRef.update({"lastUpdated": now}));
+  }
+
+  Future<List<SubGroup>> getSubGroups(String groupId) async {
+    final snapshot = await _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .get();
+
+    return snapshot.docs
+        .map((document) => SubGroup.fromFirestore(document))
+        .toList();
+  }
+
+  Stream<List<SubGroup>> streamSectionSubGroups(
+    String groupId,
+    String section,
+  ) {
+    final snapshotStream = _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .where("section", isEqualTo: section)
+        .snapshots();
+
+    return snapshotStream.map(
+      (snapshot) => snapshot.docs
+          .map((document) => SubGroup.fromFirestore(document))
+          .toList(),
+    );
+  }
+
+  Future<List<SubGroup>> getSectionSubGroups(
+    String groupId,
+    String section,
+  ) async {
+    final snapshot = await _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .where("section", isEqualTo: section)
+        .get();
+
+    return snapshot.docs
+        .map((document) => SubGroup.fromFirestore(document))
+        .toList();
+  }
+
+  Future<void> createGroupAnnouncement({
+    required String content,
+    required String authorId,
+    required String groupId,
+    String? targetSection,
+  }) async {
+    final announcement = GroupAnnouncement(
+      id: "",
+      authorId: authorId,
+      content: content,
+      dateAdded: Timestamp.now(),
+      targetSection: targetSection,
+    );
+
+    final docRef =
+        _db.collection("groups").doc(groupId).collection("announcements").doc();
+    await docRef.set(announcement.toMap());
+  }
+
+  Stream<List<GroupAnnouncement>> streamGroupAnnouncements(
+    String groupId,
+    String? section,
+  ) {
+    final snapshotStream = _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("announcements")
+        .where("targetSection", isEqualTo: section)
+        .orderBy("dateAdded", descending: true)
+        .snapshots();
+
+    return snapshotStream.map(
+      (snapshot) => snapshot.docs
+          .map((document) => GroupAnnouncement.fromFirestore(document))
           .toList(),
     );
   }

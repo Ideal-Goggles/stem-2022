@@ -3,9 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>841360814435-j7qrrtm56qga659ib8jpsrf6pjltr21t.apps.googleusercontent.com</string>
+	<string>841360814435-i62i73p82knnld63bkh3qb9rrlutcui5.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.841360814435-j7qrrtm56qga659ib8jpsrf6pjltr21t</string>
+	<string>com.googleusercontent.apps.841360814435-i62i73p82knnld63bkh3qb9rrlutcui5</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>841360814435-2tmd55ebujcqbc1f39vdlk6ebvr9n38g.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyB1KaB5BLwHWY09CZTVXT8sW9oJF2afXiM</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.ideal-duo.stem2022</string>
+	<string>com.idealduo.stem2022</string>
 	<key>PROJECT_ID</key>
 	<string>stem-2022</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:841360814435:ios:2d288b680155bc56c52356</string>
+	<string>1:841360814435:ios:69280a5916bd9fc1c52356</string>
 </dict>
 </plist>
