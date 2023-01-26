@@ -66,7 +66,7 @@ class MonthlyWastageChart extends StatelessWidget {
               reservedSize: 45,
               getTitlesWidget: (value, meta) {
                 final v = value >= 1000
-                    ? "${value ~/ 1000} K"
+                    ? "${(value / 1000).toStringAsPrecision(2)} K"
                     : value.toInt().toString();
 
                 return Padding(

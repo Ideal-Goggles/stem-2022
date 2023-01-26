@@ -32,10 +32,10 @@ class GradeWastageComparisonChart extends StatelessWidget {
             sideTitles: SideTitles(
               showTitles: true,
               reservedSize: 50,
-              interval: 100,
+              interval: 500,
               getTitlesWidget: (value, meta) {
                 final v = value >= 1000
-                    ? "${value ~/ 1000} K"
+                    ? "${(value / 1000).toStringAsPrecision(2)} K"
                     : value.toInt().toString();
 
                 return Padding(
