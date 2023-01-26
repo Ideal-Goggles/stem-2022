@@ -6,6 +6,7 @@ class AppUser {
   final String displayName;
   final int overallRating;
   final Timestamp dateCreated;
+  final int streak;
   final String? groupId;
   final String? subGroupId;
 
@@ -15,9 +16,19 @@ class AppUser {
     required this.displayName,
     required this.overallRating,
     required this.dateCreated,
+    required this.streak,
     this.groupId,
     this.subGroupId,
   });
+
+  static AppUser get previewUser => AppUser(
+        id: "",
+        email: "user@mail.com",
+        displayName: "User",
+        overallRating: 0,
+        dateCreated: Timestamp.now(),
+        streak: 0,
+      );
 
   // TODO: Change to `fromMap`
   factory AppUser.fromFirestore(DocumentSnapshot snapshot) {
@@ -25,10 +36,11 @@ class AppUser {
 
     return AppUser(
       id: snapshot.id,
-      email: data["email"],
-      displayName: data["displayName"],
-      overallRating: data["overallRating"],
-      dateCreated: data["dateCreated"],
+      email: data["email"] ?? "",
+      displayName: data["displayName"] ?? "User",
+      overallRating: data["overallRating"] ?? 0,
+      dateCreated: data["dateCreated"] ?? Timestamp.now(),
+      streak: data["streak"] ?? 0,
       groupId: data["groupId"],
       subGroupId: data["subGroupId"],
     );
@@ -40,6 +52,7 @@ class AppUser {
       "displayName": displayName,
       "overallRating": overallRating,
       "dateCreated": dateCreated,
+      "streak": streak,
       "groupId": groupId,
       "subGroupId": subGroupId,
     };

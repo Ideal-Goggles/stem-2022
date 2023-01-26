@@ -61,10 +61,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final googleSignIn = GoogleSignIn();
 
     // Sign in with Google
-    googleSignIn
-        .signIn()
-        .then((googleUser) => googleUser!.authentication)
-        .then((googleAuth) {
+    googleSignIn.signIn().then((googleUser) {
+      if (googleUser == null) {
+        throw Exception("Google Sign In Aborted!");
+      }
+      return googleUser.authentication;
+    }).then((googleAuth) {
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
@@ -73,9 +75,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }).then((creds) {
       final user = creds.user!;
       final db = Provider.of<DatabaseService>(context, listen: false);
-
-      // Update user's Firestore document
-      db.updateAppUserDetails(user.uid, user.email!, user.displayName!);
 
       // Download user's profile picture and upload to Storage
       if (user.photoURL != null) {
@@ -89,10 +88,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
         });
       }
 
+      // Update user's Firestore document
+      return db
+          .updateAppUserDetails(user.uid, user.email!, user.displayName!)
+          .then((_) => user.displayName);
+    }).then((userDisplayName) {
       // Display a SnackBar with a welcome message
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
-          "Successfully signed in with Google, welcome back ${user.displayName}!",
+          "Successfully signed in with Google, welcome back $userDisplayName!",
           textAlign: TextAlign.center,
         ),
       ));
