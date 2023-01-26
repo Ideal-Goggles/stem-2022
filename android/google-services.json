@@ -7,12 +7,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:841360814435:android:6780283cead04e3bc52356",
+        "mobilesdk_app_id": "1:841360814435:android:9e47ff69ead87402c52356",
         "android_client_info": {
-          "package_name": "com.example.stem_2022"
+          "package_name": "com.idealduo.stem2022"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "841360814435-6snb2phosc855l1kveffdfj0q99on0pd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.idealduo.stem2022",
+            "certificate_hash": "0ab3105e468938833e027f8d82657a13b7f51d3a"
+          }
+        },
         {
           "client_id": "841360814435-rr3vlh7dt7b1jl9uq2amjb768ajt8dba.apps.googleusercontent.com",
           "client_type": 3

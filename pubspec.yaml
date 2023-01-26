@@ -48,6 +48,7 @@ dependencies:
   event: ^2.1.2
   shared_preferences: ^2.0.15
   url_launcher: ^6.1.7
+  fl_chart: ^0.55.2
   firebase_analytics: ^10.1.0
   gradient_borders: ^0.2.0
 

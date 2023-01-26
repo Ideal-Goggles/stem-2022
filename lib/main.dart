@@ -4,11 +4,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:stem_2022/firebase_options.dart';
+import 'package:stem_2022/models/app_user.dart';
 import 'package:stem_2022/services/storage_service.dart';
 import 'package:stem_2022/services/database_service.dart';
 
-import 'package:stem_2022/tab_screens/groups.dart';
 import 'package:stem_2022/tab_screens/home.dart';
+import 'package:stem_2022/tab_screens/groups.dart';
+import 'package:stem_2022/tab_screens/my_group.dart';
 import 'package:stem_2022/tab_screens/settings.dart';
 
 import 'package:stem_2022/misc_screens/create_post_screen.dart';
@@ -92,68 +94,79 @@ class MyAppHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: const MyAppBar(),
-        extendBodyBehindAppBar: true,
-        extendBody: true,
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        floatingActionButton: ElevatedButton(
-          onPressed: () {
-            final currentUser = Provider.of<User?>(context, listen: false);
+    final db = Provider.of<DatabaseService>(context);
+    final currentUser = Provider.of<User?>(context);
 
-            if (currentUser == null) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: const Text(
-                  "You must be logged in to create a post",
-                  textAlign: TextAlign.center,
-                ),
-                backgroundColor: Theme.of(context).colorScheme.error,
-              ));
-            } else {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const CreatePostScreen()),
-              );
-            }
-          },
-          style: ElevatedButton.styleFrom(
-            elevation: 5,
-            fixedSize: const Size.fromRadius(25),
-            shape: const CircleBorder(),
-            foregroundColor: Colors.white,
-            backgroundColor: Theme.of(context).colorScheme.primary,
+    return StreamProvider.value(
+      value: currentUser == null
+          ? Stream.value(null)
+          : db.streamAppUser(currentUser.uid),
+      initialData: null,
+      child: DefaultTabController(
+        length: 4,
+        child: Scaffold(
+          appBar: const MyAppBar(),
+          extendBodyBehindAppBar: true,
+          extendBody: true,
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+          floatingActionButton: ElevatedButton(
+            onPressed: () {
+              final currentUser = Provider.of<User?>(context, listen: false);
+
+              if (currentUser == null) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: const Text(
+                    "You must be logged in to create a post",
+                    textAlign: TextAlign.center,
+                  ),
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                ));
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const CreatePostScreen()),
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              elevation: 5,
+              fixedSize: const Size.fromRadius(25),
+              shape: const CircleBorder(),
+              foregroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+            ),
+            child: const Icon(Icons.add, size: 25),
           ),
-          child: const Icon(Icons.add, size: 25),
-        ),
-        bottomNavigationBar: Container(
-          color: Colors.grey[900],
-          padding: const EdgeInsets.only(bottom: 10, top: 10),
-          child: SafeArea(
-            child: TabBar(
-              labelColor: Theme.of(context).colorScheme.primary,
-              unselectedLabelColor: Colors.white38,
-              tabs: const [
-                Tab(icon: Icon(Icons.home)),
-                Tab(icon: Icon(Icons.group)),
-                Tab(icon: Icon(Icons.settings))
-              ],
-              indicatorColor: Colors.transparent,
+          bottomNavigationBar: Container(
+            color: Colors.grey[900],
+            padding: const EdgeInsets.only(bottom: 10, top: 10),
+            child: SafeArea(
+              child: TabBar(
+                labelColor: Theme.of(context).colorScheme.primary,
+                unselectedLabelColor: Colors.white38,
+                tabs: const [
+                  Tab(icon: Icon(Icons.home)),
+                  Tab(icon: Icon(Icons.group)),
+                  Tab(icon: Icon(Icons.bar_chart)),
+                  Tab(icon: Icon(Icons.settings))
+                ],
+                indicatorColor: Colors.transparent,
+              ),
             ),
           ),
-        ),
-        body: PageStorage(
-          bucket: _bucket,
-          child: const SafeArea(
-            minimum: EdgeInsets.all(8),
-            child: TabBarView(
-              children: [
-                HomeScreen(),
-                GroupsScreen(),
-                SettingsScreen(),
-              ],
+          body: PageStorage(
+            bucket: _bucket,
+            child: const SafeArea(
+              minimum: EdgeInsets.all(8),
+              child: TabBarView(
+                children: [
+                  HomeScreen(),
+                  GroupsScreen(),
+                  MyGroupScreen(),
+                  SettingsScreen(),
+                ],
+              ),
             ),
           ),
         ),
@@ -180,8 +193,9 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<User?>(context);
+    final appUser = Provider.of<AppUser?>(context);
 
-    if (currentUser == null) {
+    if (currentUser == null || appUser == null) {
       return AppBar(
         title: Row(
           children: [
@@ -207,7 +221,6 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
     }
 
     final storage = Provider.of<StorageService>(context);
-    final db = Provider.of<DatabaseService>(context);
 
     return AppBar(
       titleTextStyle: const TextStyle(
@@ -225,28 +238,17 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
             },
           ),
           const SizedBox(width: 10),
-          StreamBuilder(
-            stream: db.streamAppUser(currentUser.uid),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
-              final appUser = snapshot.data!;
-
-              return Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(child: Text(appUser.displayName)),
-                    Text(
-                      "${appUser.overallRating} H",
-                      style: const TextStyle(color: Colors.white54),
-                    ),
-                  ],
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(child: Text(appUser.displayName)),
+                Text(
+                  "${appUser.overallRating} H",
+                  style: const TextStyle(color: Colors.white54),
                 ),
-              );
-            },
+              ],
+            ),
           ),
         ],
       ),
