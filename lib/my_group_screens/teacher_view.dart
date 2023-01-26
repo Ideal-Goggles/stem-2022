@@ -25,7 +25,8 @@ class _AddDataAlertDialogState extends State<AddDataAlertDialog> {
   final _formKey = GlobalKey<FormState>();
 
   double foodWastage = 0;
-  double healthyPercent = 0;
+  int healthyStudents = 0;
+  int totalStudents = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -62,22 +63,38 @@ class _AddDataAlertDialogState extends State<AddDataAlertDialog> {
               ),
               const SizedBox(height: 15),
               TextFormField(
-                onSaved: (newValue) => healthyPercent = double.parse(newValue!),
+                onSaved: (newValue) => healthyStudents = int.parse(newValue!),
                 keyboardType: const TextInputType.numberWithOptions(
                   signed: false,
                   decimal: true,
                 ),
                 decoration: const InputDecoration(
-                  label: Text("% of Students with Healthy Food"),
+                  label: Text("Students with Healthy Food"),
                 ),
                 validator: (value) {
                   if (value != null && value.isNotEmpty) {
-                    final numValue = double.tryParse(value);
-
-                    if (numValue == null) {
+                    if (double.tryParse(value) == null) {
                       return "Enter a valid number";
-                    } else if (numValue < 0 || numValue > 100) {
-                      return "Percentage must be between 0% and 100%";
+                    }
+                    return null;
+                  }
+                  return "Please enter a number";
+                },
+              ),
+              const SizedBox(height: 15),
+              TextFormField(
+                onSaved: (newValue) => totalStudents = int.parse(newValue!),
+                keyboardType: const TextInputType.numberWithOptions(
+                  signed: false,
+                  decimal: true,
+                ),
+                decoration: const InputDecoration(
+                  label: Text("Total Number of Students"),
+                ),
+                validator: (value) {
+                  if (value != null && value.isNotEmpty) {
+                    if (double.tryParse(value) == null) {
+                      return "Enter a valid number";
                     }
                     return null;
                   }
@@ -100,7 +117,10 @@ class _AddDataAlertDialogState extends State<AddDataAlertDialog> {
 
               Navigator.pop(
                 context,
-                Pair(first: foodWastage, second: healthyPercent / 100),
+                Pair(
+                  first: foodWastage,
+                  second: healthyStudents / totalStudents,
+                ),
               );
             }
           },
