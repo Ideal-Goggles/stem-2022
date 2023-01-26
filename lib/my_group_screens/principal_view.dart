@@ -23,10 +23,10 @@ class PrincipalView extends StatefulWidget {
 }
 
 class _PrincipalViewState extends State<PrincipalView> {
-  late final Map<String, double> _gradeWastage;
-  late final Map<String, List<double>> _gradeHealth;
-  late final Map<String, double> _gradeWastageForYear;
-  late final Map<String, List<double>> _gradeHealthForYear;
+  late double _schoolWastage;
+  late List<double> _schoolHealth;
+  late double _schoolWastageForYear;
+  late List<double> _schoolHealthForYear;
 
   bool _loading = true;
 
@@ -35,18 +35,15 @@ class _PrincipalViewState extends State<PrincipalView> {
     final db = Provider.of<DatabaseService>(context, listen: false);
     final groupId = widget.group.id;
 
-    for (final section in widget.sections) {
-      Map<String, double> gradeWastage = {};
-      Map<String, List<double>> gradeHealth = {};
-      Map<String, double> gradeWastageForYear = {};
-      Map<String, List<double>> gradeHealthForYear = {};
+    double schoolWastage = 0;
+    List<double> schoolHealth = [];
+    double schoolWastageForYear = 0;
+    List<double> schoolHealthForYear = [];
 
+    for (final section in widget.sections) {
       db.getSectionSubGroups(groupId, section).then(
         (subGroups) async {
           for (final subGroup in subGroups) {
-            final subGroupGrade =
-                subGroup.id.substring(0, subGroup.id.length - 2);
-
             final wastageFuture = db.getWastageData(groupId, subGroup.id);
             final wastageForYearFuture = db.getWastageDataForYear(
               groupId,
@@ -62,43 +59,28 @@ class _PrincipalViewState extends State<PrincipalView> {
             );
 
             for (final wastage in await wastageFuture) {
-              gradeWastage.update(
-                section,
-                (w) => w + wastage.totalWastage,
-                ifAbsent: () => wastage.totalWastage,
-              );
+              schoolWastage += wastage.totalWastage;
             }
             for (final wastage in await wastageForYearFuture) {
-              gradeWastageForYear.update(
-                section,
-                (w) => w + wastage.totalWastage,
-                ifAbsent: () => wastage.totalWastage,
-              );
+              schoolWastageForYear += wastage.totalWastage;
             }
 
             for (final health in await healthFuture) {
-              gradeHealth.update(
-                section,
-                (h) => [...h, health.healthyPercent],
-                ifAbsent: () => [health.healthyPercent],
-              );
+              schoolHealth.add(health.healthyPercent);
             }
             for (final health in await healthForYearFuture) {
-              gradeHealthForYear.update(
-                section,
-                (h) => [...h, health.healthyPercent],
-                ifAbsent: () => [health.healthyPercent],
-              );
+              schoolHealthForYear.add(health.healthyPercent);
             }
           }
         },
       );
-      setState(() {
-        _gradeWastage = gradeWastage;
-        _gradeWastageForYear = gradeWastageForYear;
 
-        _gradeHealth = gradeHealth;
-        _gradeHealthForYear = gradeHealthForYear;
+      setState(() {
+        _schoolWastage = schoolWastage;
+        _schoolWastageForYear = schoolWastageForYear;
+
+        _schoolHealth = schoolHealth;
+        _schoolHealthForYear = schoolHealthForYear;
 
         _loading = false;
       });
@@ -107,25 +89,22 @@ class _PrincipalViewState extends State<PrincipalView> {
     super.initState();
   }
 
-  Divider get _divider => const Divider(thickness: 1, color: Colors.white38);
-
   @override
   Widget build(BuildContext context) {
     if (_loading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    var totalGradeWastage;
-    var totalGradeWastageForYear;
-    var totalHealth;
-    var totalHealthForYear;
+    print(_schoolHealth);
+    print(_schoolHealthForYear);
 
-    for (final section in widget.sections) {
-      totalGradeWastage += _gradeWastage[section]!;
-      totalGradeWastageForYear += _gradeWastageForYear[section]!;
-      totalHealth += _gradeHealth[section]!;
-      totalHealth += _gradeHealthForYear[section]!;
-    }
+    final totalSchoolHealth = _schoolHealth.reduce((a, b) => a + b);
+    final avgSchoolHealth = totalSchoolHealth * 100 / _schoolHealth.length;
+
+    final totalSchoolHealthForYear =
+        _schoolHealthForYear.reduce((a, b) => a + b);
+    final avgSchoolHealthForYear =
+        totalSchoolHealthForYear * 100 / _schoolHealthForYear.length;
 
     return Padding(
       padding: const EdgeInsets.only(top: 15),
@@ -148,9 +127,7 @@ class _PrincipalViewState extends State<PrincipalView> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
+                const SizedBox(height: 15),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -162,8 +139,10 @@ class _PrincipalViewState extends State<PrincipalView> {
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
                         ),
-                        Text("Total wastage: ${totalGradeWastage}g"),
-                        Text("Average health: $totalHealth%"),
+                        Text("Total wastage: ${_schoolWastage}g"),
+                        Text(
+                          "Average health: ${avgSchoolHealth.toStringAsPrecision(4)}%",
+                        ),
                       ],
                     ),
                     Column(
@@ -174,8 +153,10 @@ class _PrincipalViewState extends State<PrincipalView> {
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
                         ),
-                        Text("Total wastage: ${totalGradeWastage}g"),
-                        Text("Average health: $totalHealthForYear%"),
+                        Text("Total wastage: ${_schoolWastageForYear}g"),
+                        Text(
+                          "Average health: ${avgSchoolHealthForYear.toStringAsPrecision(4)}%",
+                        ),
                       ],
                     ),
                   ],
@@ -217,13 +198,14 @@ class _PrincipalViewState extends State<PrincipalView> {
                   );
                 },
                 child: Row(
-                    // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Expanded(
-                        child: Text(section),
-                      ),
-                      const Icon(Icons.chevron_right_rounded)
-                    ]),
+                  // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Expanded(
+                      child: Text(section),
+                    ),
+                    const Icon(Icons.chevron_right_rounded)
+                  ],
+                ),
               ),
             )
         ],
