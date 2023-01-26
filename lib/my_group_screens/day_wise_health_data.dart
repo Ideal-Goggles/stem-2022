@@ -52,7 +52,7 @@ class DataListTile extends StatelessWidget {
 
   /// January = 0, December = 11
   String? _monthIntToString(int month) {
-    switch (month + 1) {
+    switch (month) {
       case DateTime.january:
         return "January";
       case DateTime.february:
