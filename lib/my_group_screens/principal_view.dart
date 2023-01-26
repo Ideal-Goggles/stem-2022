@@ -40,51 +40,49 @@ class _PrincipalViewState extends State<PrincipalView> {
     double schoolWastageForYear = 0;
     List<double> schoolHealthForYear = [];
 
-    for (final section in widget.sections) {
-      db.getSectionSubGroups(groupId, section).then(
-        (subGroups) async {
-          for (final subGroup in subGroups) {
-            final wastageFuture = db.getWastageData(groupId, subGroup.id);
-            final wastageForYearFuture = db.getWastageDataForYear(
-              groupId,
-              subGroup.id,
-              year: DateTime.now().year,
-            );
+    db.getSubGroups(groupId).then(
+      (subGroups) async {
+        for (final subGroup in subGroups) {
+          final wastageFuture = db.getWastageData(groupId, subGroup.id);
+          final wastageForYearFuture = db.getWastageDataForYear(
+            groupId,
+            subGroup.id,
+            year: DateTime.now().year,
+          );
 
-            final healthFuture = db.getHealthData(groupId, subGroup.id);
-            final healthForYearFuture = db.getHealthDataForYear(
-              groupId,
-              subGroup.id,
-              year: DateTime.now().year,
-            );
+          final healthFuture = db.getHealthData(groupId, subGroup.id);
+          final healthForYearFuture = db.getHealthDataForYear(
+            groupId,
+            subGroup.id,
+            year: DateTime.now().year,
+          );
 
-            for (final wastage in await wastageFuture) {
-              schoolWastage += wastage.totalWastage;
-            }
-            for (final wastage in await wastageForYearFuture) {
-              schoolWastageForYear += wastage.totalWastage;
-            }
-
-            for (final health in await healthFuture) {
-              schoolHealth.add(health.healthyPercent);
-            }
-            for (final health in await healthForYearFuture) {
-              schoolHealthForYear.add(health.healthyPercent);
-            }
+          for (final wastage in await wastageFuture) {
+            schoolWastage += wastage.totalWastage;
           }
-        },
-      );
+          for (final wastage in await wastageForYearFuture) {
+            schoolWastageForYear += wastage.totalWastage;
+          }
 
-      setState(() {
-        _schoolWastage = schoolWastage;
-        _schoolWastageForYear = schoolWastageForYear;
+          for (final health in await healthFuture) {
+            schoolHealth.add(health.healthyPercent);
+          }
+          for (final health in await healthForYearFuture) {
+            schoolHealthForYear.add(health.healthyPercent);
+          }
+        }
 
-        _schoolHealth = schoolHealth;
-        _schoolHealthForYear = schoolHealthForYear;
+        setState(() {
+          _schoolWastage = schoolWastage;
+          _schoolWastageForYear = schoolWastageForYear;
 
-        _loading = false;
-      });
-    }
+          _schoolHealth = schoolHealth;
+          _schoolHealthForYear = schoolHealthForYear;
+
+          _loading = false;
+        });
+      },
+    );
 
     super.initState();
   }
@@ -94,9 +92,6 @@ class _PrincipalViewState extends State<PrincipalView> {
     if (_loading) {
       return const Center(child: CircularProgressIndicator());
     }
-
-    print(_schoolHealth);
-    print(_schoolHealthForYear);
 
     final totalSchoolHealth = _schoolHealth.reduce((a, b) => a + b);
     final avgSchoolHealth = totalSchoolHealth * 100 / _schoolHealth.length;
@@ -115,7 +110,7 @@ class _PrincipalViewState extends State<PrincipalView> {
             padding: const EdgeInsets.all(15),
             decoration: BoxDecoration(
               color: Colors.grey[900],
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(14),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -412,6 +412,18 @@ class DatabaseService {
         .then((_) => subGroupDocRef.update({"lastUpdated": now}));
   }
 
+  Future<List<SubGroup>> getSubGroups(String groupId) async {
+    final snapshot = await _db
+        .collection("groups")
+        .doc(groupId)
+        .collection("subgroups")
+        .get();
+
+    return snapshot.docs
+        .map((document) => SubGroup.fromFirestore(document))
+        .toList();
+  }
+
   Stream<List<SubGroup>> streamSectionSubGroups(
     String groupId,
     String section,
