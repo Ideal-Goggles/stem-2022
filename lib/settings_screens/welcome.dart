@@ -95,6 +95,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             ),
           ),
         ),
+      textPage(const Text(
+        "Once you've joined a school group, your class teacher will add you to your class subgroup.\n\nThis will help in collecting data about your food wastage and eating habits to provide greater insights on food waste management in your school.",
+        textAlign: TextAlign.center,
+      )),
       textPage(Text.rich(
         TextSpan(
           children: [
@@ -102,7 +106,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               text: "All of this is just the start,\nvisit ",
             ),
             TextSpan(
-              text: "https://hammit.fun",
+              text: "our website",
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
                   launchUrlString("https://hammit.fun");
