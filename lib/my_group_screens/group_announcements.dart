@@ -114,8 +114,11 @@ class AnnouncementCard extends StatelessWidget {
   final GroupAnnouncement announcement;
   final String section;
 
-  const AnnouncementCard(
-      {super.key, required this.announcement, required this.section});
+  const AnnouncementCard({
+    super.key,
+    required this.announcement,
+    required this.section,
+  });
 
   /// January = 0, December = 11
   String? _monthIntToString(int month) {
@@ -151,7 +154,6 @@ class AnnouncementCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<DatabaseService>(context);
     final dateAdded = announcement.dateAdded.toDate();
 
     return Card(
@@ -162,17 +164,16 @@ class AnnouncementCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            StreamBuilder(
-              stream: db.streamAppUser(announcement.authorId),
-              builder: (context, snapshot) {
-                return Text(
-                  "Announcement by $section Supervisor",
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                );
-              },
+            const Text(
+              "Announcement",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              "by $section Supervisor",
+              style: const TextStyle(fontSize: 14, color: Colors.white38),
             ),
             Text(
               "on ${dateAdded.day} ${_monthIntToString(dateAdded.month)} ${dateAdded.year}",
