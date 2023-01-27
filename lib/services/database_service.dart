@@ -232,10 +232,9 @@ class DatabaseService {
   Future<List<WastageDataPoint>> getWastageDataForYear(
     String groupId,
     String subGroupId, {
-    required int year,
+    required DateTime yearStart,
   }) async {
-    final yearBegin = DateTime(year);
-    final yearEnd = yearBegin.add(const Duration(days: 365));
+    final yearEnd = yearStart.add(const Duration(days: 365));
 
     final snapshot = await _db
         .collection("groups")
@@ -246,7 +245,7 @@ class DatabaseService {
         .orderBy("timestamp")
         .where(
           "timestamp",
-          isGreaterThan: Timestamp.fromDate(yearBegin),
+          isGreaterThan: Timestamp.fromDate(yearStart),
           isLessThan: Timestamp.fromDate(yearEnd),
         )
         .get();
@@ -301,10 +300,9 @@ class DatabaseService {
   Future<List<HealthDataPoint>> getHealthDataForYear(
     String groupId,
     String subGroupId, {
-    required int year,
+    required DateTime yearStart,
   }) async {
-    final yearBegin = DateTime(year);
-    final yearEnd = yearBegin.add(const Duration(days: 365));
+    final yearEnd = yearStart.add(const Duration(days: 365));
 
     final snapshot = await _db
         .collection("groups")
@@ -315,7 +313,7 @@ class DatabaseService {
         .orderBy("timestamp")
         .where(
           "timestamp",
-          isGreaterThan: Timestamp.fromDate(yearBegin),
+          isGreaterThan: Timestamp.fromDate(yearStart),
           isLessThan: Timestamp.fromDate(yearEnd),
         )
         .get();
@@ -328,10 +326,9 @@ class DatabaseService {
   Stream<List<WastageDataPoint>> streamWastageDataForYear(
     String groupId,
     String subGroupId, {
-    required int year,
+    required DateTime yearStart,
   }) {
-    final yearBegin = DateTime(year);
-    final yearEnd = yearBegin.add(const Duration(days: 365));
+    final yearEnd = yearStart.add(const Duration(days: 365));
 
     final snapshotStream = _db
         .collection("groups")
@@ -342,7 +339,7 @@ class DatabaseService {
         .orderBy("timestamp")
         .where(
           "timestamp",
-          isGreaterThan: Timestamp.fromDate(yearBegin),
+          isGreaterThan: Timestamp.fromDate(yearStart),
           isLessThan: Timestamp.fromDate(yearEnd),
         )
         .snapshots();
@@ -357,10 +354,9 @@ class DatabaseService {
   Stream<List<HealthDataPoint>> streamHealthDataForYear(
     String groupId,
     String subGroupId, {
-    required int year,
+    required DateTime yearStart,
   }) {
-    final yearBegin = DateTime(year);
-    final yearEnd = yearBegin.add(const Duration(days: 365));
+    final yearEnd = yearStart.add(const Duration(days: 365));
 
     final snapshotStream = _db
         .collection("groups")
@@ -371,7 +367,7 @@ class DatabaseService {
         .orderBy("timestamp")
         .where(
           "timestamp",
-          isGreaterThan: Timestamp.fromDate(yearBegin),
+          isGreaterThan: Timestamp.fromDate(yearStart),
           isLessThan: Timestamp.fromDate(yearEnd),
         )
         .snapshots();

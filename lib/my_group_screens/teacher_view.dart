@@ -270,7 +270,7 @@ class TeacherView extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => DayWiseHealthDataScreen(
-                  groupId: group.id,
+                  group: group,
                   subGroupId: subGroup.id,
                 ),
               ),
@@ -420,7 +420,7 @@ class TeacherView extends StatelessWidget {
             stream: db.streamWastageDataForYear(
               group.id,
               subGroup.id,
-              year: DateTime.now().year,
+              yearStart: group.academicYearStart.toDate(),
             ),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
@@ -445,7 +445,7 @@ class TeacherView extends StatelessWidget {
         ),
         const Center(
           child: Text(
-            "Wastage Report (This Year)",
+            "Wastage Report (Current Academic Year)",
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ),
@@ -468,7 +468,7 @@ class TeacherView extends StatelessWidget {
             stream: db.streamHealthDataForYear(
               group.id,
               subGroup.id,
-              year: DateTime.now().year,
+              yearStart: group.academicYearStart.toDate(),
             ),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
@@ -493,7 +493,7 @@ class TeacherView extends StatelessWidget {
         ),
         const Center(
           child: Text(
-            "Health Report (This Year)",
+            "Health Report (Current Academic Year)",
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ),

@@ -8,6 +8,7 @@ class Group {
   final Map<String, String> supervisors;
   final String admin;
   final List<String> sections;
+  final Timestamp academicYearStart;
 
   Group({
     required this.id,
@@ -17,6 +18,7 @@ class Group {
     required this.supervisors,
     required this.admin,
     required this.sections,
+    required this.academicYearStart,
   });
 
   factory Group.fromFirestore(DocumentSnapshot snapshot) {
@@ -30,6 +32,7 @@ class Group {
       supervisors: Map<String, String>.from(data["supervisors"]),
       admin: data["admin"],
       sections: List<String>.from(data["sections"]),
+      academicYearStart: data["academicYearStart"],
     );
   }
 }

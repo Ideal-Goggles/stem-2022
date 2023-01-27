@@ -33,28 +33,28 @@ class _PrincipalViewState extends State<PrincipalView> {
   @override
   void initState() {
     final db = Provider.of<DatabaseService>(context, listen: false);
-    final groupId = widget.group.id;
+    final group = widget.group;
 
     double schoolWastage = 0;
     List<double> schoolHealth = [];
     double schoolWastageForYear = 0;
     List<double> schoolHealthForYear = [];
 
-    db.getSubGroups(groupId).then(
+    db.getSubGroups(group.id).then(
       (subGroups) async {
         for (final subGroup in subGroups) {
-          final wastageFuture = db.getWastageData(groupId, subGroup.id);
+          final wastageFuture = db.getWastageData(group.id, subGroup.id);
           final wastageForYearFuture = db.getWastageDataForYear(
-            groupId,
+            group.id,
             subGroup.id,
-            year: DateTime.now().year,
+            yearStart: group.academicYearStart.toDate(),
           );
 
-          final healthFuture = db.getHealthData(groupId, subGroup.id);
+          final healthFuture = db.getHealthData(group.id, subGroup.id);
           final healthForYearFuture = db.getHealthDataForYear(
-            groupId,
+            group.id,
             subGroup.id,
-            year: DateTime.now().year,
+            yearStart: group.academicYearStart.toDate(),
           );
 
           for (final wastage in await wastageFuture) {
