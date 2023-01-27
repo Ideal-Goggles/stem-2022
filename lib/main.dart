@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
         Provider<StorageService>.value(value: storage),
       ],
       child: MaterialApp(
-        title: "Hammit",
+        title: "HELPe",
         theme: ThemeData(
           primarySwatch: primaryThemeColor,
           fontFamily: "Inter",

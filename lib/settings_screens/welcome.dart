@@ -43,7 +43,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
     final carouselItems = [
       textPage(const Text(
-        "Hammit is an app that aims to reduce food wastage and junk food consumption.",
+        "HELPe is an app that aims to reduce food wastage and junk food consumption.",
         textAlign: TextAlign.center,
       )),
       textPage(const Text(
@@ -102,10 +102,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               text: "All of this is just the start,\nvisit ",
             ),
             TextSpan(
-              text: "https://hammit.fun",
+              text: "https://HELPe.fun",
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  launchUrlString("https://hammit.fun");
+                  launchUrlString("https://HELPe.fun");
                 },
               style: const TextStyle(
                 color: Colors.blue,
@@ -122,7 +122,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     ];
 
     return Scaffold(
-        appBar: AppBar(title: const Text("Welcome to Hammit")),
+        appBar: AppBar(title: const Text("Welcome to HELPe")),
         body: Center(
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

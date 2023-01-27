@@ -120,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                "Welcome Back to Hammit!",
+                "Welcome Back to HELPe!",
                 style: TextStyle(
                   fontSize: 20,
                 ),
