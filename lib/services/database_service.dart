@@ -61,7 +61,7 @@ class DatabaseService {
         .collection("foodPosts")
         .where("authorId", isEqualTo: userId)
         .orderBy("dateAdded", descending: true)
-        .limit(1)
+        .limitToLast(1)
         .get();
 
     if (snapshot.docs.isEmpty) {
@@ -199,7 +199,7 @@ class DatabaseService {
         .doc(subGroupId)
         .collection("wastage")
         .orderBy("timestamp")
-        .limit(limit)
+        .limitToLast(limit)
         .snapshots();
 
     return snapshotStream.map(
@@ -221,7 +221,7 @@ class DatabaseService {
         .doc(subGroupId)
         .collection("wastage")
         .orderBy("timestamp")
-        .limit(limit)
+        .limitToLast(limit)
         .get();
 
     return snapshot.docs
@@ -268,7 +268,7 @@ class DatabaseService {
         .doc(subGroupId)
         .collection("health")
         .orderBy("timestamp")
-        .limit(limit)
+        .limitToLast(limit)
         .snapshots();
 
     return snapshotStream.map(
@@ -290,7 +290,7 @@ class DatabaseService {
         .doc(subGroupId)
         .collection("health")
         .orderBy("timestamp")
-        .limit(limit)
+        .limitToLast(limit)
         .get();
 
     return snapshot.docs
