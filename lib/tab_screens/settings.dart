@@ -26,8 +26,8 @@ class SettingsScreen extends StatelessWidget {
     final loggedIn = user != null;
 
     final List<SettingsMenuEntry> entries = [
-      SettingsMenuEntry(CupertinoIcons.question_circle_fill, "What is HELPe?",
-          const WelcomeScreen()),
+      SettingsMenuEntry(CupertinoIcons.question_circle_fill,
+          "What is HeLP@MPS?", const WelcomeScreen()),
       if (!loggedIn) ...[
         SettingsMenuEntry(Icons.perm_contact_calendar, "Create an Account",
             const SignUpScreen()),

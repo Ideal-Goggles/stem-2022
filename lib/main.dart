@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
         Provider<StorageService>.value(value: storage),
       ],
       child: MaterialApp(
-        title: "HELPe",
+        title: "HeLP@MPS",
         theme: ThemeData(
           primarySwatch: primaryThemeColor,
           fontFamily: "Inter",
@@ -89,20 +89,38 @@ class MyApp extends StatelessWidget {
             contentTextStyle: TextStyle(color: Colors.white),
           ),
         ),
-        home: const AppHome(),
+        home: const MyAppHome(),
       ),
     );
   }
 }
 
-class AppHome extends StatefulWidget {
-  const AppHome({super.key});
+class MyAppHome extends StatelessWidget {
+  const MyAppHome({super.key});
 
   @override
-  State<AppHome> createState() => MyAppHome();
+  Widget build(BuildContext context) {
+    final db = Provider.of<DatabaseService>(context);
+    final currentUser = Provider.of<User?>(context);
+
+    return StreamProvider.value(
+      value: currentUser == null
+          ? Stream.value(null)
+          : db.streamAppUser(currentUser.uid),
+      initialData: null,
+      child: const MyAppBottomBar(),
+    );
+  }
 }
 
-class MyAppHome extends State<AppHome> {
+class MyAppBottomBar extends StatefulWidget {
+  const MyAppBottomBar({super.key});
+
+  @override
+  State<MyAppBottomBar> createState() => _MyAppBottomBarState();
+}
+
+class _MyAppBottomBarState extends State<MyAppBottomBar> {
   int _currentIndex = 0;
   late PageController _pageController;
 
