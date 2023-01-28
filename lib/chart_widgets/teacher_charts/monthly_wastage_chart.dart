@@ -63,7 +63,7 @@ class MonthlyWastageChart extends StatelessWidget {
             drawBehindEverything: true,
             sideTitles: SideTitles(
               showTitles: true,
-              reservedSize: 45,
+              reservedSize: 50,
               getTitlesWidget: (value, meta) {
                 final v = value >= 1000
                     ? "${(value / 1000).toStringAsPrecision(2)} K"
