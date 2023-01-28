@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -204,45 +206,49 @@ class _AddAnnouncementAlertState extends State<AddAnnouncementAlert> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      backgroundColor: Colors.grey[900],
-      title: const Text("Create an Announcement"),
-      content: SizedBox(
-        width: 300,
-        child: Form(
-          key: _formKey,
-          child: TextFormField(
-            onSaved: (newValue) => _content = newValue ?? "",
-            keyboardType: TextInputType.multiline,
-            decoration: const InputDecoration(
-              label: Text("Content"),
-              hintText: "Hello World!",
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+      child: AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        backgroundColor: Colors.grey[900],
+        title: const Text("Create an Announcement"),
+        content: SizedBox(
+          width: 300,
+          child: Form(
+            key: _formKey,
+            child: TextFormField(
+              onSaved: (newValue) => _content = newValue ?? "",
+              keyboardType: TextInputType.multiline,
+              decoration: const InputDecoration(
+                fillColor: Colors.black38,
+                label: Text("Content"),
+                hintText: "Hello World!",
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Please enter some information";
+                }
+                return null;
+              },
             ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Please enter some information";
+          ),
+        ),
+        actions: [
+          MaterialButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                _formKey.currentState!.save();
+                Navigator.pop(context, _content);
               }
-              return null;
             },
+            color: Theme.of(context).colorScheme.primary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: const Text("Create"),
           ),
-        ),
+        ],
       ),
-      actions: [
-        MaterialButton(
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              _formKey.currentState!.save();
-              Navigator.pop(context, _content);
-            }
-          },
-          color: Theme.of(context).colorScheme.primary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: const Text("Create"),
-        ),
-      ],
     );
   }
 }

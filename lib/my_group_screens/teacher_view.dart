@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -30,106 +32,117 @@ class _AddDataAlertDialogState extends State<AddDataAlertDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: Colors.grey[900],
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      title: const Text("Add Class Data"),
-      content: SizedBox(
-        width: 300,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextFormField(
-                onSaved: (newValue) => foodWastage = double.parse(newValue!),
-                keyboardType: const TextInputType.numberWithOptions(
-                  signed: false,
-                  decimal: true,
-                ),
-                decoration: const InputDecoration(
-                  label: Text("Food Wastage (grams)"),
-                ),
-                validator: (value) {
-                  if (value != null && value.isNotEmpty) {
-                    if (double.tryParse(value) == null) {
-                      return "Enter a valid number";
-                    }
-                    return null;
-                  }
-                  return "Please enter a number";
-                },
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+      child: AlertDialog(
+        backgroundColor: Colors.grey[900],
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        title: const Text("Add Class Data"),
+        content: SizedBox(
+          width: 300,
+          child: Form(
+            key: _formKey,
+            child: SizedBox(
+              height: 213,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextFormField(
+                    onSaved: (newValue) =>
+                        foodWastage = double.parse(newValue!),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      signed: false,
+                      decimal: true,
+                    ),
+                    decoration: const InputDecoration(
+                      fillColor: Colors.black38,
+                      label: Text("Food Wastage (grams)"),
+                    ),
+                    validator: (value) {
+                      if (value != null && value.isNotEmpty) {
+                        if (double.tryParse(value) == null) {
+                          return "Enter a valid number";
+                        }
+                        return null;
+                      }
+                      return "Please enter a number";
+                    },
+                  ),
+                  const SizedBox(height: 15),
+                  TextFormField(
+                    onSaved: (newValue) =>
+                        healthyStudents = int.parse(newValue!),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      signed: false,
+                      decimal: true,
+                    ),
+                    decoration: const InputDecoration(
+                      fillColor: Colors.black38,
+                      label: Text("Students with Healthy Food"),
+                    ),
+                    validator: (value) {
+                      if (value != null && value.isNotEmpty) {
+                        if (double.tryParse(value) == null) {
+                          return "Enter a valid number";
+                        }
+                        return null;
+                      }
+                      return "Please enter a number";
+                    },
+                  ),
+                  const SizedBox(height: 15),
+                  TextFormField(
+                    onSaved: (newValue) => totalStudents = int.parse(newValue!),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      signed: false,
+                      decimal: true,
+                    ),
+                    decoration: const InputDecoration(
+                      fillColor: Colors.black38,
+                      label: Text("Total Number of Students"),
+                    ),
+                    validator: (value) {
+                      if (value != null && value.isNotEmpty) {
+                        if (double.tryParse(value) == null) {
+                          return "Enter a valid number";
+                        }
+                        return null;
+                      }
+                      return "Please enter a number";
+                    },
+                  ),
+                ],
               ),
-              const SizedBox(height: 15),
-              TextFormField(
-                onSaved: (newValue) => healthyStudents = int.parse(newValue!),
-                keyboardType: const TextInputType.numberWithOptions(
-                  signed: false,
-                  decimal: true,
-                ),
-                decoration: const InputDecoration(
-                  label: Text("Students with Healthy Food"),
-                ),
-                validator: (value) {
-                  if (value != null && value.isNotEmpty) {
-                    if (double.tryParse(value) == null) {
-                      return "Enter a valid number";
-                    }
-                    return null;
-                  }
-                  return "Please enter a number";
-                },
-              ),
-              const SizedBox(height: 15),
-              TextFormField(
-                onSaved: (newValue) => totalStudents = int.parse(newValue!),
-                keyboardType: const TextInputType.numberWithOptions(
-                  signed: false,
-                  decimal: true,
-                ),
-                decoration: const InputDecoration(
-                  label: Text("Total Number of Students"),
-                ),
-                validator: (value) {
-                  if (value != null && value.isNotEmpty) {
-                    if (double.tryParse(value) == null) {
-                      return "Enter a valid number";
-                    }
-                    return null;
-                  }
-                  return "Please enter a number";
-                },
-              ),
-            ],
+            ),
           ),
         ),
-      ),
-      actions: [
-        MaterialButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text("Cancel"),
-        ),
-        MaterialButton(
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              _formKey.currentState!.save();
+        actions: [
+          MaterialButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          MaterialButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                _formKey.currentState!.save();
 
-              Navigator.pop(
-                context,
-                Pair(
-                  first: foodWastage,
-                  second: healthyStudents / totalStudents,
-                ),
-              );
-            }
-          },
-          color: Theme.of(context).colorScheme.primary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+                Navigator.pop(
+                  context,
+                  Pair(
+                    first: foodWastage,
+                    second: healthyStudents / totalStudents,
+                  ),
+                );
+              }
+            },
+            color: Theme.of(context).colorScheme.primary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: const Text("Submit"),
           ),
-          child: const Text("Submit"),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
