@@ -6,12 +6,12 @@ import 'package:stem_2022/services/database_service.dart';
 import 'package:stem_2022/models/group.dart';
 
 class DayWiseHealthDataScreen extends StatelessWidget {
-  final String groupId;
+  final Group group;
   final String subGroupId;
 
   const DayWiseHealthDataScreen({
     super.key,
-    required this.groupId,
+    required this.group,
     required this.subGroupId,
   });
 
@@ -21,9 +21,9 @@ class DayWiseHealthDataScreen extends StatelessWidget {
 
     return StreamBuilder(
       stream: db.streamHealthDataForYear(
-        groupId,
+        group.id,
         subGroupId,
-        year: DateTime.now().year,
+        yearStart: group.academicYearStart.toDate(),
       ),
       builder: (context, snapshot) {
         final healthData = snapshot.data!.reversed.toList(growable: false);
@@ -52,7 +52,7 @@ class DataListTile extends StatelessWidget {
 
   /// January = 0, December = 11
   String? _monthIntToString(int month) {
-    switch (month + 1) {
+    switch (month) {
       case DateTime.january:
         return "January";
       case DateTime.february:

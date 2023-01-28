@@ -68,14 +68,14 @@ class _SupervisorViewState extends State<SupervisorView> {
           final wastageForYearFuture = db.getWastageDataForYear(
             widget.group.id,
             subGroup.id,
-            year: DateTime.now().year,
+            yearStart: widget.group.academicYearStart.toDate(),
           );
 
           final healthFuture = db.getHealthData(widget.group.id, subGroup.id);
           final healthForYearFuture = db.getHealthDataForYear(
             widget.group.id,
             subGroup.id,
-            year: DateTime.now().year,
+            yearStart: widget.group.academicYearStart.toDate(),
           );
 
           // Process wastage data
@@ -377,7 +377,7 @@ class _SupervisorViewState extends State<SupervisorView> {
         const SizedBox(height: 5),
         const Center(
           child: Text(
-            "Grade-wise Wastage Report (Past Year)",
+            "Grade-wise Wastage Report (Current Academic Year)",
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ),
@@ -398,7 +398,7 @@ class _SupervisorViewState extends State<SupervisorView> {
         const SizedBox(height: 5),
         const Center(
           child: Text(
-            "Grade-wise Health Report (Past Year)",
+            "Grade-wise Health Report (Current Academic Year)",
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ),
@@ -421,7 +421,7 @@ class _SupervisorViewState extends State<SupervisorView> {
         const SizedBox(height: 5),
         const Center(
           child: Text(
-            "Class-wise Wastage Report (Previous Year)",
+            "Class-wise Wastage Report (Current Academic Year)",
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ),
@@ -441,7 +441,7 @@ class _SupervisorViewState extends State<SupervisorView> {
         const SizedBox(height: 5),
         const Center(
           child: Text(
-            "Class-wise Health Report (Previous Year)",
+            "Class-wise Health Report (Current Academic Year)",
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ),

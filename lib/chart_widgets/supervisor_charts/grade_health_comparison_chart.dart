@@ -20,6 +20,7 @@ class GradeHealthComparisonChart extends StatelessWidget {
     return BarChart(
       BarChartData(
         minY: 0,
+        maxY: 100,
         borderData: FlBorderData(
           border: Border.all(color: Colors.blueGrey, width: 0.5),
         ),
