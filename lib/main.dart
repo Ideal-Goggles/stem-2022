@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+import 'package:stem_2022/bottom_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -55,9 +55,10 @@ class MyApp extends StatelessWidget {
           fontFamily: "Inter",
           highlightColor: Colors.transparent,
           splashColor: Colors.transparent,
-          scaffoldBackgroundColor: Colors.grey.shade900.withOpacity(0.2),
-          appBarTheme:
-              AppBarTheme(color: Colors.grey.shade900.withOpacity(0.5)),
+          scaffoldBackgroundColor: Colors.black,
+          appBarTheme: AppBarTheme(
+            color: Colors.grey.shade900,
+          ),
           colorScheme: const ColorScheme.dark(
               primary: primaryThemeColor, error: primaryErrorColor),
           inputDecorationTheme: InputDecorationTheme(
@@ -138,104 +139,111 @@ class _MyAppBottomBarState extends State<MyAppBottomBar> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: const MyAppBar(),
-        extendBodyBehindAppBar: false,
-        extendBody: true,
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        floatingActionButton: ElevatedButton(
-          onPressed: () {
-            final currentUser = Provider.of<User?>(context, listen: false);
+    return Scaffold(
+      appBar: const MyAppBar(),
+      extendBodyBehindAppBar: false,
+      extendBody: true,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: ElevatedButton(
+        onPressed: () {
+          final currentUser = Provider.of<User?>(context, listen: false);
 
-            if (currentUser == null) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: const Text(
-                  "You must be logged in to create a post",
-                  textAlign: TextAlign.center,
-                ),
-                backgroundColor: Theme.of(context).colorScheme.error,
-              ));
-            } else {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const CreatePostScreen()),
-              );
-            }
-          },
-          style: ElevatedButton.styleFrom(
-            elevation: 1,
-            fixedSize: const Size.fromRadius(25),
-            shape: const CircleBorder(),
-            foregroundColor: Colors.white,
-            backgroundColor: Theme.of(context).colorScheme.primary,
+          if (currentUser == null) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: const Text(
+                "You must be logged in to create a post",
+                textAlign: TextAlign.center,
+              ),
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ));
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const CreatePostScreen()),
+            );
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          elevation: 1,
+          fixedSize: const Size.fromRadius(25),
+          shape: const CircleBorder(),
+          foregroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+        ),
+        child: const Icon(CupertinoIcons.plus_rectangle_fill_on_rectangle_fill,
+            size: 18),
+      ),
+      bottomNavigationBar: PreferredSize(
+        preferredSize: Size(MediaQuery.of(context).size.width, 22),
+        child: Container(
+          decoration: const BoxDecoration(
+            border: Border(
+              top: BorderSide(color: Colors.white12),
+            ),
           ),
-          child: const Icon(
-              CupertinoIcons.plus_rectangle_fill_on_rectangle_fill,
-              size: 18),
+          child: ClipRRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: BottomNavyBar(
+                backgroundColor: Colors.black.withOpacity(0.7),
+                showElevation: false,
+                selectedIndex: _currentIndex,
+                onItemSelected: (index) => setState(() {
+                  _currentIndex = index;
+                  _pageController.animateToPage(index,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.ease);
+                }),
+                items: <BottomNavyBarItem>[
+                  BottomNavyBarItem(
+                    title: const Text(
+                      'Home',
+                    ),
+                    textAlign: TextAlign.center,
+                    icon: const Icon(CupertinoIcons.house_fill),
+                    activeColor: Colors.orange,
+                    inactiveColor: Colors.white60,
+                  ),
+                  BottomNavyBarItem(
+                    title: const Text('Groups'),
+                    textAlign: TextAlign.center,
+                    icon: const Icon(CupertinoIcons.group_solid),
+                    activeColor: Colors.yellow,
+                    inactiveColor: Colors.white60,
+                  ),
+                  BottomNavyBarItem(
+                    title: const Text(
+                      'Stats',
+                    ),
+                    textAlign: TextAlign.center,
+                    icon: const Icon(CupertinoIcons.chart_bar_alt_fill),
+                    activeColor: Colors.green,
+                    inactiveColor: Colors.white60,
+                  ),
+                  BottomNavyBarItem(
+                    title: const Text('Settings'),
+                    textAlign: TextAlign.center,
+                    icon: const Icon(CupertinoIcons.gear_alt_fill),
+                    activeColor: Colors.blue,
+                    inactiveColor: Colors.white60,
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
-        bottomNavigationBar: BottomNavyBar(
-          backgroundColor: Colors.grey[900],
-          selectedIndex: _currentIndex,
-          onItemSelected: (index) => setState(() {
-            _currentIndex = index;
-            _pageController.animateToPage(index,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.ease);
-          }),
-          items: <BottomNavyBarItem>[
-            BottomNavyBarItem(
-              title: const Text(
-                'Home',
-                textAlign: TextAlign.center,
-              ),
-              icon: const Icon(CupertinoIcons.house_fill),
-              activeColor: Colors.orange,
-              inactiveColor: Colors.white60,
-            ),
-            BottomNavyBarItem(
-              title: const Text(
-                'Groups',
-                textAlign: TextAlign.center,
-              ),
-              icon: const Icon(CupertinoIcons.group_solid),
-              activeColor: Colors.yellow,
-              inactiveColor: Colors.white60,
-            ),
-            BottomNavyBarItem(
-              title: const Text(
-                'Stats',
-                textAlign: TextAlign.center,
-              ),
-              icon: const Icon(CupertinoIcons.chart_bar_alt_fill),
-              activeColor: Colors.green,
-              inactiveColor: Colors.white60,
-            ),
-            BottomNavyBarItem(
-              title: const Text(
-                'Settings',
-                textAlign: TextAlign.center,
-              ),
-              icon: const Icon(CupertinoIcons.gear_alt_fill),
-              activeColor: Colors.blue,
-              inactiveColor: Colors.white60,
-            ),
-          ],
-        ),
-        body: PageView(
-          controller: _pageController,
-          onPageChanged: (index) {
-            setState(() => _currentIndex = index);
-          },
-          children: const <Widget>[
-            HomeScreen(),
-            GroupsScreen(),
-            MyGroupScreen(),
-            SettingsScreen(),
-          ],
-        ),
+      ),
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() => _currentIndex = index);
+        },
+        children: const <Widget>[
+          HomeScreen(),
+          GroupsScreen(),
+          MyGroupScreen(),
+          SettingsScreen(),
+        ],
       ),
     );
   }
