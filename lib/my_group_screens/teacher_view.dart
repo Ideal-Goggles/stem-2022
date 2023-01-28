@@ -135,7 +135,7 @@ class _AddDataAlertDialogState extends State<AddDataAlertDialog> {
                 );
               }
             },
-            color: Theme.of(context).colorScheme.primary,
+            color: const Color.fromRGBO(13, 71, 161, 0.5),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),
             ),

@@ -241,7 +241,7 @@ class _AddAnnouncementAlertState extends State<AddAnnouncementAlert> {
                 Navigator.pop(context, _content);
               }
             },
-            color: Theme.of(context).colorScheme.primary,
+            color: const Color.fromRGBO(13, 71, 161, 0.5),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),
             ),
