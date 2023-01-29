@@ -218,10 +218,12 @@ class _AddAnnouncementAlertState extends State<AddAnnouncementAlert> {
             key: _formKey,
             child: TextFormField(
               onSaved: (newValue) => _content = newValue ?? "",
+              minLines: 6,
               keyboardType: TextInputType.multiline,
+              maxLines: null,
               decoration: const InputDecoration(
                 fillColor: Colors.black38,
-                label: Text("Content"),
+                label: Text("Enter content for posting an announcement."),
                 hintText: "Hello World!",
               ),
               validator: (value) {
