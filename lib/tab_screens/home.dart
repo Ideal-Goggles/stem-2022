@@ -501,23 +501,26 @@ class _FoodPostCardState extends State<FoodPostCard>
                   return const CircularProgressIndicator.adaptive();
                 }
 
-                return MaterialButton(
-                  onPressed: null,
-                  onLongPress: () {
-                    HapticFeedback.mediumImpact();
-                    showDeletionDialog();
-                  },
-                  padding: EdgeInsets.zero,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                            color: Colors.white.withOpacity(0.5), width: 1),
-                        top: BorderSide(
-                            color: Colors.white.withOpacity(0.5), width: 1),
+                return GestureDetector(
+                  onDoubleTap: showRatingDialog,
+                  child: MaterialButton(
+                    onPressed: null,
+                    onLongPress: () {
+                      HapticFeedback.mediumImpact();
+                      showDeletionDialog();
+                    },
+                    padding: EdgeInsets.zero,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                              color: Colors.white.withOpacity(0.5), width: 1),
+                          top: BorderSide(
+                              color: Colors.white.withOpacity(0.5), width: 1),
+                        ),
                       ),
+                      child: Image.memory(snapshot.data!),
                     ),
-                    child: Image.memory(snapshot.data!),
                   ),
                 );
               },
