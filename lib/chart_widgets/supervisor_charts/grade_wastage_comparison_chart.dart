@@ -3,8 +3,13 @@ import 'package:fl_chart/fl_chart.dart';
 
 class GradeWastageComparisonChart extends StatelessWidget {
   final Map<String, double> gradeWiseData;
+  final double interval;
 
-  const GradeWastageComparisonChart({super.key, required this.gradeWiseData});
+  const GradeWastageComparisonChart({
+    super.key,
+    required this.gradeWiseData,
+    this.interval = 500,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +37,7 @@ class GradeWastageComparisonChart extends StatelessWidget {
             sideTitles: SideTitles(
               showTitles: true,
               reservedSize: 50,
-              interval: 500,
+              interval: interval,
               getTitlesWidget: (value, meta) {
                 final v = value >= 1000
                     ? "${(value / 1000).toStringAsPrecision(2)} K"

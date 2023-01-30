@@ -371,8 +371,10 @@ class _SupervisorViewState extends State<SupervisorView> {
             color: Colors.grey[900],
             borderRadius: BorderRadius.circular(30),
           ),
-          child:
-              GradeWastageComparisonChart(gradeWiseData: _gradeWastageForYear),
+          child: GradeWastageComparisonChart(
+            gradeWiseData: _gradeWastageForYear,
+            interval: 2000,
+          ),
         ),
         const SizedBox(height: 5),
         const Center(
@@ -416,7 +418,9 @@ class _SupervisorViewState extends State<SupervisorView> {
           decoration: BoxDecoration(
               color: Colors.grey[900], borderRadius: BorderRadius.circular(30)),
           child: GradeWastageComparisonChart(
-              gradeWiseData: _subGroupWastageForYear),
+            gradeWiseData: _subGroupWastageForYear,
+            interval: 2000,
+          ),
         ),
         const SizedBox(height: 5),
         const Center(

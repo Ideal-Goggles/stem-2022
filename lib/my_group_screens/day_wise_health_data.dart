@@ -121,9 +121,8 @@ class DataListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final timestamp = data.timestamp.toDate();
-    final afternoon = timestamp.hour > 12;
     final timestampString =
-        "${afternoon ? timestamp.hour - 12 : timestamp.hour}:${timestamp.minute.toString().padLeft(2, "0")} ${afternoon ? "PM" : "AM"}, ${_weekdayIntToString(timestamp.weekday)} ${timestamp.day} ${_monthIntToString(timestamp.month)} ${timestamp.year}";
+        "${_weekdayIntToString(timestamp.weekday)} ${timestamp.day} ${_monthIntToString(timestamp.month)} ${timestamp.year}";
 
     return Container(
       decoration: BoxDecoration(
